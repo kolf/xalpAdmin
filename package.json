@@ -2,6 +2,7 @@
   "name": "app",
   "version": "1.0.0",
   "dependencies": {
+    "@ant-design/icons": "^4.6.2",
     "@antv/f2": "^3.8.8",
     "@fortawesome/fontawesome": "^1.1.8",
     "@fortawesome/fontawesome-free": "^5.15.1",
