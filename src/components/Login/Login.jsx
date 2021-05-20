@@ -19,7 +19,7 @@ class Login extends React.Component {
 
   render() {
     return sessionService.isAuthenticated() ? (
-      <Redirect to="/park-management" />
+      <Redirect to="/" />
     ) : (
       <div className="login-form-root">
         <div className="login-form">

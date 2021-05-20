@@ -24,7 +24,7 @@ class SessionService {
       const userData = res.user_info;
       sessionStorage.setItem("@Auth:token", token);
       sessionStorage.setItem("user", JSON.stringify(userData));
-      history.push("/park-management");
+      history.push("/");
       return Promise.resolve(userData);
     } catch (error) {
       return Promise.reject(error);

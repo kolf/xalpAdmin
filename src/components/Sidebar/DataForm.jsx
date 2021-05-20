@@ -27,9 +27,9 @@ export default function HorizontalLoginForm() {
                 message: "Please input your username!",
               },
             ]}
-            style={{ marginBottom: 12 }}
+            style={{ marginBottom: 6 }}
           >
-            <Select defaultValue="rmb">
+            <Select size="small" placeholder="请选择区域">
               <Option value="rmb">RMB</Option>
               <Option value="dollar">Dollar</Option>
             </Select>
@@ -44,9 +44,9 @@ export default function HorizontalLoginForm() {
                 message: "Please input your username!",
               },
             ]}
-            style={{ marginBottom: 12 }}
+            style={{ marginBottom: 6 }}
           >
-            <Select defaultValue="rmb">
+            <Select size="small" placeholder="选择设备">
               <Option value="rmb">RMB</Option>
               <Option value="dollar">Dollar</Option>
             </Select>
@@ -61,9 +61,9 @@ export default function HorizontalLoginForm() {
                 message: "Please input your username!",
               },
             ]}
-            style={{ marginBottom: 12 }}
+            style={{ marginBottom: 6 }}
           >
-            <Select defaultValue="rmb">
+            <Select size="small" placeholder="选择时间类型">
               <Option value="rmb">RMB</Option>
               <Option value="dollar">Dollar</Option>
             </Select>
@@ -78,9 +78,9 @@ export default function HorizontalLoginForm() {
                 message: "Please input your username!",
               },
             ]}
-            style={{ marginBottom: 12 }}
+            style={{ marginBottom: 6 }}
           >
-            <Select defaultValue="rmb">
+            <Select size="small" placeholder="请选择年份">
               <Option value="rmb">RMB</Option>
               <Option value="dollar">Dollar</Option>
             </Select>
@@ -95,9 +95,9 @@ export default function HorizontalLoginForm() {
                 message: "Please input your username!",
               },
             ]}
-            style={{ marginBottom: 12 }}
+            style={{ marginBottom: 6 }}
           >
-            <Select defaultValue="rmb">
+            <Select size="small" placeholder="请选择月份">
               <Option value="rmb">RMB</Option>
               <Option value="dollar">Dollar</Option>
             </Select>
@@ -112,14 +112,18 @@ export default function HorizontalLoginForm() {
                 message: "Please input your username!",
               },
             ]}
-            style={{ marginBottom: 12 }}
+            style={{ marginBottom: 6 }}
           >
-            <Select defaultValue="rmb">
+            <Select size="small" placeholder="请选择日">
               <Option value="rmb">RMB</Option>
               <Option value="dollar">Dollar</Option>
             </Select>
           </Form.Item>
         </Col>
+      </Row>
+      <Row gutter={8}>
+        <Col span={12}><Button size="small" block ghost>查询数据</Button></Col>
+        <Col span={12}><Button size="small" block ghost>导出数据</Button></Col>
       </Row>
     </Form>
   );

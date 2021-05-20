@@ -1,9 +1,6 @@
-import React from 'react';
+import React from "react";
 
-export default class Home extends React.Component {
-    render() {
-        return (
-            <h1>HOME</h1>
-        );
-    }
+import "./style.less";
+export default function Home() {
+  return null
 }
