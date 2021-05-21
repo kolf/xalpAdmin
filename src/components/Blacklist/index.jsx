@@ -18,12 +18,13 @@ export default function Home() {
       onClose={(e) => {
         setShow(false);
       }}
-      header={<Tabs activeKey={tabKey} onChange={setTabKey}>
-      <TabPane tab="黑名单管理" key="1" />
-      <TabPane tab="不文明行为惩处规范" key="2" />
-    </Tabs>}
+      header={
+        <Tabs activeKey={tabKey} onChange={setTabKey}>
+          <TabPane tab="黑名单管理" key="1" />
+          <TabPane tab="不文明行为惩处规范" key="2" />
+        </Tabs>
+      }
     >
-      
       {tabKey === "1" && <DataTable1 />}
       {tabKey === "2" && <DataTable2 />}
     </Main>

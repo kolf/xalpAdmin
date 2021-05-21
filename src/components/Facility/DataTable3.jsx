@@ -171,21 +171,17 @@ export default function DataTable() {
         >
           <RangePicker size="small" />
         </Form.Item>
-        <Form.Item shouldUpdate>
-          {() => (
+        <Form.Item>
+     
             <Button
               type="primary"
               htmlType="submit"
               size="small"
-              disabled={
-                !form.isFieldsTouched(true) ||
-                !!form.getFieldsError().filter(({ errors }) => errors.length)
-                  .length
-              }
+           
             >
               查询数据
             </Button>
-          )}
+  
         </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search size="small" placeholder="模糊搜索" />

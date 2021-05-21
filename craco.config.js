@@ -16,6 +16,21 @@ module.exports = {
       },
     },
   ],
+  devServer: {
+    proxy: {
+      "/auth": {
+        target: "http://114.67.250.8",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/api": {
+        target: "http://xalby-api.facevisitor.com",
+        changeOrigin: true,
+        secure: false,
+        // pathRewrite: { "^/api": "" },
+      },
+    },
+  },
 };
 
 // 'component-background':'#0B223F'

@@ -1,7 +1,7 @@
 import queryString from "query-string";
 import api from "../core/http";
 
-class BlacklistService {
+class UserService {
   getBlockBehaviorList = async (creds) => {
     try {
       const res = await api.get(
@@ -32,33 +32,35 @@ class BlacklistService {
       return Promise.reject(error);
     }
   };
-  updateBlockBehavior = async (id) => {
+  updateBlockBehavior = async (creds) => {
     try {
-      const res = await api.put(`api/BlockBehavior/${id}`);
+      const res = await api.post(`api/BlockBehavior/${creds.id}`, creds);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
     }
   };
-  addBlockBehavior = async (id) => {
+  addBlockBehavior = async (creds) => {
     try {
-      const res = await api.put(`api/BlockBehavior/${id}`);
+      const res = await api.post(`api/BlockBehavior`, creds);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
     }
   };
-  exportBlockBehavior = async (id) => {
+  exportBlockBehavior = async (creds) => {
     try {
-      const res = await api.put(`api/BlockBehavior/${id}`);
+      const res = await api.post(`api/BlockBehavior/Import`, creds);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
     }
   };
-  getBlockBehaviorFile = async (id) => {
+  getBlockBehaviorFile = async (creds) => {
     try {
-      const res = await api.put(`api/BlockBehavior/${id}`);
+      const res = await api.get(
+        `api/UploadFile/GetSampleFile/${queryString.stringify(creds)}`
+      );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -66,4 +68,4 @@ class BlacklistService {
   };
 }
 
-export default new BlacklistService();
+export default new UserService();

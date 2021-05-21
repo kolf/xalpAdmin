@@ -1,110 +1,32 @@
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Tabs,
-  Button,
-  Select,
-  DatePicker,
-  Form,
-  Input,
-  Row,
-  Col,
-} from "antd";
-const { TabPane } = Tabs;
+import { Table, Button, DatePicker, Form, Row, Col } from "antd";
+import blanklistService from "../../services/blanklist.service";
 const { RangePicker } = DatePicker;
-const { Option } = Select;
-const { Search } = Input;
-const dataSource = [
-  {
-    key: "1",
-    name: "胡彦斌",
-    age: 32,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "2",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "1",
-    name: "胡彦斌",
-    age: 32,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "2",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "1",
-    name: "胡彦斌",
-    age: 32,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "2",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "1",
-    name: "胡彦斌",
-    age: 32,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "2",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "1",
-    name: "胡彦斌",
-    age: 32,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "2",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
-  },
-];
-
+const dataFormat = "YYYY-MM-DD";
 const columns = [
   {
-    title: "设备IP",
+    title: "序号",
+    dataIndex: "index",
+  },
+  {
+    title: "真是姓名",
     dataIndex: "name",
   },
   {
-    title: "设备名称",
-    dataIndex: "age",
-  },
-  {
-    title: "设备类型",
-    dataIndex: "address",
-  },
-  {
-    title: "录入人姓名",
-    dataIndex: "user",
-  },
-  {
-    title: "录入人工号",
-    dataIndex: "num",
-  },
-  {
-    title: "录入人员电话",
+    title: "手机号",
     dataIndex: "phone",
   },
   {
-    title: "在线状态",
-    dataIndex: "online",
+    title: "身份证",
+    dataIndex: "user",
+  },
+  {
+    title: "历史不文明行为",
+    dataIndex: "num",
+  },
+  {
+    title: "不文明行为",
+    dataIndex: "phone",
   },
   {
     title: "操作",
@@ -113,9 +35,9 @@ const columns = [
       return (
         <div className="text-center">
           <Button size="small" style={{ marginRight: 4 }}>
-            查看操作日志
+            编辑
           </Button>
-          <Button size="small">编辑</Button>
+          <Button size="small">移除</Button>
         </div>
       );
     },
@@ -124,15 +46,49 @@ const columns = [
 
 export default function DataTable() {
   const [form] = Form.useForm();
-  const [, forceUpdate] = useState({}); // To disable submit button at the beginning.
+  const [loading, setLoading] = useState(false);
+  const [dataList, setDataList] = useState([]);
 
   useEffect(() => {
-    forceUpdate({});
+    loadData();
   }, []);
 
-  const onFinish = (values) => {
-    console.log("Finish:", values);
-  };
+  function onFinish(values) {
+    loadData(makeQuery(values));
+  }
+
+  async function loadData(query) {
+    try {
+      setLoading(true);
+      const res = await blanklistService.getBlacklist(query);
+      setLoading(false);
+      setDataList(res);
+    } catch (error) {
+      setLoading(false);
+    }
+  }
+
+  function makeData(data) {
+    return data.map((item, index) => {
+      return { ...item, index: index + 1 };
+    });
+  }
+
+  function makeQuery(query) {
+    return Object.keys(query).reduce((result, key) => {
+      const value = query[key];
+      if (key === "date" && value) {
+        const [start, end] = value;
+        result.StartCreationTime = start.format(dataFormat) + " 00:00:00";
+        result.EndCreationTime = end.format(dataFormat) + " 23:59:59";
+      }
+
+      if (value !== undefined && value !== "-1") {
+        result[key] = value;
+      }
+      return result;
+    }, {});
+  }
 
   return (
     <div>
@@ -149,31 +105,23 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={onFinish}
       >
-        <Form.Item
-          name="username"
-          rules={[{ required: true, message: "Please input your username!" }]}
-        >
+        <Form.Item name="date">
           <RangePicker size="small" />
         </Form.Item>
-        <Form.Item shouldUpdate>
-          {() => (
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="small"
-              disabled={
-                !form.isFieldsTouched(true) ||
-                !!form.getFieldsError().filter(({ errors }) => errors.length)
-                  .length
-              }
-            >
-              查询数据
-            </Button>
-          )}
+        <Form.Item>
+          <Button type="primary" htmlType="submit" size="small">
+            查询数据
+          </Button>
         </Form.Item>
       </Form>
 
-      <Table dataSource={dataSource} columns={columns} size="small" bordered />
+      <Table
+        dataSource={makeData(dataList)}
+        columns={columns}
+        size="small"
+        bordered
+        loading={loading}
+      />
     </div>
   );
 }

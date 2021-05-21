@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, message } from "antd";
 import sessionService from "../../services/session.service";
 import * as sessionActions from "../../store/actions/session.actions";
 
@@ -13,8 +13,12 @@ class Login extends React.Component {
     this.props.logout();
   }
 
-  onFinish = (values) => {
-    this.props.onLogin(values);
+  onFinish = async (values) => {
+    try {
+      const res = await this.props.onLogin(values);
+    } catch (error) {
+      message.error(`登录失败，请稍候再试！`);
+    }
   };
 
   render() {

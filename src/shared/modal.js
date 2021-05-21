@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Modal,ConfigProvider } from "antd";
+import { Modal, ConfigProvider } from "antd";
 import Draggable from "react-draggable";
 import zhCN from "antd/lib/locale/zh_CN";
 const IS_REACT_16 = !!ReactDOM.createPortal;
@@ -34,53 +34,55 @@ class Mod extends React.Component {
     const { title, children, wrapClassName, ...otherProps } = this.props;
     const { bounds, disabled } = this.state;
     return (
-      <ConfigProvider locale={zhCN}><Modal
-        {...otherProps}
-        title={
-          title ? (
-            <div
-              style={{
-                width: "100%",
-                cursor: "move",
-              }}
-              onMouseOver={() => {
-                if (disabled) {
+      <ConfigProvider locale={zhCN}>
+        <Modal
+          {...otherProps}
+          title={
+            title ? (
+              <div
+                style={{
+                  width: "100%",
+                  cursor: "move",
+                }}
+                onMouseOver={() => {
+                  if (disabled) {
+                    this.setState({
+                      disabled: false,
+                    });
+                  }
+                }}
+                onMouseOut={() => {
                   this.setState({
-                    disabled: false,
+                    disabled: true,
                   });
-                }
-              }}
-              onMouseOut={() => {
-                this.setState({
-                  disabled: true,
-                });
-              }}
+                }}
+              >
+                {title}
+              </div>
+            ) : null
+          }
+          modalRender={(modal) => (
+            <Draggable
+              disabled={disabled}
+              bounds={bounds}
+              onStart={(event, uiData) => this.onStart(event, uiData)}
             >
-              {title}
-            </div>
-          ) : null
-        }
-        modalRender={(modal) => (
-          <Draggable
-            disabled={disabled}
-            bounds={bounds}
-            onStart={(event, uiData) => this.onStart(event, uiData)}
-          >
-            <div ref={this.draggleRef}>{modal}</div>
-          </Draggable>
-        )}
-        wrapClassName={wrapClassName}
-        mask={false}
-        bodyStyle={{
-          ...otherProps.bodyStyle,
-          maxHeight: this.bodyMaxHeight,
-          overflowY: "auto",
-        }}
-        cancelText="取消"
-        okText="确定"
-      >
-        {children}
-      </Modal></ConfigProvider>
+              <div ref={this.draggleRef}>{modal}</div>
+            </Draggable>
+          )}
+          wrapClassName={wrapClassName}
+          mask={false}
+          bodyStyle={{
+            ...otherProps.bodyStyle,
+            maxHeight: this.bodyMaxHeight,
+            overflowY: "auto",
+          }}
+          cancelText="取消"
+          okText="确定"
+        >
+          {children}
+        </Modal>
+      </ConfigProvider>
     );
   }
 }
@@ -149,18 +151,12 @@ function modal(config) {
   };
 }
 
-function confirm(title, content) {
-  return new Promise((resolve) => {
-    const mod = modal({
-      width: 480,
-      title,
-      content: (
-        <div style={{ padding: 24, textAlign: "center" }}>{content}</div>
-      ),
-      onOk() {
-        resolve(mod);
-      },
-    });
+function confirm(config) {
+  return Modal.confirm({
+    ...config,
+    onOk() {
+      return new Promise(config.onOk);
+    },
   });
 }
 

@@ -1,7 +1,7 @@
 import queryString from "query-string";
 import api from "../core/http";
 
-class BlacklistService {
+class PoliceService {
   getBlockBehaviorList = async (creds) => {
     try {
       const res = await api.get(
@@ -66,4 +66,4 @@ class BlacklistService {
   };
 }
 
-export default new BlacklistService();
+export default new PoliceService();

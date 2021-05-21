@@ -154,21 +154,17 @@ export default function DataTable() {
             <Option value="user">权限管理</Option>
           </Select>
         </Form.Item>
-        <Form.Item shouldUpdate>
-          {() => (
+        <Form.Item>
+
             <Button
               type="primary"
               htmlType="submit"
               size="small"
-              disabled={
-                !form.isFieldsTouched(true) ||
-                !!form.getFieldsError().filter(({ errors }) => errors.length)
-                  .length
-              }
+
             >
               查询数据
             </Button>
-          )}
+    
         </Form.Item>
       </Form>
       <Table dataSource={dataSource} columns={columns} size="small" bordered />
