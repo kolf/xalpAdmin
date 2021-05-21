@@ -57,56 +57,24 @@ const dataSource = [
     age: 32,
     address: "西湖区湖底公园1号",
   },
-  {
-    key: "2",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "1",
-    name: "胡彦斌",
-    age: 32,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "2",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
-  },
 ];
 
 const columns = [
   {
-    title: "角色名称",
+    title: "设备IP",
     dataIndex: "name",
   },
   {
-    title: "最后编辑时间",
+    title: "设备名称",
     dataIndex: "age",
   },
   {
-    title: "权限详情",
+    title: "设备类型",
     dataIndex: "address",
-  },
-  {
-    title: "操作",
-    dataIndex: "options",
-    render() {
-      return (
-        <div className="text-center">
-          <Button size="small" style={{ marginRight: 4 }}>
-            编辑
-          </Button>
-          <Button size="small">删除</Button>
-        </div>
-      );
-    },
   },
 ];
 
-export default function DataTable() {
+export default function LogDataTable() {
   const [form] = Form.useForm();
   const [, forceUpdate] = useState({}); // To disable submit button at the beginning.
 
@@ -119,7 +87,7 @@ export default function DataTable() {
   };
 
   return (
-    <div>
+    <>
       <Form
         form={form}
         name="form"
@@ -152,6 +120,6 @@ export default function DataTable() {
       </Form>
 
       <Table dataSource={dataSource} columns={columns} size="small" bordered />
-    </div>
+    </>
   );
 }

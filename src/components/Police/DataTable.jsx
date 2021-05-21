@@ -1,115 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Table, Tabs, Button, Select, Row, Col, Form } from "antd";
+import modal from "../../shared/modal";
+import UpdateDataForm from "./UpdateDataForm";
+import LogDataTable from "./LogDataTable";
 const { TabPane } = Tabs;
 const { Option } = Select;
-
-const dataSource = [
-  {
-    key: "1",
-    name: "胡彦斌",
-    age: 32,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "2",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "1",
-    name: "胡彦斌",
-    age: 32,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "2",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "1",
-    name: "胡彦斌",
-    age: 32,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "2",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "1",
-    name: "胡彦斌",
-    age: 32,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "2",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "1",
-    name: "胡彦斌",
-    age: 32,
-    address: "西湖区湖底公园1号",
-  },
-  {
-    key: "2",
-    name: "胡彦祖",
-    age: 42,
-    address: "西湖区湖底公园1号",
-  },
-];
-
-const columns = [
-  {
-    title: "设备IP",
-    dataIndex: "name",
-  },
-  {
-    title: "设备名称",
-    dataIndex: "age",
-  },
-  {
-    title: "设备类型",
-    dataIndex: "address",
-  },
-  {
-    title: "录入人姓名",
-    dataIndex: "user",
-  },
-  {
-    title: "录入人工号",
-    dataIndex: "num",
-  },
-  {
-    title: "录入人员电话",
-    dataIndex: "phone",
-  },
-  {
-    title: "在线状态",
-    dataIndex: "online",
-  },
-  {
-    title: "操作",
-    dataIndex: "options",
-    render() {
-      return (
-        <div className="text-center">
-          <Button size="small" style={{ marginRight: 4 }}>
-            查看操作日志
-          </Button>
-          <Button size="small">编辑</Button>
-        </div>
-      );
-    },
-  },
-];
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -119,15 +14,149 @@ export default function DataTable() {
     forceUpdate({});
   }, []);
 
-  const onFinish = (values) => {
+  const dataSource = [
+    {
+      key: "1",
+      name: "胡彦斌",
+      age: 32,
+      address: "西湖区湖底公园1号",
+    },
+    {
+      key: "2",
+      name: "胡彦祖",
+      age: 42,
+      address: "西湖区湖底公园1号",
+    },
+    {
+      key: "1",
+      name: "胡彦斌",
+      age: 32,
+      address: "西湖区湖底公园1号",
+    },
+    {
+      key: "2",
+      name: "胡彦祖",
+      age: 42,
+      address: "西湖区湖底公园1号",
+    },
+    {
+      key: "1",
+      name: "胡彦斌",
+      age: 32,
+      address: "西湖区湖底公园1号",
+    },
+    {
+      key: "2",
+      name: "胡彦祖",
+      age: 42,
+      address: "西湖区湖底公园1号",
+    },
+    {
+      key: "1",
+      name: "胡彦斌",
+      age: 32,
+      address: "西湖区湖底公园1号",
+    },
+    {
+      key: "2",
+      name: "胡彦祖",
+      age: 42,
+      address: "西湖区湖底公园1号",
+    },
+    {
+      key: "1",
+      name: "胡彦斌",
+      age: 32,
+      address: "西湖区湖底公园1号",
+    },
+    {
+      key: "2",
+      name: "胡彦祖",
+      age: 42,
+      address: "西湖区湖底公园1号",
+    },
+  ];
+
+  const columns = [
+    {
+      title: "设备IP",
+      dataIndex: "name",
+    },
+    {
+      title: "设备名称",
+      dataIndex: "age",
+    },
+    {
+      title: "设备类型",
+      dataIndex: "address",
+    },
+    {
+      title: "录入人姓名",
+      dataIndex: "user",
+    },
+    {
+      title: "录入人工号",
+      dataIndex: "num",
+    },
+    {
+      title: "录入人员电话",
+      dataIndex: "phone",
+    },
+    {
+      title: "在线状态",
+      dataIndex: "online",
+    },
+    {
+      title: "操作",
+      dataIndex: "options",
+      render(text, creds) {
+        return (
+          <div className="text-center">
+            <Button
+              size="small"
+              style={{ marginRight: 4 }}
+              onClick={showLogModal.bind(this, creds)}
+            >
+              查看操作日志
+            </Button>
+            <Button size="small" onClick={showEditModal.bind(this, creds)}>
+              编辑
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
+
+  function onFinish(values) {
     console.log("Finish:", values);
-  };
+  }
+
+  function showLogModal(creds) {
+    const mod = modal({
+      title: "操作日志",
+      content: <LogDataTable></LogDataTable>,
+      onOk,
+    });
+
+    function onOk(values) {}
+  }
+
+  function showEditModal(creds) {
+    const mod = modal({
+      title: "编辑",
+      content: <UpdateDataForm></UpdateDataForm>,
+      onOk,
+    });
+
+    function onOk(values) {}
+  }
 
   return (
     <div>
       <Form
         form={form}
-        name="horizontal_login"
+        name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
         onFinish={onFinish}
