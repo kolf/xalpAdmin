@@ -2,63 +2,47 @@ import queryString from "query-string";
 import api from "../core/http";
 
 class FaciliyService {
-  getBlockBehaviorList = async (creds) => {
+  // 时段分页列表获取
+  getReservationTimeList = async (creds) => {
     try {
       const res = await api.get(
-        `api/BlockBehavior/List?${queryString.stringify(creds)}`
+        `api/ReservationTimeItem/List?${queryString.stringify(creds)}`
       );
       return res.data.items;
     } catch (error) {
       return Promise.reject(error);
     }
   };
-  getBlockAllowUserList = async (creds) => {
+  getReservationTime = async (creds) => {
     try {
-      const res = await api.get(
-        `api/BlockAllowUser/List?${queryString.stringify(creds)}`
+      const res = await api.get(`/api/ReservationTimeItem/${creds.id}`);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  deleteReservationTime = async (creds) => {
+    try {
+      const res = await api.delete(`/api/ReservationTimeItem/${creds.id}`);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  updateReservationTime = async (creds) => {
+    try {
+      const res = await api.post(
+        `api​/ReservationTimeItem​/${creds.id}`,
+        creds
       );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
     }
   };
-  deleteBlockBehavior = async (creds) => {
+  addReservationTime = async (creds) => {
     try {
-      const res = await api.delete(
-        `api/BlockBehavior?${queryString.stringify(creds)}`
-      );
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  updateBlockBehavior = async (id) => {
-    try {
-      const res = await api.put(`api/BlockBehavior/${id}`);
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  addBlockBehavior = async (id) => {
-    try {
-      const res = await api.put(`api/BlockBehavior/${id}`);
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  exportBlockBehavior = async (id) => {
-    try {
-      const res = await api.put(`api/BlockBehavior/${id}`);
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  getBlockBehaviorFile = async (id) => {
-    try {
-      const res = await api.put(`api/BlockBehavior/${id}`);
+      const res = await api.post(`api/ReservationTimeItem`, creds);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
