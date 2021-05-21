@@ -127,7 +127,7 @@ export default function DataTable() {
     <div>
       <Form
         form={form}
-        name="horizontal_login"
+        name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
         onFinish={onFinish}

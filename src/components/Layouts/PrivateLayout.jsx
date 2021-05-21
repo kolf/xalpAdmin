@@ -9,6 +9,7 @@ import imgUrl from "../../assets/img/cad-01.bb6c9874.png";
 import SessionService from "../../services/session.service";
 
 import { Layout } from "antd";
+import AppFooter from "./AppFooter";
 const { Content, Sider } = Layout;
 
 export default class PrivateLayout extends React.Component {
@@ -32,7 +33,7 @@ export default class PrivateLayout extends React.Component {
                 >
                   <Sidebar />
                 </Sider>
-                <Content style={{padding: "12px 0"}}>
+                <Content style={{ padding: "12px 0" }}>
                   <Component {...props} />
                 </Content>
                 <Sider
@@ -41,6 +42,7 @@ export default class PrivateLayout extends React.Component {
                 >
                   <Menu />
                 </Sider>
+                <AppFooter></AppFooter>
               </Layout>
             </Layout>
           ) : (
