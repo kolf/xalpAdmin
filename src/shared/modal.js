@@ -1,8 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { Modal } from "antd";
+import { Modal,ConfigProvider } from "antd";
 import Draggable from "react-draggable";
-
+import zhCN from "antd/lib/locale/zh_CN";
 const IS_REACT_16 = !!ReactDOM.createPortal;
 
 class Mod extends React.Component {
@@ -34,7 +34,7 @@ class Mod extends React.Component {
     const { title, children, wrapClassName, ...otherProps } = this.props;
     const { bounds, disabled } = this.state;
     return (
-      <Modal
+      <ConfigProvider locale={zhCN}><Modal
         {...otherProps}
         title={
           title ? (
@@ -80,7 +80,7 @@ class Mod extends React.Component {
         okText="确定"
       >
         {children}
-      </Modal>
+      </Modal></ConfigProvider>
     );
   }
 }

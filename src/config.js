@@ -5,7 +5,7 @@ const config = {
     baseUrl: process.env.APP_BASE_URL,
   },
   api: {
-    baseUrl: isDevEnv ? "http://114.67.250.8" : "http://114.67.250.8",
+    baseUrl: isDevEnv ? "http://xalby-api.facevisitor.com/api" : "http://114.67.250.8",
   },
   data: {
     dateFormat: "Do MMM YYYY",

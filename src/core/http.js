@@ -44,7 +44,8 @@ axios.interceptors.response.use(
     return res;
   },
   (error) => {
-    if (error.response.status === 401) {
+    console.log(error, 'error');
+    if (error.response && error.response.status === 401) {
       sessionService.logout();
       return;
       //place your reentry code

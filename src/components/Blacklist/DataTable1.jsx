@@ -10,6 +10,7 @@ import {
   Row,
   Col,
 } from "antd";
+import blanklistService from "../../services/blanklist.service";
 const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -125,14 +126,18 @@ const columns = [
 export default function DataTable() {
   const [form] = Form.useForm();
   const [, forceUpdate] = useState({}); // To disable submit button at the beginning.
+  const [query, setQuery] = useState({ Keyword: "dsfsd" });
 
   useEffect(() => {
     forceUpdate({});
+    loadData();
   }, []);
 
-  const onFinish = (values) => {
-    console.log("Finish:", values);
-  };
+  function onFinish(values) {}
+
+  async function loadData() {
+    const res = await blanklistService.getBlacklist(query);
+  }
 
   return (
     <div>
