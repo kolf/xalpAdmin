@@ -1,16 +1,16 @@
 import React from "react";
 import { Select } from "antd";
-import history from "../../shared/history"
+import history from "../../shared/history";
 const { Option } = Select;
 
 export default function Menu() {
-    const handleSelect = value => {
-        history.push(value);
-    }
+  const handleSelect = (value) => {
+    history.push(value);
+  };
   return (
     <Select
       placeholder="系统菜单"
-      style={{ width: "100%", backgroundColor: "#0b223f" }}
+      style={{ width: "100%", backgroundColor: 'rgba(11, 34, 63, 0.9)' }}
       onSelect={handleSelect}
     >
       <Option value="police">设备管理</Option>

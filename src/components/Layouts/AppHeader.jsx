@@ -1,12 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, Button } from "antd";
 import sessionService from "../../services/session.service";
 
 import "./AppHeader.less";
 
 import * as sessionActions from "../../store/actions/session.actions";
+import DateWidget from "../UI/DateWidget";
 
 const { Header } = Layout;
 
@@ -22,7 +23,8 @@ class AppHeader extends React.Component {
     return (
       <Header
         style={{
-          padding: 0,
+          paddingLeft: 0,
+          paddingRight:12,
           display: "flex",
           backgroundColor: "rgba(6, 26, 53, 0.8)",
           height: "66px",
@@ -39,34 +41,13 @@ class AppHeader extends React.Component {
             flex: 1,
           }}
         >
-          {/* <Menu.Item key="1">
-            <Link to="/" className="header-nav">
-              智慧灌溉系统
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="2">
-            <Link to="/" className="header-nav">
-              广播管理系统
-            </Link>
-          </Menu.Item> */}
           <Menu.Item key="3">入园管理系统</Menu.Item>
-          {/* <Menu.Item key="4">
-            <Link to="/" className="header-nav">
-              生态监测系统
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="5">
-            <Link to="/" className="header-nav">
-              管养运维系统
-            </Link>
-          </Menu.Item>*/}
         </Menu>
-        <div style={{ paddingRight: "12px", display: "flex" }}>
-          <div>02:03:40</div>
-          {/* <div>
-            <div>星期五</div>
-            <div>2012年10月21日</div>
-          </div> */}
+        <div style={{ padding: "0 12px" }}>
+          <Link to="/login">退出</Link>
+        </div>
+        <div style={{ display: "flex" }}>
+          <DateWidget/>
         </div>
       </Header>
     );

@@ -61,15 +61,15 @@ const dataSource = [
 
 const columns = [
   {
-    title: "设备IP",
+    title: "设备IP地址",
     dataIndex: "name",
   },
   {
-    title: "设备名称",
+    title: "操作时间",
     dataIndex: "age",
   },
   {
-    title: "设备类型",
+    title: "操作详情",
     dataIndex: "address",
   },
 ];
@@ -102,16 +102,9 @@ export default function LogDataTable() {
           <RangePicker size="small" />
         </Form.Item>
         <Form.Item>
-
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="small"
-
-            >
-              查询数据
-            </Button>
- 
+          <Button type="primary" htmlType="submit" size="small">
+            查询数据
+          </Button>
         </Form.Item>
       </Form>
 

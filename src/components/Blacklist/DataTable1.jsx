@@ -169,8 +169,12 @@ export default function DataTable() {
     <div>
       <Row style={{ paddingBottom: 12 }}>
         <Col flex="auto">
-          今日预约人数<span style={{ marginRight: 12 }}>1223</span>今日核销人数
-          <span>1223</span>
+          <Space>
+            <span>今日预约人数:</span>
+            <span className="iconfont1 text-danger">1223</span>
+            <span>今日预约人数:</span>
+            <span className="iconfont1 text-danger">1223</span>
+          </Space>
         </Col>
         <Col flex="120px" style={{ textAlign: "right" }}>
           <Space>

@@ -1,68 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, DatePicker, Form, Row, Col } from "antd";
+import { Table, Button, DatePicker, Form, Input, Row, Col, Space } from "antd";
 import blanklistService from "../../services/blanklist.service";
 const { RangePicker } = DatePicker;
+const { Search } = Input;
 const dataFormat = "YYYY-MM-DD";
-const columns = [
-  {
-    title: "序号",
-    dataIndex: "index",
-  },
-  {
-    title: "真是姓名",
-    dataIndex: "name",
-  },
-  {
-    title: "手机号",
-    dataIndex: "phone",
-  },
-  {
-    title: "身份证",
-    dataIndex: "user",
-  },
-  {
-    title: "历史不文明行为",
-    dataIndex: "num",
-  },
-  {
-    title: "不文明行为",
-    dataIndex: "phone",
-  },
-  {
-    title: "操作",
-    dataIndex: "options",
-    render() {
-      return (
-        <div className="text-center">
-          <Button size="small" style={{ marginRight: 4 }}>
-            编辑
-          </Button>
-          <Button size="small">移除</Button>
-        </div>
-      );
-    },
-  },
-];
 
 export default function DataTable() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [query, setQuery] = useState({
+    skipCount: "1",
+    maxResultCount: "10",
+  });
 
   useEffect(() => {
-    loadData();
+    loadData({});
   }, []);
 
-  function onFinish(values) {
-    loadData(makeQuery(values));
-  }
-
-  async function loadData(query) {
+  async function loadData(newQuery) {
+    const nextQuery = { ...query, ...newQuery };
+    setQuery(nextQuery);
+    setLoading(true);
     try {
-      setLoading(true);
-      const res = await blanklistService.getBlacklist(query);
+      const { items, totalCount } =
+        await blanklistService.getBlockAllowUserList(makeQuery(nextQuery));
       setLoading(false);
-      setDataList(res);
+      setDataList(items);
+      setTotal(totalCount);
     } catch (error) {
       setLoading(false);
     }
@@ -79,23 +45,55 @@ export default function DataTable() {
       const value = query[key];
       if (key === "date" && value) {
         const [start, end] = value;
-        result.StartCreationTime = start.format(dataFormat) + " 00:00:00";
-        result.EndCreationTime = end.format(dataFormat) + " 23:59:59";
-      }
-
-      if (value !== undefined && value !== "-1") {
+        result.StartTimeStart = start.format(dataFormat) + " 00:00:00";
+        result.StartTimeEnd = end.format(dataFormat) + " 23:59:59";
+      } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
       return result;
     }, {});
   }
 
+  const columns = [
+    {
+      title: "序号",
+      dataIndex: "index",
+    },
+    {
+      title: "程度",
+      dataIndex: "name",
+    },
+    {
+      title: "行为",
+      dataIndex: "phone",
+    },
+    {
+      title: "惩罚措施",
+      dataIndex: "user",
+    },
+    {
+      title: "创建时间",
+      dataIndex: "num",
+    },
+  ];
+
+  const paginationProps = {
+    current: query.skipCount * 1,
+    pageSize: query.maxResultCount * 1,
+    total,
+    position: ["", "bottomCenter"],
+  };
+
   return (
     <div>
       <Row style={{ paddingBottom: 12 }}>
         <Col flex="auto">
-          今日预约人数<span style={{ marginRight: 12 }}>1223</span>今日核销人数
-          <span>1223</span>
+          <Space>
+            <span>今日预约人数:</span>
+            <span className="iconfont1 text-danger">1223</span>
+            <span>今日预约人数:</span>
+            <span className="iconfont1 text-danger">1223</span>
+          </Space>
         </Col>
       </Row>
       <Form
@@ -103,21 +101,20 @@ export default function DataTable() {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={onFinish}
+        onFinish={loadData}
       >
         <Form.Item name="date">
           <RangePicker size="small" />
         </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" size="small">
-            查询数据
-          </Button>
+        <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
+          <Search size="small" placeholder="模糊搜索" />
         </Form.Item>
       </Form>
 
       <Table
         dataSource={makeData(dataList)}
         columns={columns}
+        pagination={paginationProps}
         size="small"
         bordered
         loading={loading}

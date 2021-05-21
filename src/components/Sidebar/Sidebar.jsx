@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Progress } from "antd";
+import { Row, Col, Progress, Space } from "antd";
 import F2 from "@antv/f2";
 import DataForm from "./DataForm";
 import ProgressArc from "../UI/ProgressArc";
@@ -171,7 +171,33 @@ export default function Sidebar() {
       <div className="panel-body">
         <canvas id="chart2" width="352" height="160"></canvas>
         <Row>
-          <Col span={4}>TOP1</Col> <Col span={3}>湖北</Col>
+          <Col span={4}>
+            <span
+              className="iconfont1"
+              style={{ fontSize: 18, lineHeight: 1.2 }}
+            >
+              TOP1
+            </span>
+          </Col>
+          <Col span={3}>湖北</Col>
+          <Col span={16}>
+            <Progress
+              percent={30}
+              strokeLinecap="square"
+              format={() => "23651"}
+            />
+          </Col>
+        </Row>
+        <Row style={{padding:'12px 0'}}>
+          <Col span={4}>
+            <span
+              className="iconfont1"
+              style={{ fontSize: 18, lineHeight: 1.2 }}
+            >
+              TOP2
+            </span>
+          </Col>
+          <Col span={3}>湖北</Col>
           <Col span={16}>
             <Progress
               percent={30}
@@ -181,17 +207,15 @@ export default function Sidebar() {
           </Col>
         </Row>
         <Row>
-          <Col span={4}>TOP2</Col> <Col span={3}>湖北</Col>
-          <Col span={16}>
-            <Progress
-              percent={30}
-              strokeLinecap="square"
-              format={() => "23651"}
-            />
+          <Col span={4}>
+            <span
+              className="iconfont1"
+              style={{ fontSize: 18, lineHeight: 1.2 }}
+            >
+              TOP3
+            </span>
           </Col>
-        </Row>
-        <Row>
-          <Col span={4}>TOP3</Col> <Col span={3}>湖北</Col>
+          <Col span={3}>湖北</Col>
           <Col span={16}>
             <Progress
               percent={30}
