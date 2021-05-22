@@ -4,6 +4,13 @@ import blanklistService from "../../services/blanklist.service";
 import modal from "../../shared/modal";
 import LogDataTable from "./LogDataTable";
 import UpdateDataForm from "./UpdateDataForm";
+import {
+  areaOptions,
+  yearOptions,
+  deviceOptions,
+  mouthOptions,
+  onlineOptions,
+} from "../../shared/options";
 const { Option } = Select;
 const dataFormat = "YYYY-MM-DD";
 
@@ -66,7 +73,7 @@ export default function DataTable() {
     const mod = modal({
       title: "操作日志",
       content: <LogDataTable />,
-      footer:null,
+      footer: null,
       onOk,
     });
 
@@ -140,20 +147,18 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={loadData}
       >
-        <Form.Item name="password">
-          <Select placeholder="系统菜单" size="small">
-            <Option value="police">设备管理</Option>
-            <Option value="facility">预约入园</Option>
-            <Option value="blacklist">黑名单管理</Option>
-            <Option value="user">权限管理</Option>
+        <Form.Item name="aa" style={{ marginBottom: 6,width:100 }}>
+          <Select size="small" placeholder="选择设备" allowClear>
+            {deviceOptions.map((o) => (
+              <Option key={o.value}>{o.label}</Option>
+            ))}
           </Select>
         </Form.Item>
-        <Form.Item name="password">
-          <Select placeholder="系统菜单" size="small">
-            <Option value="police">设备管理</Option>
-            <Option value="facility">预约入园</Option>
-            <Option value="blacklist">黑名单管理</Option>
-            <Option value="user">权限管理</Option>
+        <Form.Item name="a2" style={{ marginBottom: 6,width:100 }}>
+          <Select size="small" placeholder="设备状态" allowClear>
+            {onlineOptions.map((o) => (
+              <Option key={o.value}>{o.label}</Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item>

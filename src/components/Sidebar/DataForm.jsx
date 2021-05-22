@@ -81,14 +81,9 @@ export default function HorizontalLoginForm() {
         </Col>
       </Row>
       <Row gutter={8}>
-        <Col span={12}>
+        <Col span={24}>
           <Button size="small" block ghost>
             查询数据
-          </Button>
-        </Col>
-        <Col span={12}>
-          <Button size="small" block ghost>
-            导出数据
           </Button>
         </Col>
       </Row>

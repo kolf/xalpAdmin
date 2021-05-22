@@ -152,7 +152,9 @@ function modal(config) {
 }
 
 function confirm(config) {
+  Modal.destroyAll();
   return Modal.confirm({
+    destroyOnClose:true,
     ...config,
     onOk() {
       return new Promise(config.onOk);

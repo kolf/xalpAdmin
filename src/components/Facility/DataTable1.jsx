@@ -1,7 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, DatePicker, Form, Input, Row, Col, Space,Select } from "antd";
+import {
+  Table,
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Row,
+  Col,
+  Space,
+  Select,
+} from "antd";
 import modal from "../../shared/modal";
 import blanklistService from "../../services/blanklist.service";
+import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
@@ -175,12 +186,13 @@ export default function DataTable() {
         onFinish={loadData}
       >
         <Form.Item name="username">
-          <Select placeholder="系统菜单" size="small">
-            <Option value="police">设备管理</Option>
-            <Option value="facility">预约入园</Option>
-            <Option value="blacklist">黑名单管理</Option>
-            <Option value="user">权限管理</Option>
-          </Select>
+          <Form.Item name="a1" style={{ marginBottom: 6, width: 100 }}>
+            <Select size="small" placeholder="核销状态" allowClear>
+              {reviewOptions.map((o) => (
+                <Option key={o.value}>{o.label}</Option>
+              ))}
+            </Select>
+          </Form.Item>
         </Form.Item>
         <Form.Item name="date">
           <RangePicker size="small" />

@@ -1,7 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, DatePicker, Form, Input, Row, Col, Space,Select } from "antd";
+import {
+  Table,
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Row,
+  Col,
+  Space,
+  Select,
+} from "antd";
 import modal from "../../shared/modal";
+import DetailsDataTable from "./DetailsDataTable";
 import blanklistService from "../../services/blanklist.service";
+import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
@@ -56,6 +68,18 @@ export default function DataTable() {
     }, {});
   }
 
+  function showDetailsModal(creds) {
+    const mod = modal({
+      title: "团体赛详情",
+      width:640,
+      content: <DetailsDataTable></DetailsDataTable>,
+      footer:null,
+      onOk
+    });
+
+    function onOk() {}
+  }
+
   function showDeleteModal(creds) {
     const mod = modal.confirm({ content: `此操作将取消该票, 是否继续?`, onOk });
     function onOk(done) {
@@ -101,10 +125,17 @@ export default function DataTable() {
       title: "操作",
       dataIndex: "options",
       fixed: "right",
-      width: 120,
+      width: 176,
       render() {
         return (
           <div className="text-center">
+            <Button
+              size="small"
+              style={{ marginRight: 4 }}
+              onClick={showDetailsModal}
+            >
+              查看
+            </Button>
             <Button
               size="small"
               style={{ marginRight: 4 }}
@@ -154,12 +185,11 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={loadData}
       >
-        <Form.Item name="username">
-          <Select placeholder="系统菜单" size="small">
-            <Option value="police">设备管理</Option>
-            <Option value="facility">预约入园</Option>
-            <Option value="blacklist">黑名单管理</Option>
-            <Option value="user">权限管理</Option>
+        <Form.Item name="a1" style={{ marginBottom: 6, width: 100 }}>
+          <Select size="small" placeholder="核销状态" allowClear>
+            {reviewOptions.map((o) => (
+              <Option key={o.value}>{o.label}</Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item name="date">

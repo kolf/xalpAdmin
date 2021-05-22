@@ -1,7 +1,7 @@
 @import "~antd/dist/antd.less";
 ::-webkit-scrollbar {
   width: 6px;
-  height:6px
+  height: 6px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -22,17 +22,25 @@
 .ant-form-item-control-input {
   min-height: 24px;
 }
-
-@font-face {
-  font-family: 'webfont1';
-  font-display: swap;
-  src: url('//at.alicdn.com/t/webfont_rwxwtiubrv.eot'), /* IE9*/
-  url('//at.alicdn.com/t/webfont_rwxwtiubrv.woff2') format('woff2'),
-  url('//at.alicdn.com/t/webfont_rwxwtiubrv.woff') format('woff'), /* chrome、firefox */
-  url('//at.alicdn.com/t/webfont_rwxwtiubrv.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
-  url('//at.alicdn.com/t/webfont_rwxwtiubrv.svg#庞门正道标题体2') format('svg'); /* iOS 4.1- */
+.ant-modal-untitle {
+  .ant-modal-close-x {
+    width: 46px;
+    height: 46px;
+  }
 }
 
+@font-face {
+  font-family: "webfont1";
+  font-display: swap;
+  src: url("//at.alicdn.com/t/webfont_lkw1cb1z1ud.eot"),
+    /* IE9*/ url("//at.alicdn.com/t/webfont_lkw1cb1z1ud.woff2") format("woff2"),
+    url("//at.alicdn.com/t/webfont_lkw1cb1z1ud.woff") format("woff"),
+    /* chrome、firefox */ url("//at.alicdn.com/t/webfont_lkw1cb1z1ud.ttf")
+      format("truetype"),
+    /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+      url("//at.alicdn.com/t/webfont_lkw1cb1z1ud.svg#庞门正道标题体2")
+      format("svg"); /* iOS 4.1- */
+}
 .iconfont1 {
   font-family: "webfont1";
 }
@@ -45,7 +53,7 @@
     text-align: center;
   }
   &-danger {
-    color: #ff5a5a
+    color: #ff5a5a;
   }
 }
 
@@ -66,6 +74,10 @@
     border-left: 4px solid #32e9ff;
   }
   &-body {
+    padding: 12px;
+  }
+  &-footer {
+    display: flex;
     padding: 12px;
   }
 }

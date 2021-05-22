@@ -32,5 +32,3 @@ module.exports = {
     },
   },
 };
-
-// 'component-background':'#0B223F'

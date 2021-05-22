@@ -11,6 +11,8 @@ import {
   TreeSelect,
   Switch,
 } from "antd";
+import { onlineOptions, deviceOptions } from "../../shared/options";
+const { Option } = Select;
 
 export default function UpdateDataForm() {
   return (
@@ -32,8 +34,10 @@ export default function UpdateDataForm() {
           <Input />
         </Form.Item>
         <Form.Item label="设备类型">
-          <Select>
-            <Select.Option value="demo">Demo</Select.Option>
+          <Select size="small" placeholder="设备类型" allowClear>
+            {deviceOptions.map((o) => (
+              <Option key={o.value}>{o.label}</Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item label="录入人员姓名">
@@ -53,8 +57,9 @@ export default function UpdateDataForm() {
         </Form.Item>
         <Form.Item label="设备状态" name="size">
           <Radio.Group>
-            <Radio value="small">在线</Radio>
-            <Radio value="default">离线</Radio>
+            {onlineOptions.map((o) => (
+              <Radio key={o.value} value={o.value}>{o.label}</Radio>
+            ))}
           </Radio.Group>
         </Form.Item>
       </Form>

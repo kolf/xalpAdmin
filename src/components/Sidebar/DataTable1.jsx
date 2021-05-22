@@ -1,22 +1,9 @@
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  Row,
-  Col,
-  Space,
-  Select,
-} from "antd";
+import { Table, Button, DatePicker, Form, Input, Row, Col, Space } from "antd";
 import modal from "../../shared/modal";
-import UpdateDataForm from "./UpdateData3Form";
 import blanklistService from "../../services/blanklist.service";
-import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
-const { Option } = Select;
 const dataFormat = "YYYY-MM-DD";
 
 export default function DataTable() {
@@ -68,95 +55,28 @@ export default function DataTable() {
     }, {});
   }
 
-  function showDeleteModal(creds) {
-    const mod = modal.confirm({ content: `此操作将取消该票, 是否继续?`, onOk });
-    function onOk(done) {
-      // mod.close()
-    }
-  }
-
-  function showEditModal(creds) {
-    const mod = modal({
-      title: "编辑",
-      content: <UpdateDataForm></UpdateDataForm>,
-      onOk,
-    });
-    function onOk(done) {
-      // mod.close()
-    }
-  }
-
-  function showAddModal(creds) {
-    const mod = modal({
-      title: "添加",
-      content: <UpdateDataForm></UpdateDataForm>,
-      onOk,
-    });
-    function onOk(done) {
-      // mod.close()
-    }
-  }
-
   function openFile() {}
 
   const columns = [
     {
-      title: "工号",
+      title: "序号",
+      dataIndex: "index",
+    },
+    {
+      title: "排名",
       dataIndex: "name",
     },
     {
-      title: "姓名",
-      dataIndex: "age",
+      title: "省级",
+      dataIndex: "phone",
     },
     {
-      title: "联系电话",
-      dataIndex: "address",
-    },
-    {
-      title: "身份证",
+      title: "市级",
       dataIndex: "user",
     },
     {
-      title: "岗位",
+      title: "人数",
       dataIndex: "num",
-    },
-    {
-      title: "照片",
-      dataIndex: "phone",
-    },
-    {
-      title: "剩余天数",
-      dataIndex: "phone",
-    },
-    {
-      title: "更新时间",
-      dataIndex: "phone",
-    },
-    {
-      title: "有效入园时间",
-      dataIndex: "phone",
-    },
-    {
-      title: "操作",
-      dataIndex: "options",
-      fixed: "right",
-      width: 120,
-      render() {
-        return (
-          <div className="text-center">
-            <Button
-              size="small"
-              style={{ marginRight: 4 }}
-              onClick={showEditModal}
-            >
-              编辑
-            </Button>
-            <Button size="small" onClick={showDeleteModal}>
-              删除
-            </Button>
-          </div>
-        );
-      },
     },
   ];
 
@@ -170,16 +90,10 @@ export default function DataTable() {
   return (
     <div>
       <Row style={{ paddingBottom: 12 }}>
-        <Col flex="auto"></Col>
-        <Col flex="120px" style={{ textAlign: "right" }}>
-          <Space>
-            <Button size="small" type="primary" onClick={showAddModal}>
-              新增
-            </Button>
-            <Button size="small" type="primary" onClick={openFile}>
-              下载数据
-            </Button>
-          </Space>
+        <Col flex="auto">
+          <Button size="small" type="primary" onClick={openFile}>
+            下载数据
+          </Button>
         </Col>
       </Row>
       <Form
@@ -189,13 +103,6 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={loadData}
       >
-        <Form.Item name="a1" style={{ marginBottom: 6, width: 100 }}>
-          <Select size="small" placeholder="核销状态" allowClear>
-            {reviewOptions.map((o) => (
-              <Option key={o.value}>{o.label}</Option>
-            ))}
-          </Select>
-        </Form.Item>
         <Form.Item name="date">
           <RangePicker size="small" />
         </Form.Item>
@@ -216,7 +123,6 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        // scroll={{ x: 1200 }}
       />
     </div>
   );

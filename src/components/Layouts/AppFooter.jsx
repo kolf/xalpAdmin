@@ -18,7 +18,10 @@ export default function AppFooter({ onClick }) {
               className="appFooter-item"
               onClick={handleClick.bind(this, "1")}
             >
-              <div className="appFooter-item-cover"></div>
+              <div
+                className="appFooter-item-cover"
+                style={{ background: "#4cd8fc" }}
+              ></div>
               <div className="appFooter-item-title">设备正常</div>
             </div>
           </Col>
@@ -27,7 +30,10 @@ export default function AppFooter({ onClick }) {
               className="appFooter-item"
               onClick={handleClick.bind(this, "2")}
             >
-              <div className="appFooter-item-cover"></div>
+              <div
+                className="appFooter-item-cover"
+                style={{ background: "#27fed4" }}
+              ></div>
               <div className="appFooter-item-title">设备运行</div>
             </div>
           </Col>
@@ -36,7 +42,10 @@ export default function AppFooter({ onClick }) {
               className="appFooter-item"
               onClick={handleClick.bind(this, "3")}
             >
-              <div className="appFooter-item-cover"></div>
+              <div
+                className="appFooter-item-cover"
+                style={{ background: "#929da0" }}
+              ></div>
               <div className="appFooter-item-title">设备离线</div>
             </div>
           </Col>
@@ -45,7 +54,10 @@ export default function AppFooter({ onClick }) {
               className="appFooter-item"
               onClick={handleClick.bind(this, "4")}
             >
-              <div className="appFooter-item-cover"></div>
+              <div
+                className="appFooter-item-cover"
+                style={{ background: "#e45456" }}
+              ></div>
               <div className="appFooter-item-title">设备故障</div>
             </div>
           </Col>

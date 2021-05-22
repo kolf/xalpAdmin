@@ -13,6 +13,7 @@ import {
   Radio,
 } from "antd";
 import modal from "../../shared/modal";
+import UpdateDataForm from "./UpdateData3Form";
 import blanklistService from "../../services/blanklist.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -76,8 +77,23 @@ export default function DataTable() {
     }
   }
 
-  function showReviewModal(creds) {
-    const mod = modal.confirm({ content: `此操作将核销该票, 是否继续?`, onOk });
+  function showEditModal(creds) {
+    const mod = modal({
+      title: "编辑",
+      content: <UpdateDataForm></UpdateDataForm>,
+      onOk,
+    });
+    function onOk(done) {
+      // mod.close()
+    }
+  }
+
+  function showAddModal(creds) {
+    const mod = modal({
+      title: "添加",
+      content: <UpdateDataForm></UpdateDataForm>,
+      onOk,
+    });
     function onOk(done) {
       // mod.close()
     }
@@ -133,7 +149,7 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showReviewModal}
+              onClick={showEditModal}
             >
               编辑
             </Button>
@@ -170,7 +186,7 @@ export default function DataTable() {
             </Col>
             <Col flex="120px" style={{ textAlign: "right" }}>
               <Space>
-                <Button size="small" type="primary" onClick={openFile}>
+                <Button size="small" type="primary" onClick={showAddModal}>
                   新增
                 </Button>
                 <Button size="small" type="primary" onClick={openFile}>
