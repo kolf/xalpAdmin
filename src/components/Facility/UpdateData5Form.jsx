@@ -12,7 +12,6 @@ import {
   Switch,
   message,
 } from "antd";
-import UploadImage from "../UI/UploadImage";
 import { merchantOptions } from "../../shared/options";
 import commonService from "../../services/common.service";
 import faciliyService from "../../services/faciliy.service";
@@ -51,13 +50,13 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   async function onFinish(values) {
     let res = null;
     if (defaultValues.id) {
-      res = await faciliyService.updateStaff({
+      res = await faciliyService.updateMerchant({
         ...values,
         id: defaultValues.id,
       });
       message.success(`更新成功！`);
     } else {
-      res = await faciliyService.addStaff(values);
+      res = await faciliyService.addMerchant(values);
       message.success(`添加成功！`);
     }
 
@@ -74,26 +73,25 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         onFinish={onFinish}
         initialValues={defaultValues}
       >
-        <Form.Item label="工号" name="jobNumber">
-          <Input placeholder="请输入" />
+        <Form.Item label="供应商名称" name="name">
+          <Input placeholder="请输入供应商名称" />
         </Form.Item>
-        <Form.Item label="姓名" name="name">
-          <Input placeholder="请输入" />
+        <Form.Item label="申请人姓名" name="handlerName">
+          <Input placeholder="请输入申请人姓名" />
         </Form.Item>
-        <Form.Item label="岗位" name="jobName">
-          <Input placeholder="请输入" />
+        <Form.Item label="申请人电话" name="handlerPhone">
+          <Input placeholder="请输入申请人电话" />
         </Form.Item>
-
-        <Form.Item label="电话" name="phone">
-          <Input placeholder="请输入" />
+        <Form.Item label="供应商类型" name="merchantTypeId">
+          <Select placeholder="请选择">
+            {makeData(merchantOptions).map((o) => (
+              <Select.Option key={o.value} value={o.value}>
+                {o.label}
+              </Select.Option>
+            ))}
+          </Select>
         </Form.Item>
-        <Form.Item label="身份证号" name="certNumber">
-          <Input placeholder="请输入" />
-        </Form.Item>
-        <Form.Item label="照片" name="avatarUrl">
-          <UploadImage />
-        </Form.Item>
-        <Form.Item label="有效入园时间段" name="date">
+        <Form.Item label="有效入园时间段">
           <RangePicker />
         </Form.Item>
         <Form.Item {...tailLayout}>

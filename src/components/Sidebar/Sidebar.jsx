@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 import { Row, Col, Progress, Tabs } from "antd";
 import DataForm from "./DataForm";
 import ProgressArc from "../UI/ProgressArc";
-import DetailsDataTabs from "./DetailsDataTabs";
 import AdmissionChart from "./AdmissionChart";
 import TouristChart from "./TouristChart";
 import modal from "../../shared/modal";
@@ -10,17 +11,6 @@ import "./Sidebar.less";
 
 export default function Sidebar() {
   const [height, setHeight] = useState(640);
-
-  function showDetailsModal() {
-    const mod = modal({
-      wrapClassName: "and-modal-untitle",
-      width: 960,
-      bodyStyle: { paddingTop: 0 },
-      title: "当月游客分析",
-      content: <DetailsDataTabs></DetailsDataTabs>,
-      footer: null,
-    });
-  }
 
   useEffect(() => {
     const windowHeight = window.innerHeight;
@@ -139,13 +129,9 @@ export default function Sidebar() {
         </Row>
       </div>
       <div className="panel-footer">
-        <a
-          href="javascript:;"
-          style={{ marginLeft: "auto" }}
-          onClick={showDetailsModal}
-        >
+        <Link to='/data' style={{ marginLeft: "auto" }}>
           查看更多
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -29,6 +29,7 @@ class SessionService {
       sessionStorage.setItem("user", JSON.stringify(userData));
       return Promise.resolve(userData);
     } catch (error) {
+      console.log(error, 'dfd');
       return Promise.reject(error);
     }
   };

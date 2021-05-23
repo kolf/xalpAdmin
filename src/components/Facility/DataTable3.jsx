@@ -9,10 +9,12 @@ import {
   Col,
   Space,
   Select,
+  Pagination,
+  message,
 } from "antd";
 import modal from "../../shared/modal";
 import UpdateDataForm from "./UpdateData3Form";
-import blanklistService from "../../services/blanklist.service";
+import faciliyService from "../../services/faciliy.service";
 import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -27,6 +29,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
+    Keyword: "",
   });
 
   useEffect(() => {
@@ -38,8 +41,9 @@ export default function DataTable() {
     setQuery(nextQuery);
     setLoading(true);
     try {
-      const { items, totalCount } =
-        await blanklistService.getBlockAllowUserList(makeQuery(nextQuery));
+      const { items, totalCount } = await faciliyService.getStaffList(
+        makeQuery(nextQuery)
+      );
       setLoading(false);
       setDataList(items);
       setTotal(totalCount);
@@ -49,6 +53,9 @@ export default function DataTable() {
   }
 
   function makeData(data) {
+    if(!data){
+      return []
+    }
     return data.map((item, index) => {
       return { ...item, index: index + 1 };
     });
@@ -69,31 +76,62 @@ export default function DataTable() {
   }
 
   function showDeleteModal(creds) {
-    const mod = modal.confirm({ content: `此操作将取消该票, 是否继续?`, onOk });
-    function onOk(done) {
-      // mod.close()
+    const mod = modal.confirm({
+      content: `此操作将删除此员工, 是否继续?`,
+      onOk,
+    });
+    async function onOk(done) {
+      try {
+        const res = await faciliyService.deleteStaff(creds);
+        message.success(`删除成功！`);
+        mod.destroy();
+        loadData({
+          skipCount: "1",
+        });
+      } catch (error) {
+        mod.destroy();
+      }
     }
   }
 
   function showEditModal(creds) {
     const mod = modal({
       title: "编辑",
-      content: <UpdateDataForm></UpdateDataForm>,
-      onOk,
+      content: (
+        <UpdateDataForm defaultValues={creds} onOk={onOk}></UpdateDataForm>
+      ),
+      footer: null,
     });
     function onOk(done) {
-      // mod.close()
+      mod.close();
+      loadData({
+        skipCount: "1",
+      });
     }
   }
 
-  function showAddModal(creds) {
+  function showAddModal() {
     const mod = modal({
-      title: "添加",
-      content: <UpdateDataForm></UpdateDataForm>,
-      onOk,
+      title: "新增",
+      content: <UpdateDataForm onOk={onOk}></UpdateDataForm>,
+      footer: null,
     });
     function onOk(done) {
-      // mod.close()
+      mod.close();
+      loadData({
+        skipCount: "1",
+      });
+    }
+  }
+
+  function showExportModal(creds) {
+    const mod = modal({
+      title: "添加",
+      content: <UpdateDataForm onOk={onOk}></UpdateDataForm>,
+    });
+    function onOk(done) {
+      mod.close();
+      loadData();
     }
   }
 
@@ -141,17 +179,17 @@ export default function DataTable() {
       dataIndex: "options",
       fixed: "right",
       width: 120,
-      render() {
+      render(text, creds) {
         return (
           <div className="text-center">
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showEditModal}
+              onClick={showEditModal.bind(this, creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={showDeleteModal}>
+            <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
               删除
             </Button>
           </div>
@@ -161,10 +199,18 @@ export default function DataTable() {
   ];
 
   const paginationProps = {
+    showQuickJumper: true,
+    showSizeChanger: true,
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
     total,
     position: ["", "bottomCenter"],
+    size: "small",
+    onChange(value) {
+      loadData({
+        skipCount: value + "",
+      });
+    },
   };
 
   return (
@@ -205,19 +251,27 @@ export default function DataTable() {
           </Button>
         </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
-          <Search size="small" placeholder="模糊搜索" />
+          <Search
+            size="small"
+            placeholder="模糊搜索"
+            onSearch={(value) => loadData({ Keyword: value })}
+          />
         </Form.Item>
       </Form>
 
       <Table
         dataSource={makeData(dataList)}
         columns={columns}
-        pagination={paginationProps}
+        pagination={false}
         size="small"
         bordered
         loading={loading}
+        rowKey="creatorId"
         // scroll={{ x: 1200 }}
       />
+      <div className="page-container">
+        <Pagination {...paginationProps} />
+      </div>
     </div>
   );
 }

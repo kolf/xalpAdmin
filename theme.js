@@ -9,4 +9,5 @@ module.exports = {
   "table-bg": "transparent",
   "table-border-color": "rgba(69, 190, 255, 0.3)",
   "select-dropdown-bg": "#0F3360",
+  'calendar-full-bg':'transparent'
 };

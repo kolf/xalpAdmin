@@ -11,10 +11,15 @@ import {
   Select,
   Calendar,
   Radio,
+  Pagination,
+  message,
 } from "antd";
 import modal from "../../shared/modal";
-import UpdateDataForm from "./UpdateData3Form";
-import blanklistService from "../../services/blanklist.service";
+import UpdateDataForm from "./DataTable5UpdateTabs";
+import DataTableCalendar from "./DataTable5Calendar";
+import DataTableList from "./DataTable5List";
+import faciliyService from "../../services/faciliy.service";
+import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
@@ -29,6 +34,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
+    Keyword: "",
   });
 
   useEffect(() => {
@@ -41,7 +47,9 @@ export default function DataTable() {
     setLoading(true);
     try {
       const { items, totalCount } =
-        await blanklistService.getBlockAllowUserList(makeQuery(nextQuery));
+        await faciliyService.getReservationTimeSettingList(
+          makeQuery(nextQuery)
+        );
       setLoading(false);
       setDataList(items);
       setTotal(totalCount);
@@ -51,6 +59,9 @@ export default function DataTable() {
   }
 
   function makeData(data) {
+    if (!data) {
+      return [];
+    }
     return data.map((item, index) => {
       return { ...item, index: index + 1 };
     });
@@ -71,103 +82,55 @@ export default function DataTable() {
   }
 
   function showDeleteModal(creds) {
-    const mod = modal.confirm({ content: `此操作将取消该票, 是否继续?`, onOk });
-    function onOk(done) {
-      // mod.close()
+    const mod = modal.confirm({
+      content: `此操作将删除此供应商, 是否继续?`,
+      onOk,
+    });
+    async function onOk(done) {
+      try {
+        const res = await faciliyService.deleteReservationTimeSetting(creds);
+        message.success(`删除成功！`);
+        mod.destroy();
+        loadData({
+          skipCount: "1",
+        });
+      } catch (error) {
+        mod.destroy();
+      }
     }
   }
 
   function showEditModal(creds) {
     const mod = modal({
       title: "编辑",
-      content: <UpdateDataForm></UpdateDataForm>,
-      onOk,
+      content: (
+        <UpdateDataForm defaultValues={creds} onOk={onOk}></UpdateDataForm>
+      ),
+      footer: null,
     });
     function onOk(done) {
-      // mod.close()
+      mod.close();
+      loadData({
+        skipCount: "1",
+      });
     }
   }
 
-  function showAddModal(creds) {
+  function showAddModal() {
     const mod = modal({
-      title: "添加",
-      content: <UpdateDataForm></UpdateDataForm>,
-      onOk,
+      content: <UpdateDataForm onOk={onOk}></UpdateDataForm>,
+      footer: null,
     });
     function onOk(done) {
-      // mod.close()
+      mod.close();
+      loadData({
+        skipCount: "1",
+      });
     }
   }
 
   function openFile() {}
 
-  const columns = [
-    {
-      title: "供应商名称",
-      dataIndex: "name",
-    },
-    {
-      title: "姓名",
-      dataIndex: "age",
-    },
-    {
-      title: "联系电话",
-      dataIndex: "address",
-    },
-    {
-      title: "类型",
-      dataIndex: "user",
-    },
-    {
-      title: "最后修改时间",
-      dataIndex: "num",
-    },
-    {
-      title: "预约时间段",
-      dataIndex: "phone",
-    },
-    {
-      title: "剩余有期天数",
-      dataIndex: "phone",
-    },
-    {
-      title: "更新时间",
-      dataIndex: "phone",
-    },
-    {
-      title: "有效入园时间",
-      dataIndex: "phone",
-    },
-    {
-      title: "操作",
-      dataIndex: "options",
-      fixed: "right",
-      width: 120,
-      render() {
-        return (
-          <div className="text-center">
-            <Button
-              size="small"
-              style={{ marginRight: 4 }}
-              onClick={showEditModal}
-            >
-              编辑
-            </Button>
-            <Button size="small" onClick={showDeleteModal}>
-              取消
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
-
-  const paginationProps = {
-    current: query.skipCount * 1,
-    pageSize: query.maxResultCount * 1,
-    total,
-    position: ["", "bottomCenter"],
-  };
 
   return (
     <div>
@@ -195,33 +158,8 @@ export default function DataTable() {
               </Space>
             </Col>
           </Row>
-          <Form
-            form={form}
-            name="form"
-            layout="inline"
-            style={{ paddingBottom: 12 }}
-            onFinish={loadData}
-          >
-            <Form.Item name="date">
-              <RangePicker size="small" />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" size="small">
-                查询数据
-              </Button>
-            </Form.Item>
-            <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
-              <Search size="small" placeholder="模糊搜索" />
-            </Form.Item>
-          </Form>
-          <Table
-            dataSource={makeData(dataList)}
-            columns={columns}
-            pagination={paginationProps}
-            size="small"
-            bordered
-            loading={loading}
-          />
+       
+          <DataTableList />
         </>
       )}
       {showType === "1" && (
@@ -245,7 +183,7 @@ export default function DataTable() {
               </Space>
             </Col>
           </Row>
-          <Calendar style={{ backgroundColor: "transparent" }} />
+          <DataTableCalendar />
         </>
       )}
     </div>

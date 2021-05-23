@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import moment from "moment";
 import {
   Table,
   Button,
@@ -8,17 +9,20 @@ import {
   Row,
   Col,
   Space,
+  Tabs,
   Select,
   Pagination,
   message,
 } from "antd";
 import modal from "../../shared/modal";
-import UpdateDataForm from "./UpdateData4Form";
+import UpdateDataForm from "./DataTable5UpdateTabs";
 import faciliyService from "../../services/faciliy.service";
-import { reviewOptions } from "../../shared/options";
+
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
+const { TabPane } = Tabs;
+
 const dataFormat = "YYYY-MM-DD";
 
 export default function DataTable() {
@@ -41,9 +45,10 @@ export default function DataTable() {
     setQuery(nextQuery);
     setLoading(true);
     try {
-      const { items, totalCount } = await faciliyService.getMerchantList(
-        makeQuery(nextQuery)
-      );
+      const { items, totalCount } =
+        await faciliyService.getReservationTimeSettingList(
+          makeQuery(nextQuery)
+        );
       setLoading(false);
       setDataList(items);
       setTotal(totalCount);
@@ -66,9 +71,9 @@ export default function DataTable() {
       const value = query[key];
       if (key === "date" && value) {
         const [start, end] = value;
-        result.startPermissionDate = start.format(dataFormat) + " 00:00:00";
-        result.endPermissionDate = end.format(dataFormat) + " 23:59:59";
-      } else if (value !== undefined && value !== "-1") {
+        result.StartTime = start.format(dataFormat) + " 00:00:00";
+        result.EndTime = end.format(dataFormat) + " 23:59:59";
+      } else if (value && value !== "-1") {
         result[key] = value;
       }
       return result;
@@ -82,7 +87,7 @@ export default function DataTable() {
     });
     async function onOk(done) {
       try {
-        const res = await faciliyService.deleteMerchant(creds);
+        const res = await faciliyService.deleteReservationTimeSetting(creds);
         message.success(`删除成功！`);
         mod.destroy();
         loadData({
@@ -96,7 +101,6 @@ export default function DataTable() {
 
   function showEditModal(creds) {
     const mod = modal({
-      title: "编辑",
       content: (
         <UpdateDataForm defaultValues={creds} onOk={onOk}></UpdateDataForm>
       ),
@@ -110,73 +114,32 @@ export default function DataTable() {
     }
   }
 
-  function showAddModal() {
-    const mod = modal({
-      title: "新增",
-      content: <UpdateDataForm onOk={onOk}></UpdateDataForm>,
-      footer: null,
-    });
-    function onOk(done) {
-      mod.close();
-      loadData({
-        skipCount: "1",
-      });
-    }
-  }
-
-  function showExportModal(creds) {
-    const mod = modal({
-      title: "添加",
-      content: <UpdateDataForm onOk={onOk}></UpdateDataForm>,
-    });
-    function onOk(done) {
-      mod.close();
-      loadData();
-    }
-  }
-
-  function openFile() {}
-
   const columns = [
     {
-      title: "供应商名称",
-      dataIndex: "name",
+      title: "序号",
+      dataIndex: "index",
     },
     {
-      title: "姓名",
-      dataIndex: "handlerName",
-    },
-    {
-      title: "联系电话",
-      dataIndex: "handlerPhone",
-    },
-    {
-      title: "类型",
-      dataIndex: "merchantTypeName",
-      render(text) {
-        return text || "/";
-      },
-    },
-    {
-      title: "最后修改时间",
-      dataIndex: "lastModificationTime",
-      render(text) {
-        return text || "/";
-      },
-    },
-    {
-      title: "预约时间",
-      dataIndex: "openingHours",
-      render(text) {
-        return text || "/";
-      },
-    },
-    {
-      title: "状态",
-      dataIndex: "status",
+      title: "起始日期",
+      dataIndex: "startReserveDate",
       render(text, creds) {
-        return "正常";
+        return `${moment(creds.startReserveDate).format(dataFormat)}至${moment(
+          creds.endReserveDate
+        ).format(dataFormat)}`;
       },
+    },
+    {
+      title: "单日时段",
+      dataIndex: "address",
+    },
+    {
+      title: "门票数量/已预约数量",
+      dataIndex: "user",
+      render: (text) => text || "3000 / 2401",
+    },
+    {
+      title: "库存提示",
+      dataIndex: "dailyMaxTouristsQuantity",
     },
     {
       title: "操作",
@@ -218,23 +181,7 @@ export default function DataTable() {
   };
 
   return (
-    <div>
-      <Row style={{ paddingBottom: 12 }}>
-        <Col flex="auto"></Col>
-        <Col flex="120px" style={{ textAlign: "right" }}>
-          <Space>
-            <Button size="small" type="primary" onClick={showAddModal}>
-              新增
-            </Button>
-            <Button size="small" type="primary" onClick={showExportModal}>
-              批量导入
-            </Button>
-            <Button size="small" type="primary" onClick={openFile}>
-              下载数据
-            </Button>
-          </Space>
-        </Col>
-      </Row>
+    <>
       <Form
         form={form}
         name="form"
@@ -242,13 +189,6 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={loadData}
       >
-        <Form.Item name="a1" style={{ marginBottom: 6, width: 100 }}>
-          <Select size="small" placeholder="核销状态" allowClear>
-            {reviewOptions.map((o) => (
-              <Option key={o.value}>{o.label}</Option>
-            ))}
-          </Select>
-        </Form.Item>
         <Form.Item name="date">
           <RangePicker size="small" />
         </Form.Item>
@@ -279,6 +219,6 @@ export default function DataTable() {
       <div className="page-container">
         <Pagination {...paginationProps} />
       </div>
-    </div>
+    </>
   );
 }

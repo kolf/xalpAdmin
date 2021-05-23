@@ -3,10 +3,10 @@ import { CloseOutlined } from "@ant-design/icons";
 import "./Main.less";
 
 export default function Main({ header, children, onClose }) {
-  const [height, setHeight] = useState(640);
+  const [height, setHeight] = useState(520);
   useEffect(() => {
     const windowHeight = window.innerHeight;
-    setHeight(windowHeight - 178-120);
+    setHeight(Math.max(windowHeight - 480, 520));
   });
   return (
     <div className="main-root">
@@ -16,7 +16,7 @@ export default function Main({ header, children, onClose }) {
         />
       </div>
       {header && header}
-      <div className="main-body" style={{ maxHeight: height }}>{children}</div>
+      <div className="main-body" style={{  height }}>{children}</div>
     </div>
   );
 }

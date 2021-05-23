@@ -11,7 +11,7 @@ import {
   Select,
 } from "antd";
 import modal from "../../shared/modal";
-import blanklistService from "../../services/blanklist.service";
+import facilityService from "../../services/faciliy.service";
 import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -26,6 +26,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
+    Keyword: "",
   });
 
   useEffect(() => {
@@ -37,8 +38,9 @@ export default function DataTable() {
     setQuery(nextQuery);
     setLoading(true);
     try {
-      const { items, totalCount } =
-        await blanklistService.getBlockAllowUserList(makeQuery(nextQuery));
+      const { items, totalCount } = await facilityService.getOrderDetailList(
+        makeQuery(nextQuery)
+      );
       setLoading(false);
       setDataList(items);
       setTotal(totalCount);
@@ -203,7 +205,15 @@ export default function DataTable() {
           </Button>
         </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
-          <Search size="small" placeholder="模糊搜索" />
+          <Search
+            size="small"
+            placeholder="模糊搜索"
+            onSearch={(value) =>
+              this.loadData({
+                Keyword: value,
+              })
+            }
+          />
         </Form.Item>
       </Form>
 

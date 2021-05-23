@@ -15,6 +15,7 @@ import User from "./components/User";
 import Blacklist from "./components/Blacklist";
 import Police from "./components/Police";
 import Facility from "./components/Facility";
+import Data from "./components/Data";
 
 export default class Routes extends React.Component {
   render() {
@@ -24,6 +25,7 @@ export default class Routes extends React.Component {
           <Switch>
             <PrivateLayout path="/" exact component={Home} />
             <PrivateLayout path="/user" exact component={User} />
+            <PrivateLayout path="/data" exact component={Data} />
             <PrivateLayout path="/blacklist" exact component={Blacklist} />
             <PrivateLayout path="/police" exact component={Police} />
             <PrivateLayout path="/facility" exact component={Facility} />

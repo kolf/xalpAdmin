@@ -20,6 +20,13 @@ const reviewEnum = {
   2: "已过期",
 };
 
+const merchantEnum = {
+  1: "电子",
+  2: "竞技",
+  3: "公共",
+  4: "其它",
+};
+
 export const areaOptions = Object.keys(areaEnum).map((key) => ({
   value: key + "",
   label: areaEnum[key],
@@ -38,6 +45,11 @@ export const onlineOptions = Object.keys(onlineEnum).map((key) => ({
 export const reviewOptions = Object.keys(reviewEnum).map((key) => ({
   value: key + "",
   label: reviewEnum[key],
+}));
+
+export const merchantOptions = Object.keys(merchantEnum).map((key) => ({
+  value: key + "",
+  label: merchantEnum[key],
 }));
 
 export const yearOptions = Array.from({ length: 20 }, (item, i) => {

@@ -1,12 +1,29 @@
-.sidebar {
-  &-heading {
-    &-num {
-      font-family: "webfont1";
-      font-size: 24px;
-      line-height: 1.4;
-      &-group {
-        padding: 24px 0;
+
+
+.calendar{
+  &-root{
+    .ant-picker {
+      &-content {
+        text-align: center;
+        tbody {
+          border-left: 1px solid rgba(69, 190, 255, 0.3);
+          border-bottom: 1px solid rgba(69, 190, 255, 0.3);
+        }
       }
+      &-cell {
+        border-right: 1px solid rgba(69, 190, 255, 0.3);
+        border-top: 1px solid rgba(69, 190, 255, 0.3);
+        &:hover{
+          background-color:rgba(69, 190, 255, 0.3)
+        }
+      }
+    }
+  }
+  &-cell {
+    height: 96px;
+    padding:6px;
+    &-value {
+      font-family: webfont1;
     }
   }
 }

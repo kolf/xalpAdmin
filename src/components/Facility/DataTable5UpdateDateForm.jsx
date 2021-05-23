@@ -10,6 +10,7 @@ import {
   InputNumber,
   TreeSelect,
   Switch,
+  Space,
   message,
 } from "antd";
 import UploadImage from "../UI/UploadImage";
@@ -17,6 +18,7 @@ import { merchantOptions } from "../../shared/options";
 import commonService from "../../services/common.service";
 import faciliyService from "../../services/faciliy.service";
 const { RangePicker } = DatePicker;
+const { Option } = Select;
 
 const layout = {
   labelCol: { span: 8 },
@@ -74,28 +76,20 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         onFinish={onFinish}
         initialValues={defaultValues}
       >
-        <Form.Item label="工号" name="jobNumber">
-          <Input placeholder="请输入" />
-        </Form.Item>
-        <Form.Item label="姓名" name="name">
-          <Input placeholder="请输入" />
-        </Form.Item>
-        <Form.Item label="岗位" name="jobName">
-          <Input placeholder="请输入" />
-        </Form.Item>
-
-        <Form.Item label="电话" name="phone">
-          <Input placeholder="请输入" />
-        </Form.Item>
-        <Form.Item label="身份证号" name="certNumber">
-          <Input placeholder="请输入" />
-        </Form.Item>
-        <Form.Item label="照片" name="avatarUrl">
-          <UploadImage />
-        </Form.Item>
-        <Form.Item label="有效入园时间段" name="date">
+        <Form.Item label="开始/截至日期" name="date">
           <RangePicker />
         </Form.Item>
+        <Form.Item label="时间段票数" name="jobNumber">
+          <Input placeholder="请输入" />
+        </Form.Item>
+        <Form.Item label="库存提示" name="jobName">
+          <Space>
+            <span>数量低于</span>
+            <InputNumber />
+            <span>提示“余票过少”</span>
+          </Space>
+        </Form.Item>
+
         <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit">
             确定
