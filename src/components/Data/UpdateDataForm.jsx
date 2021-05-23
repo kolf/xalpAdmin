@@ -76,7 +76,7 @@ export default function UpdateDataForm() {
           <DatePicker />
         </Form.Item>
         <Form.Item label="InputNumber">
-          <InputNumber />
+          <InputNumber placeholder='0'/>
         </Form.Item>
         <Form.Item label="Switch">
           <Switch />

@@ -23,6 +23,10 @@ const { Option } = Select;
 const dataFormat = "YYYY-MM-DD";
 const timeFormat = "HH:mm";
 
+const createId = () => {
+  return Date.now();
+};
+
 const EditableCell = ({
   editing,
   dataIndex,
@@ -47,7 +51,7 @@ const EditableCell = ({
             },
           ]}
         >
-          <TimePicker format={format}/>
+          <TimePicker format={timeFormat} style={{ width: 96 }} size="small" />
         </Form.Item>
       ) : (
         children
@@ -102,20 +106,86 @@ export default function DataTable() {
   function makeQuery(query) {
     return Object.keys(query).reduce((result, key) => {
       const value = query[key];
-      if (key === "date" && value) {
-        const [start, end] = value;
-        result.StartTime = start.format(dataFormat) + " 00:00:00";
-        result.EndTime = end.format(dataFormat) + " 23:59:59";
-      } else if (value && value !== "-1") {
-        result[key] = value;
-      }
+      result[key] = value;
       return result;
     }, {});
   }
 
-  function onDelete(key) {}
+  async function onDelete(creds) {
+    const res = await faciliyService.deleteReservationTimeItem({
+      ...creds,
+      startTime: undefined,
+      endTime: undefined,
+      key: undefined,
+    });
+    message.success(`删除成功！`);
+    const nextDataList = dataList.filter((item) => item.key !== creds.key);
+    setDataList(nextDataList);
+  }
 
-  function onSave() {}
+  async function onSave(key) {
+    try {
+      const row = await form.validateFields();
+      const [startTime, endTime] = [
+        row.startTime.format(timeFormat),
+        row.endTime.format(timeFormat),
+      ];
+
+      const displayText = startTime + "-" + endTime;
+      let res = null;
+      if (/^\d+$/) {
+        res = await create({ key, startTime, endTime, displayText });
+      } else {
+        res = await update({ key, startTime, endTime, displayText });
+      }
+
+      const nextDataList = dataList.map((item) => {
+        if (item.key === key) {
+          return {
+            ...item,
+            startTime,
+            endTime,
+            displayText,
+          };
+        }
+        return item;
+      });
+      setDataList(nextDataList);
+      setEditingKey("");
+    } catch (error) {
+      console.error(error, "error");
+    }
+  }
+
+  async function update({ key, startTime, endTime, displayText }) {
+    try {
+      const res = await faciliyService.updateReservationTimeItem({
+        timeRangeName: displayText,
+        startTimeRange: startTime,
+        endTimeRange: endTime,
+        maxTouristsQuantity: 0,
+        id: key,
+      });
+      return res;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  async function create({ key, startTime, endTime, displayText }) {
+    try {
+      const res = await faciliyService.addReservationTimeItem({
+        timeRangeName: displayText,
+        startTimeRange: startTime,
+        endTimeRange: endTime,
+        maxTouristsQuantity: 0,
+        id: key,
+      });
+      return res;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
 
   function onEdit(record) {
     form.setFieldsValue({
@@ -124,6 +194,24 @@ export default function DataTable() {
       ...record,
     });
     setEditingKey(record);
+  }
+
+  function onAdd() {
+    if (dataList.length >= 3) {
+      return;
+    }
+    const id = createId();
+    const nextDataList = [
+      ...dataList,
+      {
+        id,
+        key: id,
+        displayText: "",
+        startTime: "",
+        endTime: "",
+      },
+    ];
+    setDataList(nextDataList);
   }
 
   function isEditing(record) {
@@ -141,7 +229,7 @@ export default function DataTable() {
       editable: true,
     },
     {
-      title: "开始时间",
+      title: "结束时间",
       dataIndex: "endTime",
       editable: true,
     },
@@ -167,11 +255,12 @@ export default function DataTable() {
                 size="small"
                 style={{ marginRight: 4 }}
                 onClick={onEdit.bind(this, creds.key)}
+                disabled={editingKey !== ""}
               >
                 编辑
               </Button>
             )}
-            <Button size="small" onClick={onDelete.bind(this, creds.key)}>
+            <Button size="small" onClick={onDelete.bind(this, creds)}>
               删除
             </Button>
           </div>
@@ -197,7 +286,7 @@ export default function DataTable() {
   return (
     <>
       <div style={{ paddingBottom: 12 }}>
-        <Button type="primary" size="small">
+        <Button type="primary" size="small" onClick={onAdd}>
           添加时段
         </Button>
       </div>

@@ -100,6 +100,7 @@ export default function DataTable() {
   }
 
   function showEditModal(creds) {
+    console.log(creds, 'creds')
     const mod = modal({
       content: (
         <UpdateDataForm defaultValues={creds} onOk={onOk}></UpdateDataForm>
