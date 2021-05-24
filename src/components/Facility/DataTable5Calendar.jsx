@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Calendar } from "antd";
+import { Calendar,Space } from "antd";
 import faciliyService from "../../services/faciliy.service";
 const dataFormat = "YYYY-MM-DD";
 
@@ -41,10 +41,16 @@ export default function DataTable5ListCalendar() {
   }
 
   function dateFullCellRender(e) {
-    const data = e.date();
+    const date = e.date();
     console.log(e.date(), "value");
     return (
       <div className="calendar-cell">
+        <div className="calendar-cell-title">{date}日</div>
+        <div className="calendar-cell-notice">
+          <Space size="small">06:00-09:00<span className="text-danger">121</span></Space>
+          <div>09:00-12:00</div>
+          <div>12:00-16:00</div>
+        </div>
         <div className="calendar-cell-value">1000</div>
       </div>
     );
@@ -53,7 +59,8 @@ export default function DataTable5ListCalendar() {
   function monthFullCellRender(e) {
     return (
       <div className="calendar-cell">
-        <div className="calendar-cell-value">{e.month() + 1}月</div>
+        <div className="calendar-cell-title">{e.month() + 1}月</div>
+        <div className="calendar-cell-year-value">1000</div>
       </div>
     );
   }

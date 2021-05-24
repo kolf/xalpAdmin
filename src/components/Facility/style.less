@@ -14,16 +14,40 @@
         border-right: 1px solid rgba(69, 190, 255, 0.3);
         border-top: 1px solid rgba(69, 190, 255, 0.3);
         &:hover{
-          background-color:rgba(69, 190, 255, 0.3)
+          background-color:rgba(69, 190, 255, 0.3);
+          .calendar-cell-value{
+            top: 0;
+            right: 12px;
+            transform: translate(0,0);
+          }
+          .calendar-cell-notice{
+            display: block;
+          }
         }
       }
     }
   }
   &-cell {
     height: 96px;
-    padding:6px;
-    &-value {
+    position: relative;
+    overflow: hidden;
+    &-title{
+      text-align:left;
+      padding-left: 6px;
+      padding-top: 6px;
+    }
+    &-value,&-year-value{
       font-family: webfont1;
+      font-size:24px;
+      position: absolute;
+      left:50%;
+      top:50%;
+      transform: translate(-50%,-50%);
+    }
+    &-notice{
+      display:none;
+      padding-top: 7px;
+      line-height:1.3
     }
   }
 }

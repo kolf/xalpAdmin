@@ -92,7 +92,12 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       startReserveDate,
       endReserveDate,
       timeItems,
+      id
     } = defaultValues;
+
+    if(!id){
+      return {}
+    }
     return {
       maxTouristsQuantity,
       items: timeItems,
