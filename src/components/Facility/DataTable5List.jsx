@@ -6,11 +6,6 @@ import {
   DatePicker,
   Form,
   Input,
-  Row,
-  Col,
-  Space,
-  Tabs,
-  Select,
   Pagination,
   message,
 } from "antd";
@@ -20,8 +15,6 @@ import faciliyService from "../../services/faciliy.service";
 
 const { RangePicker } = DatePicker;
 const { Search } = Input;
-const { Option } = Select;
-const { TabPane } = Tabs;
 
 const dataFormat = "YYYY-MM-DD";
 
@@ -82,7 +75,7 @@ export default function DataTable() {
 
   function showDeleteModal(creds) {
     const mod = modal.confirm({
-      content: `此操作将删除此供应商, 是否继续?`,
+      content: `此操作将删除这条数据, 是否继续?`,
       onOk,
     });
     async function onOk(done) {
@@ -100,7 +93,7 @@ export default function DataTable() {
   }
 
   function showEditModal(creds) {
-    console.log(creds, 'creds')
+    console.log(creds, "creds");
     const mod = modal({
       content: (
         <UpdateDataForm defaultValues={creds} onOk={onOk}></UpdateDataForm>

@@ -6,7 +6,7 @@ export default function Main({ header, children, onClose }) {
   const [height, setHeight] = useState(520);
   useEffect(() => {
     const windowHeight = window.innerHeight;
-    setHeight(Math.max(windowHeight - 480, 520));
+    setHeight(Math.max(windowHeight - 300, 520));
   });
   return (
     <div className="main-root">

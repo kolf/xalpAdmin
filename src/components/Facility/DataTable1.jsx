@@ -9,6 +9,8 @@ import {
   Col,
   Space,
   Select,
+  Pagination,
+  message,
 } from "antd";
 import modal from "../../shared/modal";
 import facilityService from "../../services/faciliy.service";
@@ -50,6 +52,9 @@ export default function DataTable() {
   }
 
   function makeData(data) {
+    if (!data) {
+      return [];
+    }
     return data.map((item, index) => {
       return { ...item, index: index + 1 };
     });
@@ -155,10 +160,24 @@ export default function DataTable() {
   ];
 
   const paginationProps = {
+    showQuickJumper: true,
+    showSizeChanger: true,
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
     total,
     position: ["", "bottomCenter"],
+    size: "small",
+    onChange(pageNum, pageSize) {
+      let nextPageNum = pageNum;
+      if (pageSize != query.maxResultCount * 1) {
+        nextPageNum = 1;
+      }
+
+      loadData({
+        skipCount: nextPageNum + "",
+        maxResultCount: pageSize + "",
+      });
+    },
   };
 
   return (
@@ -187,14 +206,12 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={loadData}
       >
-        <Form.Item name="username">
-          <Form.Item name="a1" style={{ marginBottom: 6, width: 100 }}>
-            <Select size="small" placeholder="核销状态" allowClear>
-              {reviewOptions.map((o) => (
-                <Option key={o.value}>{o.label}</Option>
-              ))}
-            </Select>
-          </Form.Item>
+        <Form.Item name="a1" style={{ marginBottom: 6, width: 100 }}>
+          <Select size="small" placeholder="核销状态" allowClear>
+            {reviewOptions.map((o) => (
+              <Option key={o.value}>{o.label}</Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item name="date">
           <RangePicker size="small" />
@@ -208,11 +225,7 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) =>
-              this.loadData({
-                Keyword: value,
-              })
-            }
+            onSearch={(value) => loadData({ Keyword: value })}
           />
         </Form.Item>
       </Form>
@@ -220,12 +233,16 @@ export default function DataTable() {
       <Table
         dataSource={makeData(dataList)}
         columns={columns}
-        pagination={paginationProps}
+        pagination={false}
         size="small"
         bordered
         loading={loading}
-        scroll={{ x: 1200 }}
+        rowKey="id"
+        // scroll={{ x: 1200 }}
       />
+      <div className="page-container">
+        <Pagination {...paginationProps} />
+      </div>
     </div>
   );
 }

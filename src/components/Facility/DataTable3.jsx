@@ -206,9 +206,15 @@ export default function DataTable() {
     total,
     position: ["", "bottomCenter"],
     size: "small",
-    onChange(value) {
+    onChange(pageNum, pageSize) {
+      let nextPageNum = pageNum;
+      if (pageSize != query.maxResultCount * 1) {
+        nextPageNum = 1;
+      }
+
       loadData({
-        skipCount: value + "",
+        skipCount: nextPageNum + "",
+        maxResultCount: pageSize + "",
       });
     },
   };
