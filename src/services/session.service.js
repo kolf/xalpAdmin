@@ -20,16 +20,24 @@ class SessionService {
       );
       const { access_token: ossAccessToken, user_info: userData } =
         res1.data.data;
-      const res2 = await axios.post("/api/LbyTokenAuth", {
-        ossAccessToken,
-      });
 
-      const token = res2.data.access_token;
-      sessionStorage.setItem("@Auth:token", token);
+      await this.getToken(ossAccessToken);
       sessionStorage.setItem("user", JSON.stringify(userData));
       return Promise.resolve(userData);
     } catch (error) {
-      console.log(error, 'dfd');
+      return Promise.reject(error);
+    }
+  };
+
+  getToken = async (ossAccessToken) => {
+    try {
+      const res = await axios.post("/api/LbyTokenAuth", {
+        ossAccessToken,
+      });
+      const token = res.data.access_token;
+      sessionStorage.setItem("@Auth:token", token);
+      return Promise.resolve(token);
+    } catch (error) {
       return Promise.reject(error);
     }
   };

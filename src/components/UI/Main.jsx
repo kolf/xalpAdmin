@@ -16,7 +16,9 @@ export default function Main({ header, children, onClose }) {
         />
       </div>
       {header && header}
-      <div className="main-body" style={{  height }}>{children}</div>
+      <div className="main-body" style={{ height }}>
+        {children}
+      </div>
     </div>
   );
 }

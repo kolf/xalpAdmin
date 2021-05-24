@@ -18,16 +18,17 @@ module.exports = {
   ],
   devServer: {
     proxy: {
-      "/auth": {
+      "/topark/auth": {
         target: "http://114.67.250.8",
         changeOrigin: true,
         secure: false,
+        pathRewrite: { "^/topark": "" },
       },
-      "/api": {
+      "/topark/api": {
         target: "http://xalby-api.facevisitor.com",
         changeOrigin: true,
         secure: false,
-        // pathRewrite: { "^/api": "" },
+        pathRewrite: { "^/topark": "" },
       },
     },
   },

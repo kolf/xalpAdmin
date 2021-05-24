@@ -10,7 +10,7 @@ export default function Menu() {
   return (
     <Select
       placeholder="系统菜单"
-      style={{ width: "100%", backgroundColor: 'rgba(11, 34, 63, 0.9)' }}
+      style={{ width: "100%", backgroundColor: "rgba(11, 34, 63, 0.9)" }}
       onSelect={handleSelect}
     >
       <Option value="police">设备管理</Option>

@@ -1,6 +1,7 @@
 {
   "name": "app",
   "version": "1.0.0",
+  "homepage": "/topark",
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
     "@antv/f2": "^3.8.8",

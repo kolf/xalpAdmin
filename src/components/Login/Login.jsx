@@ -4,13 +4,28 @@ import { Redirect } from "react-router-dom";
 import { Form, Input, Button, message } from "antd";
 import sessionService from "../../services/session.service";
 import * as sessionActions from "../../store/actions/session.actions";
+import history from "../../shared/history";
 
 import "./Login.css";
-class Login extends React.Component {
-  state = {};
 
-  componentDidMount() {
-    this.props.logout();
+const queryString = require("query-string");
+class Login extends React.Component {
+  state = {
+    loading: true,
+  };
+  async componentDidMount() {
+    sessionStorage.clear();
+    const parsed = queryString.parse(this.props.location.search);
+    if (parsed.token) {
+      const res = await sessionService.getToken(parsed.token);
+      if (res) {
+        history.push("/");
+      }
+    } else {
+      this.setState({
+        loading: false,
+      });
+    }
   }
 
   onFinish = async (values) => {
@@ -22,6 +37,10 @@ class Login extends React.Component {
   };
 
   render() {
+    const { loading } = this.state;
+    if (loading) {
+      return null;
+    }
     return sessionService.isAuthenticated() ? (
       <Redirect to="/" />
     ) : (

@@ -2,10 +2,10 @@ const isDevEnv = process.env.NODE_ENV === "development";
 const config = {
   app: {
     domain: process.env.APP_DOMAIN,
-    baseUrl: process.env.APP_BASE_URL,
+    baseUrl: "/topark",
   },
   api: {
-    baseUrl: isDevEnv ? "/" : "http://xalby-api.facevisitor.com/",
+    baseUrl: "/topark",
   },
   data: {
     dateFormat: "Do MMM YYYY",
