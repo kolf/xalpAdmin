@@ -13,6 +13,7 @@ import {
   message,
 } from "antd";
 import UploadImage from "../UI/UploadImage";
+import utils from "../../shared/utils";
 import { merchantOptions } from "../../shared/options";
 import commonService from "../../services/common.service";
 import faciliyService from "../../services/faciliy.service";
@@ -47,10 +48,10 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         ...makeParams(values),
         id: defaultValues.id,
       });
-      message.success(`更新成功！`);
+      utils.success(`更新成功！`);
     } else {
       res = await faciliyService.addStaff(makeParams(values));
-      message.success(`添加成功！`);
+      utils.success(`添加成功！`);
     }
 
     onOk && onOk(res);

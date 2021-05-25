@@ -13,6 +13,7 @@ import {
   message,
 } from "antd";
 import modal from "../../shared/modal";
+import confirm from "../../shared/confirm";
 import DetailsDataTable from "./DetailsDataTable";
 import blanklistService from "../../services/blanklist.service";
 import { reviewOptions } from "../../shared/options";
@@ -70,6 +71,9 @@ export default function DataTable() {
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
+      if (query.skipCount) {
+        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
+      }
       return result;
     }, {});
   }
@@ -87,14 +91,14 @@ export default function DataTable() {
   }
 
   function showDeleteModal(creds) {
-    const mod = modal({confirm:true, content: `此操作将取消该票, 是否继续?`, onOk });
+    const mod = confirm({ content: `此操作将取消该票, 是否继续?`, onOk });
     function onOk(done) {
       // mod.close()
     }
   }
 
   function showReviewModal(creds) {
-    const mod = modal({confirm:true, content: `此操作将核销该票, 是否继续?`, onOk });
+    const mod = confirm({ content: `此操作将核销该票, 是否继续?`, onOk });
     function onOk(done) {
       // mod.close()
     }

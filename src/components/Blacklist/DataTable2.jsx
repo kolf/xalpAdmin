@@ -50,6 +50,9 @@ export default function DataTable() {
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
+      if (query.skipCount) {
+        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
+      }
       return result;
     }, {});
   }

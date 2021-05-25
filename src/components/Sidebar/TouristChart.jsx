@@ -69,5 +69,5 @@ export default function TouristChart() {
     });
     chart.render();
   }
-  return <canvas id="chart1" width="352" height="160"></canvas>;
+  return <canvas id="chart1" width="352" height="120"></canvas>;
 }

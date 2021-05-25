@@ -15,6 +15,7 @@ import {
   message,
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import utils from "../../shared/utils";
 import UploadImage from "../UI/UploadImage";
 import { datePickerOptions } from "../../shared/options";
 import commonService from "../../services/common.service";
@@ -64,10 +65,10 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     if (defaultValues.id) {
       params.id = defaultValues.id;
       res = await faciliyService.updateReservationTimeSetting(params);
-      message.success(`更新成功！`);
+      utils.success(`更新成功！`);
     } else {
       res = await faciliyService.addReservationTimeSetting(params);
-      message.success(`添加成功！`);
+      utils.success(`添加成功！`);
     }
 
     onOk && onOk(res);

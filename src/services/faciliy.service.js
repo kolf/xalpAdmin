@@ -186,9 +186,7 @@ class FaciliyService {
   };
   checkOrder = async (creds) => {
     try {
-      const res = await api.post(
-        `api/Order/Check?${queryString.stringify(creds)}`
-      );
+      const res = await api.post(`api/Order/Check/${creds.id}`);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -196,9 +194,7 @@ class FaciliyService {
   };
   cancelOrder = async (creds) => {
     try {
-      const res = await api.post(
-        `api/Order/Cancel?${queryString.stringify(creds)}​`
-      );
+      const res = await api.post(`api/Order/Cancel/${creds.id}`);
       return res.data;
     } catch (error) {
       return Promise.reject(error);

@@ -79,6 +79,33 @@ export default function HorizontalLoginForm() {
             </Select>
           </Form.Item>
         </Col>
+        <Col span={8}>
+          <Form.Item name="a4" style={{ marginBottom: 6 }}>
+            <Select size="small" placeholder="请选择年份">
+              {yearOptions.map((o) => (
+                <Option key={o.value}>{o.label}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item name="a5" style={{ marginBottom: 6 }}>
+            <Select size="small" placeholder="请选择月份">
+              {mouthOptions.map((o) => (
+                <Option key={o.value}>{o.label}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item name="a6" style={{ marginBottom: 6 }}>
+            <Select size="small" placeholder="请选择日">
+              {dayOptions.map((o) => (
+                <Option key={o.value}>{o.label}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
       </Row>
       <Row gutter={8}>
         <Col span={24}>
