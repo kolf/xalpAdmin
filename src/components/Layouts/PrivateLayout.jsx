@@ -27,22 +27,22 @@ export default class PrivateLayout extends React.Component {
               <Layout
                 style={{ backgroundColor: "transparent", padding: "8px 8px 0" }}
               >
-                {/* <Sider
+                <Sider
                   width={400}
                   style={{ backgroundColor: "transparent", padding: "12px" }}
                 >
                   <Sidebar />
-                </Sider> */}
+                </Sider>
                 <Content style={{ padding: "12px 0" }}>
                   <Component {...props} />
                 </Content>
-                {/* <Sider
+                <Sider
                   width={140}
                   style={{ backgroundColor: "transparent", padding: "12px" }}
                 >
                   <Menu />
                 </Sider>
-                <AppFooter></AppFooter> */}
+                <AppFooter></AppFooter>
               </Layout>
             </Layout>
           ) : (

@@ -17,9 +17,14 @@ class Login extends React.Component {
     sessionStorage.clear();
     const parsed = queryString.parse(this.props.location.search);
     if (parsed.token) {
-      const res = await sessionService.getToken(parsed.token);
-      if (res) {
-        history.push("/");
+      try {
+        const res = await sessionService.getToken(parsed.token);
+        if (res) {
+          history.push("/");
+        }
+      } catch (error) {
+        window.location.href =
+          "http://114.67.250.8/#/login?redirectUrl=http://114.67.250.8/topark/login&appCode=ENTERPARKnL4gX4cG8tJ2zW4r";
       }
     } else {
       this.setState({
