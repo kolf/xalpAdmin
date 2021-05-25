@@ -12,7 +12,7 @@ import {
   onlineOptions,
 } from "../../shared/options";
 const { Option } = Select;
-const dataFormat = "YYYY-MM-DD";
+const dateFormat = "YYYY-MM-DD";
 
 export default function DataTable() {
   const [form] = Form.useForm();

@@ -12,6 +12,7 @@ import {
   Pagination,
   message,
 } from "antd";
+import moment from "moment";
 import modal from "../../shared/modal";
 import UpdateDataForm from "./UpdateData3Form";
 import faciliyService from "../../services/faciliy.service";
@@ -19,7 +20,7 @@ import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
-const dataFormat = "YYYY-MM-DD";
+const dateFormat = "YYYY-MM-DD";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -53,11 +54,11 @@ export default function DataTable() {
   }
 
   function makeData(data) {
-    if(!data){
-      return []
+    if (!data) {
+      return [];
     }
     return data.map((item, index) => {
-      return { ...item, index: index + 1 };
+      return { ...item.staff,webUrl:item.webUrl, index: index + 1 };
     });
   }
 
@@ -66,8 +67,8 @@ export default function DataTable() {
       const value = query[key];
       if (key === "date" && value) {
         const [start, end] = value;
-        result.StartTimeStart = start.format(dataFormat) + " 00:00:00";
-        result.StartTimeEnd = end.format(dataFormat) + " 23:59:59";
+        result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
+        result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
@@ -140,39 +141,49 @@ export default function DataTable() {
   const columns = [
     {
       title: "工号",
-      dataIndex: "name",
+      dataIndex: "jobNumber",
     },
     {
       title: "姓名",
-      dataIndex: "age",
+      dataIndex: "name",
     },
     {
       title: "联系电话",
-      dataIndex: "address",
+      dataIndex: "phone",
     },
     {
       title: "身份证",
-      dataIndex: "user",
+      dataIndex: "certNumber",
     },
     {
       title: "岗位",
-      dataIndex: "num",
+      dataIndex: "organizationUnit",
     },
     {
       title: "照片",
-      dataIndex: "phone",
+      dataIndex: "webUrl",
+      render(text){
+        return text ? <img src={text}/> : '无'
+      }
     },
     {
       title: "剩余天数",
-      dataIndex: "phone",
+      dataIndex: "staffType",
     },
     {
       title: "更新时间",
-      dataIndex: "phone",
+      dataIndex: "creationTime",
     },
     {
       title: "有效入园时间",
-      dataIndex: "phone",
+      dataIndex: "permissionDate",
+      render(text, creds) {
+        return (
+          moment(creds.startPermissionDate).format(dateFormat) +
+          "至" +
+          moment(creds.endPermissionDate).format(dateFormat)
+        );
+      },
     },
     {
       title: "操作",

@@ -19,7 +19,7 @@ import UploadImage from "../UI/UploadImage";
 import { datePickerOptions } from "../../shared/options";
 import commonService from "../../services/common.service";
 import faciliyService from "../../services/faciliy.service";
-const dataFormat = "YYYY-MM-DD";
+const dateFormat = "YYYY-MM-DD";
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
@@ -57,8 +57,8 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
 
     let params = {
       ...values,
-      startReserveDate: start.format(dataFormat),
-      endReserveDate: end.format(dataFormat),
+      startReserveDate: start.format(dateFormat),
+      endReserveDate: end.format(dateFormat),
     };
     let res = null;
     if (defaultValues.id) {
@@ -102,8 +102,8 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       maxTouristsQuantity,
       items: timeItems,
       date: [
-        moment(startReserveDate, dataFormat),
-        moment(endReserveDate, dataFormat),
+        moment(startReserveDate, dateFormat),
+        moment(endReserveDate, dateFormat),
       ],
     };
   }

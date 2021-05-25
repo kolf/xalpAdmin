@@ -28,7 +28,7 @@ export default function UploadImage({ onChange }) {
       listType="picture-card"
       className="file-uploader"
       showUploadList={false}
-      action="/api/UploadFile/UploadFaceImage"
+      action="api/UploadFile/UploadFaceImage"
       onChange={handleChange}
     >
       {value ? (

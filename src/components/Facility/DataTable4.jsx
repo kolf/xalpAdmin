@@ -19,7 +19,7 @@ import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
-const dataFormat = "YYYY-MM-DD";
+const dateFormat = "YYYY-MM-DD";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -66,8 +66,8 @@ export default function DataTable() {
       const value = query[key];
       if (key === "date" && value) {
         const [start, end] = value;
-        result.startPermissionDate = start.format(dataFormat) + " 00:00:00";
-        result.endPermissionDate = end.format(dataFormat) + " 23:59:59";
+        result.startPermissionDate = start.format(dateFormat) + " 00:00:00";
+        result.endPermissionDate = end.format(dateFormat) + " 23:59:59";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }

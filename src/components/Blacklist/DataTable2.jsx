@@ -3,7 +3,7 @@ import { Table, Button, DatePicker, Form, Input, Row, Col, Space } from "antd";
 import blanklistService from "../../services/blanklist.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
-const dataFormat = "YYYY-MM-DD";
+const dateFormat = "YYYY-MM-DD";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -45,8 +45,8 @@ export default function DataTable() {
       const value = query[key];
       if (key === "date" && value) {
         const [start, end] = value;
-        result.StartTimeStart = start.format(dataFormat) + " 00:00:00";
-        result.StartTimeEnd = end.format(dataFormat) + " 23:59:59";
+        result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
+        result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }

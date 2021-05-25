@@ -17,6 +17,7 @@ import { merchantOptions } from "../../shared/options";
 import commonService from "../../services/common.service";
 import faciliyService from "../../services/faciliy.service";
 const { RangePicker } = DatePicker;
+const dateFormat = "YYYY-MM-DD";
 
 const layout = {
   labelCol: { span: 8 },
@@ -39,32 +40,40 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     } catch (error) {}
   }
 
-  function makeData(data) {
-    if (!data) {
-      return [];
-    }
-    return data.map((item, index) => {
-      return { value: item.id + "", label: item.displayText };
-    });
-  }
-
   async function onFinish(values) {
     let res = null;
     if (defaultValues.id) {
       res = await faciliyService.updateStaff({
-        ...values,
+        ...makeParams(values),
         id: defaultValues.id,
       });
       message.success(`更新成功！`);
     } else {
-      res = await faciliyService.addStaff(values);
+      res = await faciliyService.addStaff(makeParams(values));
       message.success(`添加成功！`);
     }
 
     onOk && onOk(res);
   }
 
-  console.log(defaultValues, "defaultValues");
+  function makeParams(values) {
+    return Object.keys(values).reduce(
+      (result, key) => {
+        const value = values[key];
+        if (key === "date" && value) {
+          const [start, end] = value;
+          result.startPermissionDate = start.format(dateFormat);
+          result.endPermissionDate = end.format(dateFormat);
+        } else if (value !== undefined && value !== "-1") {
+          result[key] = value;
+        }
+        return result;
+      },
+      {
+        staffType: 1,
+      }
+    );
+  }
 
   return (
     <>
@@ -80,7 +89,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         <Form.Item label="姓名" name="name">
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="岗位" name="jobName">
+        <Form.Item label="岗位" name="organizationUnit">
           <Input placeholder="请输入" />
         </Form.Item>
 
@@ -90,7 +99,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         <Form.Item label="身份证号" name="certNumber">
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="照片" name="avatarUrl">
+        <Form.Item label="照片" name="webUrl">
           <UploadImage />
         </Form.Item>
         <Form.Item label="有效入园时间段" name="date">

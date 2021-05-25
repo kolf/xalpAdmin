@@ -20,7 +20,7 @@ import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
-const dataFormat = "YYYY-MM-DD";
+const dateFormat = "YYYY-MM-DD";
 const timeFormat = "HH:mm";
 
 const createId = () => {

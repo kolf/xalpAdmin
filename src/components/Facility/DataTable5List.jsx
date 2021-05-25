@@ -16,7 +16,7 @@ import faciliyService from "../../services/faciliy.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 
-const dataFormat = "YYYY-MM-DD";
+const dateFormat = "YYYY-MM-DD";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -64,8 +64,8 @@ export default function DataTable() {
       const value = query[key];
       if (key === "date" && value) {
         const [start, end] = value;
-        result.StartTime = start.format(dataFormat) + " 00:00:00";
-        result.EndTime = end.format(dataFormat) + " 23:59:59";
+        result.StartTime = start.format(dateFormat) + " 00:00:00";
+        result.EndTime = end.format(dateFormat) + " 23:59:59";
       } else if (value && value !== "-1") {
         result[key] = value;
       }
@@ -117,9 +117,9 @@ export default function DataTable() {
       title: "起始日期",
       dataIndex: "startReserveDate",
       render(text, creds) {
-        return `${moment(creds.startReserveDate).format(dataFormat)}至${moment(
+        return `${moment(creds.startReserveDate).format(dateFormat)}至${moment(
           creds.endReserveDate
-        ).format(dataFormat)}`;
+        ).format(dateFormat)}`;
       },
     },
     {

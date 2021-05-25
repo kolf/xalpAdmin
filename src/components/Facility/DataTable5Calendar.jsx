@@ -3,7 +3,7 @@ import { Calendar, Space, message } from "antd";
 import modal from "../../shared/modal";
 import UpdateDataForm from "./DataTable5UpdateTabs";
 import faciliyService from "../../services/faciliy.service";
-const dataFormat = "YYYY-MM-DD";
+const dateFormat = "YYYY-MM-DD";
 
 export default function DataTable5ListCalendar() {
   const calendarRef = useRef()
@@ -50,8 +50,8 @@ export default function DataTable5ListCalendar() {
       const value = query[key];
       if (key === "date" && value) {
         const [start, end] = value;
-        result.StartTime = start.format(dataFormat) + " 00:00:00";
-        result.EndTime = end.format(dataFormat) + " 23:59:59";
+        result.StartTime = start.format(dateFormat) + " 00:00:00";
+        result.EndTime = end.format(dateFormat) + " 23:59:59";
       } else if (value && value !== "-1") {
         result[key] = value;
       }

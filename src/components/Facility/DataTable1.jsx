@@ -18,7 +18,7 @@ import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
-const dataFormat = "YYYY-MM-DD";
+const dateFormat = "YYYY-MM-DD";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -56,7 +56,7 @@ export default function DataTable() {
       return [];
     }
     return data.map((item, index) => {
-      return { ...item, index: index + 1 };
+      return {...item, ...item.orderDetail,orderDetail:undefined, index: index + 1 };
     });
   }
 
@@ -65,8 +65,8 @@ export default function DataTable() {
       const value = query[key];
       if (key === "date" && value) {
         const [start, end] = value;
-        result.StartTimeStart = start.format(dataFormat) + " 00:00:00";
-        result.StartTimeEnd = end.format(dataFormat) + " 23:59:59";
+        result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
+        result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
@@ -93,15 +93,15 @@ export default function DataTable() {
   const columns = [
     {
       title: "订单号",
-      dataIndex: "name",
+      dataIndex: "orderNO",
     },
     {
       title: "预约人",
-      dataIndex: "age",
+      dataIndex: "name",
     },
     {
       title: "电话",
-      dataIndex: "address",
+      dataIndex: "phone",
     },
     {
       title: "是否代预约",
@@ -117,7 +117,7 @@ export default function DataTable() {
     },
     {
       title: "身份证",
-      dataIndex: "online",
+      dataIndex: "certNumber",
     },
     {
       title: "预约时段",
@@ -133,6 +133,14 @@ export default function DataTable() {
     },
     {
       title: "随行宠物",
+      dataIndex: "online",
+    },
+    {
+      title: "人像录入",
+      dataIndex: "online",
+    },
+    {
+      title: "核销设备（核销方式）",
       dataIndex: "online",
     },
     {
