@@ -7,7 +7,10 @@ export default function ProgressArc({ dataSource }) {
     <div className="progress-root">
       <Row justify="space-around" align="middle">
         {dataSource.map((item) => (
-          <Col key={item.title} style={{ textAlign: "center" }}>
+          <Col
+            key={item.title + "-" + item.value}
+            style={{ textAlign: "center" }}
+          >
             <div className="progress-cover">
               <div className="progress-value">{item.value}</div>
               <div className="progress-prefix">{item.prefix}</div>

@@ -103,7 +103,7 @@ export default function DataTable() {
   }
 
   function showDeleteModal(creds) {
-    const mod = modal.confirm({ content: `确认移除此条内容`, onOk });
+    const mod = modal({confirm:true, content: `确认移除此条内容`, onOk });
     function onOk(done) {
       // mod.close()
     }

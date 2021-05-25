@@ -76,7 +76,7 @@ export default function DataTable() {
   }
 
   function showDeleteModal(creds) {
-    const mod = modal.confirm({
+    const mod = modal({confirm:true,
       content: `此操作将删除此供应商, 是否继续?`,
       onOk,
     });

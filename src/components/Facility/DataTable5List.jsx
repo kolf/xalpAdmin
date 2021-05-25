@@ -74,7 +74,7 @@ export default function DataTable() {
   }
 
   function showDeleteModal(creds) {
-    const mod = modal.confirm({
+    const mod = modal({confirm:true,
       content: `此操作将删除这条数据, 是否继续?`,
       onOk,
     });

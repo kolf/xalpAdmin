@@ -152,16 +152,4 @@ function modal(config) {
   };
 }
 
-function confirm(config) {
-  return Modal.confirm({
-    // destroyOnClose:true,
-    ...config,
-    onOk() {
-      return new Promise(config.onOk);
-    },
-  });
-}
-
-modal.confirm = confirm;
-
 export default modal;

@@ -70,7 +70,6 @@ export default function DataTable5ListCalendar() {
 
   function dateFullCellRender(e) {
     let current = null;
-    console.log(dataList,'dataList')
     if (dataList.length > 0) {
       dayList = [];
       current = dataList.find(

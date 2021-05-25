@@ -87,14 +87,14 @@ export default function DataTable() {
   }
 
   function showDeleteModal(creds) {
-    const mod = modal.confirm({ content: `此操作将取消该票, 是否继续?`, onOk });
+    const mod = modal({confirm:true, content: `此操作将取消该票, 是否继续?`, onOk });
     function onOk(done) {
       // mod.close()
     }
   }
 
   function showReviewModal(creds) {
-    const mod = modal.confirm({ content: `此操作将核销该票, 是否继续?`, onOk });
+    const mod = modal({confirm:true, content: `此操作将核销该票, 是否继续?`, onOk });
     function onOk(done) {
       // mod.close()
     }

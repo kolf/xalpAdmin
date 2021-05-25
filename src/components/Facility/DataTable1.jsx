@@ -13,6 +13,7 @@ import {
   message,
 } from "antd";
 import modal from "../../shared/modal";
+import confirm from "../../shared/confirm";
 import facilityService from "../../services/faciliy.service";
 import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
@@ -58,8 +59,6 @@ export default function DataTable() {
     return data.map((item, index) => {
       return {
         ...item,
-        ...item.orderDetail,
-        orderDetail: undefined,
         index: index + 1,
       };
     });
@@ -80,16 +79,37 @@ export default function DataTable() {
   }
 
   function showDeleteModal(creds) {
-    const mod = modal.confirm({ content: `此操作将取消该票, 是否继续?`, onOk });
-    function onOk(done) {
+    confirm({
+      content: `此操作将取消该票, 是否继续?`,
+      onOk,
+    });
+    async function onOk() {
+      try {
+        const res = await facilityService.cancelOrder({ id: creds.id });
+
+        message.success(`取消成功！`);
+        loadData({ skipCount: "1" });
+      } catch (error) {
+        message.error(`取消失败！`);
+      }
       // mod.close()
     }
   }
 
   function showReviewModal(creds) {
-    const mod = modal.confirm({ content: `此操作将核销该票, 是否继续?`, onOk });
-    function onOk(done) {
-      // mod.close()
+    confirm({
+      content: `此操作将核销该票, 是否继续?`,
+      onOk,
+    });
+    async function onOk() {
+      try {
+        const res = await facilityService.checkOrder({ id: creds.id });
+
+        message.success(`核销成功！`);
+        loadData({ skipCount: "1" });
+      } catch (error) {
+        message.error(`核销失败！`);
+      }
     }
   }
 
@@ -99,6 +119,9 @@ export default function DataTable() {
     {
       title: "订单号",
       dataIndex: "orderNO",
+      render(text, creds) {
+        return creds.orderDetail.orderNO || "无";
+      },
     },
     {
       title: "预约人",
@@ -111,34 +134,43 @@ export default function DataTable() {
     },
     {
       title: "是否代预约",
-      dataIndex: "user",
+      dataIndex: "isActivityApply",
       width: 88,
     },
     {
       title: "参观人",
-      dataIndex: "num",
+      dataIndex: "name1",
       width: 64,
+      render(text, creds) {
+        return creds.orderDetail.name || "无";
+      },
     },
     {
       title: "参观人电话",
-      dataIndex: "phone",
+      dataIndex: "phone1",
+      render(text, creds) {
+        return creds.orderDetail.phone || "无";
+      },
     },
     {
       title: "身份证",
       dataIndex: "certNumber",
+      render(text, creds) {
+        return creds.orderDetail.certNumber || "无";
+      },
     },
     {
       title: "预约时段",
-      dataIndex: "online",
+      dataIndex: "ddd",
     },
     {
       title: "参与活动",
-      dataIndex: "online",
+      dataIndex: "activityName",
       width: 80,
     },
     {
       title: "抵达方式",
-      dataIndex: "online",
+      dataIndex: "regionCity",
       width: 80,
     },
     {

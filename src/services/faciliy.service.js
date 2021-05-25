@@ -113,7 +113,9 @@ class FaciliyService {
 
   deleteReservationTimeItem = async (creds) => {
     try {
-      const res = await api.delete(`api/ReservationTimeItem?${queryString.stringify(creds)}`);
+      const res = await api.delete(
+        `api/ReservationTimeItem?${queryString.stringify(creds)}`
+      );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -176,6 +178,26 @@ class FaciliyService {
     try {
       const res = await api.get(
         `api/Order/OrderDetailList?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  checkOrder = async (creds) => {
+    try {
+      const res = await api.post(
+        `api/Order/Check?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  cancelOrder = async (creds) => {
+    try {
+      const res = await api.post(
+        `api/Order/Cancel?${queryString.stringify(creds)}​`
       );
       return res.data;
     } catch (error) {
