@@ -56,7 +56,12 @@ export default function DataTable() {
       return [];
     }
     return data.map((item, index) => {
-      return {...item, ...item.orderDetail,orderDetail:undefined, index: index + 1 };
+      return {
+        ...item,
+        ...item.orderDetail,
+        orderDetail: undefined,
+        index: index + 1,
+      };
     });
   }
 
@@ -98,21 +103,24 @@ export default function DataTable() {
     {
       title: "预约人",
       dataIndex: "name",
+      width: 64,
     },
     {
-      title: "电话",
+      title: "预约人电话",
       dataIndex: "phone",
     },
     {
       title: "是否代预约",
       dataIndex: "user",
+      width: 88,
     },
     {
       title: "参观人",
       dataIndex: "num",
+      width: 64,
     },
     {
-      title: "电话",
+      title: "参观人电话",
       dataIndex: "phone",
     },
     {
@@ -126,22 +134,27 @@ export default function DataTable() {
     {
       title: "参与活动",
       dataIndex: "online",
+      width: 80,
     },
     {
       title: "抵达方式",
       dataIndex: "online",
+      width: 80,
     },
     {
       title: "随行宠物",
       dataIndex: "online",
+      width: 80,
     },
     {
       title: "人像录入",
       dataIndex: "online",
+      width: 80,
     },
     {
       title: "核销设备（核销方式）",
       dataIndex: "online",
+      width: 158,
     },
     {
       title: "操作",
@@ -246,7 +259,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        // scroll={{ x: 1200 }}
+        scroll={{ x: 1600 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

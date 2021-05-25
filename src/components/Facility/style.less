@@ -16,9 +16,9 @@
         &:hover{
           background-color:rgba(69, 190, 255, 0.3);
           .calendar-cell-value{
-            top: 0;
-            right: 12px;
-            transform: translate(0,0);
+            top: -4px;
+            right: 4px;
+            transform: translate(0,0) !important;
           }
           .calendar-cell-notice{
             display: block;
@@ -29,6 +29,7 @@
   }
   &-cell {
     height: 96px;
+    width: 100%;
     position: relative;
     overflow: hidden;
     &-title{
@@ -38,11 +39,12 @@
     }
     &-value,&-year-value{
       font-family: webfont1;
+      text-align: right;
       font-size:24px;
       position: absolute;
-      left:50%;
+      right:50%;
       top:50%;
-      transform: translate(-50%,-50%);
+      transform: translate(50%,-50%);
     }
     &-notice{
       display:none;

@@ -6,7 +6,7 @@ import faciliyService from "../../services/faciliy.service";
 const dateFormat = "YYYY-MM-DD";
 
 export default function DataTable5ListCalendar() {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   let dayList = [];
 
@@ -26,7 +26,9 @@ export default function DataTable5ListCalendar() {
       setLoading(false);
       setDataList(items);
     } catch (error) {
+      console.error(error);
       setLoading(false);
+      setDataList([]);
     }
   }
 
@@ -68,6 +70,7 @@ export default function DataTable5ListCalendar() {
 
   function dateFullCellRender(e) {
     let current = null;
+    console.log(dataList,'dataList')
     if (dataList.length > 0) {
       dayList = [];
       current = dataList.find(
