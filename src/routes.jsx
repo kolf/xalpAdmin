@@ -15,6 +15,7 @@ import User from "./components/User";
 import Blacklist from "./components/Blacklist";
 import Police from "./components/Police";
 import Facility from "./components/Facility";
+import TicketCategory from "./components/TicketCategory";
 import Data from "./components/Data";
 
 export default function Routes() {
@@ -27,6 +28,11 @@ export default function Routes() {
         <PrivateLayout path="/blacklist" exact component={Blacklist} />
         <PrivateLayout path="/police" exact component={Police} />
         <PrivateLayout path="/facility" exact component={Facility} />
+        <PrivateLayout
+          path="/ticket-category"
+          exact
+          component={TicketCategory}
+        />
         <PublicLayout path="/login" component={Login} />
         <PublicLayout path="/unauthorized" component={Unauthorized} />
         <PublicLayout path="/login-expired" componet={LoginExpired} />

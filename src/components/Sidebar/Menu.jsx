@@ -17,6 +17,7 @@ export default function Menu() {
       <Option value="facility">预约入园</Option>
       <Option value="blacklist">黑名单管理</Option>
       <Option value="user">权限管理</Option>
+      <Option value="ticket-category">票种管理</Option>
     </Select>
   );
 }
