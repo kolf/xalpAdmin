@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Tabs } from "antd";
-import Main from "../UI/Main";
+import Main from "../Layouts/AppMain";
 import DataTable from "./DataTable";
 import "./style.less";
 const { TabPane } = Tabs;

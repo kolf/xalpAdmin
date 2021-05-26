@@ -9,18 +9,28 @@ export default function TouristChart() {
   function renderChart() {
     const data = [
       {
-        name: "股票类",
-        percent: 83.59,
+        name: "儿童(0-12岁)",
+        percent: 23.59,
         a: "1",
       },
       {
-        name: "债券类",
+        name: "青少年(13-18岁)",
         percent: 2.17,
         a: "1",
       },
       {
-        name: "现金类",
+        name: "青年(19-44岁)",
         percent: 14.24,
+        a: "1",
+      },
+      {
+        name: "中年(45-59岁)",
+        percent: 12.17,
+        a: "1",
+      },
+      {
+        name: "老年(60岁以上)",
+        percent: 24.24,
         a: "1",
       },
     ];
@@ -69,5 +79,5 @@ export default function TouristChart() {
     });
     chart.render();
   }
-  return <canvas id="chart1" width="352" height="120"></canvas>;
+  return <canvas id="chart1" width="352" height="138"></canvas>;
 }

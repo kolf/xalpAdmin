@@ -17,6 +17,7 @@ import { merchantOptions } from "../../shared/options";
 import commonService from "../../services/common.service";
 import faciliyService from "../../services/faciliy.service";
 const { RangePicker } = DatePicker;
+const dateFormat = "YYYY-MM-DD";
 
 const layout = {
   labelCol: { span: 8 },
@@ -48,16 +49,32 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     });
   }
 
+  function makeParams(values) {
+    return Object.keys(values).reduce((result, key) => {
+      const value = values[key];
+      if (key === "date" && value) {
+        const [start, end] = value;
+        result.startPermissionDate = start.format(dateFormat);
+        result.endPermissionDate = end.format(dateFormat);
+      } else if (value !== undefined && value !== "-1") {
+        result[key] = value;
+      }
+      return result;
+    }, {});
+  }
+
   async function onFinish(values) {
     let res = null;
     if (defaultValues.id) {
-      res = await faciliyService.updateMerchant({
-        ...values,
-        id: defaultValues.id,
-      });
+      res = await faciliyService.updateMerchant(
+        makeParams({
+          ...values,
+          id: defaultValues.id,
+        })
+      );
       utils.success(`更新成功！`);
     } else {
-      res = await faciliyService.addMerchant(values);
+      res = await faciliyService.addMerchant(makeParams(values));
       utils.success(`添加成功！`);
     }
 
@@ -92,7 +109,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item label="有效入园时间段">
+        <Form.Item label="有效入园时间段" name="date">
           <RangePicker />
         </Form.Item>
         <Form.Item {...tailLayout}>

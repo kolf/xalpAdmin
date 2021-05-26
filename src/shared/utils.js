@@ -7,14 +7,15 @@ class Utils {
     const timer = setTimeout(() => {
       clearTimeout(timer);
       message.success(msg, duration);
-    }, 300);
+    }, 30);
   };
 
-  error = (msg) => message.error(msg);
-
-  warning = (msg) => message.warning(msg);
-
-  info = (msg) => message.info(msg);
+  error = (msg, duration = 1) => {
+    const timer = setTimeout(() => {
+      clearTimeout(timer);
+      message.error(msg, duration);
+    }, 30);
+  };
 
   dateTimeFormater = (datetime, formatString) => {
     return moment(datetime).format(formatString);

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Upload, message } from "antd";
+import utils from "../../shared/utils";
 
 export default function UploadImage({ onChange }) {
   const [value, setValue] = useState("");
@@ -13,11 +14,11 @@ export default function UploadImage({ onChange }) {
       setLoading(false);
       const nextValue = `api/UploadFile/GetTempFileItem?fileName=${e.file.response}`;
       setValue(nextValue);
-      onChange(nextValue);
+      onChange(e.file.response);
     } else if (e.file.status === "error") {
       const errorMessage =
         e.file.response.error.message || "上传失败，请稍候再试！";
-      message.error(errorMessage);
+      utils.error(errorMessage);
       setLoading(false);
     }
   }

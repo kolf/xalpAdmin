@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { CloseOutlined } from "@ant-design/icons";
-import "./Main.less";
+import "./AppMain.less";
 
 export default function Main({ header, children, onClose }) {
   const [height, setHeight] = useState(520);

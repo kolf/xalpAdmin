@@ -5,6 +5,7 @@ import { Form, Input, Button, message } from "antd";
 import sessionService from "../../services/session.service";
 import * as sessionActions from "../../store/actions/session.actions";
 import history from "../../shared/history";
+import utils from "../../shared/utils";
 
 import "./Login.css";
 
@@ -37,7 +38,7 @@ class Login extends React.Component {
     try {
       const res = await this.props.onLogin(values);
     } catch (error) {
-      message.error(`登录失败，请稍候再试！`);
+      utils.error(`登录失败，请稍候再试！`);
     }
   };
 

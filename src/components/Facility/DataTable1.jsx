@@ -94,7 +94,7 @@ export default function DataTable() {
         utils.success(`取消成功！`);
         loadData({ skipCount: "1" });
       } catch (error) {
-        message.error(error.error.message || `取消失败！`);
+        utils.error(error.error.message || `取消失败！`);
       }
       // mod.close()
     }
@@ -112,7 +112,7 @@ export default function DataTable() {
         utils.success(`核销成功！`);
         loadData({ skipCount: "1" });
       } catch (error) {
-        message.error(error.error.message || `核销失败！`);
+        utils.error(error.error.message || `核销失败！`);
       }
     }
   }

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Tabs } from "antd";
-import Main from "../UI/Main";
+import Main from "../Layouts/AppMain";
 import DataTable1 from "./DataTable1";
 import DataTable2 from "./DataTable2";
 import DataTable3 from "./DataTable3";

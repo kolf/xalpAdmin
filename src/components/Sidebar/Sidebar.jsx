@@ -100,7 +100,7 @@ export default function Sidebar() {
               TOP2
             </span>
           </Col>
-          <Col span={3}>湖北</Col>
+          <Col span={3}>北京</Col>
           <Col span={16}>
             <Progress
               percent={30}
@@ -118,7 +118,7 @@ export default function Sidebar() {
               TOP3
             </span>
           </Col>
-          <Col span={3}>湖北</Col>
+          <Col span={3}>天津</Col>
           <Col span={16}>
             <Progress
               percent={30}

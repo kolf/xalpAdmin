@@ -100,7 +100,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         <Form.Item label="身份证号" name="certNumber">
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="照片" name="webUrl">
+        <Form.Item label="照片" name="tempFaceFileName">
           <UploadImage />
         </Form.Item>
         <Form.Item label="有效入园时间段" name="date">
