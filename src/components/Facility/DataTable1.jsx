@@ -14,6 +14,7 @@ import {
 } from "antd";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
+import utils from "../../shared/utils";
 import facilityService from "../../services/faciliy.service";
 import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
@@ -74,6 +75,9 @@ export default function DataTable() {
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
+      if (query.skipCount) {
+        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
+      }
       return result;
     }, {});
   }
@@ -87,10 +91,10 @@ export default function DataTable() {
       try {
         const res = await facilityService.cancelOrder({ id: creds.id });
 
-        message.success(`取消成功！`);
+        utils.success(`取消成功！`);
         loadData({ skipCount: "1" });
       } catch (error) {
-        message.error(`取消失败！`);
+        message.error(error.error.message || `取消失败！`);
       }
       // mod.close()
     }
@@ -105,10 +109,10 @@ export default function DataTable() {
       try {
         const res = await facilityService.checkOrder({ id: creds.id });
 
-        message.success(`核销成功！`);
+        utils.success(`核销成功！`);
         loadData({ skipCount: "1" });
       } catch (error) {
-        message.error(`核销失败！`);
+        message.error(error.error.message || `核销失败！`);
       }
     }
   }
@@ -119,6 +123,7 @@ export default function DataTable() {
     {
       title: "订单号",
       dataIndex: "orderNO",
+      width: 160,
       render(text, creds) {
         return creds.orderDetail.orderNO || "无";
       },
@@ -131,6 +136,7 @@ export default function DataTable() {
     {
       title: "预约人电话",
       dataIndex: "phone",
+      width: 116,
     },
     {
       title: "是否代预约",
@@ -148,6 +154,7 @@ export default function DataTable() {
     {
       title: "参观人电话",
       dataIndex: "phone1",
+      width: 116,
       render(text, creds) {
         return creds.orderDetail.phone || "无";
       },
@@ -193,17 +200,20 @@ export default function DataTable() {
       dataIndex: "options",
       fixed: "right",
       width: 120,
-      render() {
+      render(text, creds) {
         return (
           <div className="text-center">
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showReviewModal}
+              onClick={showReviewModal.bind(this, creds.orderDetail)}
             >
               核销
             </Button>
-            <Button size="small" onClick={showDeleteModal}>
+            <Button
+              size="small"
+              onClick={showDeleteModal.bind(this, creds.orderDetail)}
+            >
               取消
             </Button>
           </div>
@@ -291,7 +301,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        scroll={{ x: 1600 }}
+        scroll={{ x: 1400 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

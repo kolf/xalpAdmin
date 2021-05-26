@@ -10,67 +10,67 @@ class Mod extends React.Component {
     width: 520,
   };
 
-  // state = {
-  //   disabled: true,
-  //   bounds: { left: 0, top: 0, bottom: 0, right: 0 },
-  // };
+  state = {
+    disabled: true,
+    bounds: { left: 0, top: 0, bottom: 0, right: 0 },
+  };
 
-  // draggleRef = React.createRef();
+  draggleRef = React.createRef();
 
-  // onStart = (e, uiData) => {
-  //   const { clientWidth, clientHeight } = window.document.documentElement;
-  //   const targetRect = this.draggleRef.current.getBoundingClientRect();
-  //   this.setState({
-  //     bounds: {
-  //       left: -targetRect.left + uiData.x,
-  //       right: clientWidth - (targetRect.right - uiData.x),
-  //       top: -targetRect.top + uiData.y,
-  //       bottom: clientHeight - (targetRect.bottom - uiData.y),
-  //     },
-  //   });
-  // };
+  onStart = (e, uiData) => {
+    const { clientWidth, clientHeight } = window.document.documentElement;
+    const targetRect = this.draggleRef.current.getBoundingClientRect();
+    this.setState({
+      bounds: {
+        left: -targetRect.left + uiData.x,
+        right: clientWidth - (targetRect.right - uiData.x),
+        top: -targetRect.top + uiData.y,
+        bottom: clientHeight - (targetRect.bottom - uiData.y),
+      },
+    });
+  };
 
   render() {
     const { title, children, wrapClassName, ...otherProps } = this.props;
-    // const { bounds, disabled } = this.state;
+    const { bounds, disabled } = this.state;
     return (
       <ConfigProvider locale={zhCN}>
         <Modal
           {...otherProps}
           title={title}
-          // title={
-          //   title ? (
-          //     <div
-          //       style={{
-          //         width: "100%",
-          //         cursor: "move",
-          //       }}
-          //       onMouseOver={() => {
-          //         if (disabled) {
-          //           this.setState({
-          //             disabled: false,
-          //           });
-          //         }
-          //       }}
-          //       onMouseOut={() => {
-          //         this.setState({
-          //           disabled: true,
-          //         });
-          //       }}
-          //     >
-          //       {title}
-          //     </div>
-          //   ) : null
-          // }
-          // modalRender={(modal) => (
-          //   <Draggable
-          //     disabled={disabled}
-          //     bounds={bounds}
-          //     onStart={(event, uiData) => this.onStart(event, uiData)}
-          //   >
-          //     <div ref={this.draggleRef}>{modal}</div>
-          //   </Draggable>
-          // )}
+          title={
+            title ? (
+              <div
+                style={{
+                  width: "100%",
+                  cursor: "move",
+                }}
+                onMouseOver={() => {
+                  if (disabled) {
+                    this.setState({
+                      disabled: false,
+                    });
+                  }
+                }}
+                onMouseOut={() => {
+                  this.setState({
+                    disabled: true,
+                  });
+                }}
+              >
+                {title}
+              </div>
+            ) : null
+          }
+          modalRender={(modal) => (
+            <Draggable
+              disabled={disabled}
+              bounds={bounds}
+              onStart={(event, uiData) => this.onStart(event, uiData)}
+            >
+              <div ref={this.draggleRef}>{modal}</div>
+            </Draggable>
+          )}
           wrapClassName={wrapClassName}
           mask={false}
           bodyStyle={{

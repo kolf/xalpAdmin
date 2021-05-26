@@ -15,6 +15,7 @@ import {
   message,
 } from "antd";
 import modal from "../../shared/modal";
+import utils from "../../shared/utils";
 import faciliyService from "../../services/faciliy.service";
 import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
@@ -118,7 +119,7 @@ export default function DataTable() {
       endTime: undefined,
       key: undefined,
     });
-    message.success(`删除成功！`);
+    utils.success(`删除成功！`);
     const nextDataList = dataList.filter((item) => item.key !== creds.key);
     setDataList(nextDataList);
   }

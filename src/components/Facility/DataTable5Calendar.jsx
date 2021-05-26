@@ -1,27 +1,41 @@
 import React, { useState, useEffect } from "react";
+import moment from "moment";
 import { Calendar, Space, Spin, message } from "antd";
 import modal from "../../shared/modal";
 import UpdateDataForm from "./DataTable5UpdateTabs";
 import faciliyService from "../../services/faciliy.service";
 const dateFormat = "YYYY-MM-DD";
 
+function makeDate(date) {
+  const currentDate = date.date(1);
+  console.log(
+    date,
+    currentDate.format(dateFormat),
+    "currentDate"
+  );
+  const startTime = currentDate.date(-currentDate.date(1).day() + 1);
+
+  return [
+    startTime.format(dateFormat),
+    startTime.add(6, "w").format(dateFormat),
+  ];
+}
+
 export default function DataTable5ListCalendar() {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [dataList, setDataList] = useState([]);
   let dayList = [];
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      clearTimeout(timer);
-      loadData();
-    }, 300);
+    const [StartTime, EndTime] = makeDate(moment());
+    loadData({ StartTime, EndTime });
   }, []);
 
-  async function loadData() {
+  async function loadData(params) {
     setLoading(true);
     try {
       const { items } = await faciliyService.getReservationTimeRangeList(
-        makeQuery()
+        params
       );
       setLoading(false);
       setDataList(items);
@@ -32,24 +46,10 @@ export default function DataTable5ListCalendar() {
     }
   }
 
-  function makeQuery() {
-    const [StartTime, EndTime] = [
-      dayList[0].format(dateFormat),
-      dayList[dayList.length - 1].format(dateFormat),
-    ];
-    return {
-      StartTime,
-      EndTime,
-    };
-    // const [StartTime, EndTime] = [dayList[0].mo]
-  }
-
   function handleChange(value) {
-    const timer = setTimeout(() => {
-      clearTimeout(timer);
-      loadData();
-    }, 300);
-    console.log(value, "");
+    console.log(value.format(dateFormat), "value");
+    const [StartTime, EndTime] = makeDate(value.add(1,'M'));
+    loadData({ StartTime, EndTime });
   }
 
   function showEditModal(creds) {
@@ -62,7 +62,7 @@ export default function DataTable5ListCalendar() {
       ),
       footer: null,
     });
-    function onOk(done) {
+    function onOk() {
       mod.close();
       loadData();
     }
@@ -71,12 +71,9 @@ export default function DataTable5ListCalendar() {
   function dateFullCellRender(e) {
     let current = null;
     if (dataList.length > 0) {
-      dayList = [];
       current = dataList.find(
         (item) => item.reserveDatePlain === e.format(dateFormat)
       );
-    } else {
-      dayList.push(e);
     }
 
     const date = e.date();
@@ -89,7 +86,7 @@ export default function DataTable5ListCalendar() {
         <div className="calendar-cell-notice">
           {current &&
             (current.timeRanges || []).map((time) => (
-              <div>
+              <div key={time.id}>
                 <Space size="small">
                   {time.startTimeRange}-{time.endTimeRange}
                   <span className="text-danger">{time.touristsCount}</span>
@@ -120,7 +117,7 @@ export default function DataTable5ListCalendar() {
           style={{ backgroundColor: "transparent" }}
           dateFullCellRender={dateFullCellRender}
           monthFullCellRender={monthFullCellRender}
-          onChange={handleChange}
+          onPanelChange={handleChange}
         />
       </Spin>
     </div>

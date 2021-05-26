@@ -10,10 +10,13 @@ import {
   Space,
   Select,
   Pagination,
+  Image,
   message,
 } from "antd";
 import moment from "moment";
 import modal from "../../shared/modal";
+import confirm from "../../shared/confirm";
+import utils from "../../shared/utils";
 import UpdateDataForm from "./UpdateData3Form";
 import faciliyService from "../../services/faciliy.service";
 import { reviewOptions } from "../../shared/options";
@@ -21,6 +24,7 @@ const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
+const secFormat = "YYYY-MM-DD hh:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -58,7 +62,7 @@ export default function DataTable() {
       return [];
     }
     return data.map((item, index) => {
-      return { ...item.staff,webUrl:item.webUrl, index: index + 1 };
+      return { ...item.staff, webUrl: item.webUrl, index: index + 1 };
     });
   }
 
@@ -72,26 +76,27 @@ export default function DataTable() {
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
+      if (query.skipCount) {
+        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
+      }
       return result;
     }, {});
   }
 
   function showDeleteModal(creds) {
-    const mod = modal({confirm:true,
+    const mod = confirm({
       content: `此操作将删除此员工, 是否继续?`,
       onOk,
     });
     async function onOk(done) {
       try {
         const res = await faciliyService.deleteStaff(creds);
-        message.success(`删除成功！`);
-        mod.destroy();
+        utils.success(`删除成功！`);
+
         loadData({
           skipCount: "1",
         });
-      } catch (error) {
-        mod.destroy();
-      }
+      } catch (error) {}
     }
   }
 
@@ -162,9 +167,10 @@ export default function DataTable() {
     {
       title: "照片",
       dataIndex: "webUrl",
-      render(text){
-        return text ? <img src={text}/> : '无'
-      }
+      width: 70,
+      render(text) {
+        return text ? <Image width={60} src={text} /> : "无";
+      },
     },
     {
       title: "剩余天数",
@@ -173,6 +179,9 @@ export default function DataTable() {
     {
       title: "更新时间",
       dataIndex: "creationTime",
+      render(text) {
+        return text ? moment(text).format(secFormat) : '无'
+      }
     },
     {
       title: "有效入园时间",

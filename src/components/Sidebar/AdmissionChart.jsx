@@ -46,5 +46,5 @@ export default function AdmissionChart() {
         chart.render();
       });
   }
-  return <canvas id="chart" width="352" height="260"></canvas>;
+  return <canvas id="chart" width="352" height="200"></canvas>;
 }

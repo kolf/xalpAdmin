@@ -3,6 +3,8 @@ import { Table, Button, DatePicker, Form, Input, Row, Col, Space } from "antd";
 import UpdateDataForm from "./UpdateDataForm";
 import ExportDataTable from "./ExportDataTable";
 import modal from "../../shared/modal";
+import confirm from "../../shared/confirm";
+
 import blanklistService from "../../services/blanklist.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -52,6 +54,9 @@ export default function DataTable() {
         result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
+      }
+      if (query.skipCount) {
+        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
       }
       return result;
     }, {});
@@ -103,7 +108,7 @@ export default function DataTable() {
   }
 
   function showDeleteModal(creds) {
-    const mod = modal({confirm:true, content: `确认移除此条内容`, onOk });
+    const mod = confirm({ content: `确认移除此条内容`, onOk });
     function onOk(done) {
       // mod.close()
     }

@@ -10,6 +10,8 @@ import {
   message,
 } from "antd";
 import modal from "../../shared/modal";
+import confirm from "../../shared/confirm";
+import utils from "../../shared/utils";
 import UpdateDataForm from "./DataTable5UpdateTabs";
 import faciliyService from "../../services/faciliy.service";
 
@@ -69,25 +71,28 @@ export default function DataTable() {
       } else if (value && value !== "-1") {
         result[key] = value;
       }
+      if (query.skipCount) {
+        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
+      }
       return result;
     }, {});
   }
 
   function showDeleteModal(creds) {
-    const mod = modal({confirm:true,
+    const mod = confirm({
       content: `此操作将删除这条数据, 是否继续?`,
       onOk,
     });
     async function onOk(done) {
       try {
         const res = await faciliyService.deleteReservationTimeSetting(creds);
-        message.success(`删除成功！`);
-        mod.destroy();
+        utils.success(`删除成功！`);
+        
         loadData({
           skipCount: "1",
         });
       } catch (error) {
-        mod.destroy();
+        
       }
     }
   }

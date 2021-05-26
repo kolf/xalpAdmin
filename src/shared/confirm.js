@@ -41,7 +41,13 @@ export default function confirm(config) {
             >
               取消
             </Button>
-            <Button type="primary" onClick={config.onOk}>
+            <Button
+              type="primary"
+              onClick={(e) => {
+                mod.close();
+                config.onOk();
+              }}
+            >
               确定
             </Button>
           </Space>

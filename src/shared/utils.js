@@ -3,7 +3,12 @@ import { message } from "antd";
 import moment from "moment";
 
 class Utils {
-  success = (msg) => message.success(msg);
+  success = (msg, duration = 1) => {
+    const timer = setTimeout(() => {
+      clearTimeout(timer);
+      message.success(msg, duration);
+    }, 300);
+  };
 
   error = (msg) => message.error(msg);
 
