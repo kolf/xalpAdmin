@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
+import moment from "moment";
 import { Table, Button, DatePicker, Form, Input, Row, Col, Space } from "antd";
 import UpdateDataForm from "./UpdateData1Form";
-import ExportDataTable from "./ExportDataTable";
+import ExportDataTable from "./ExportData1Table";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
+import utils from "../../shared/utils";
 
 import blanklistService from "../../services/blanklist.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
+const secFormat = "YYYY-MM-DD hh:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -41,7 +44,12 @@ export default function DataTable() {
 
   function makeData(data) {
     return data.map((item, index) => {
-      return { ...item, index: index + 1 };
+      return {
+        ...item,
+        ...item.blockAllowUser,
+        blockAllowUser: undefined,
+        index: index + 1,
+      };
     });
   }
 
@@ -65,54 +73,66 @@ export default function DataTable() {
   function showAddModal() {
     const mod = modal({
       title: "新增",
-      content: (
-        <div>
-          <Space>
-            <Button size="small" type="primary">
-              新增
-            </Button>
-            <Button size="small" type="primary">
-              批量导入
-            </Button>
-            <Button size="small" type="primary">
-              下载数据
-            </Button>
-          </Space>
-          <UpdateDataForm />
-        </div>
-      ),
-      onOk,
+      content: <UpdateDataForm onOk={onOk} />,
+      footer: null,
     });
 
-    function onOk(values) {}
+    function onOk() {
+      mod.close();
+      utils.success("添加成功！");
+      loadData({
+        skipCount: "1",
+      });
+    }
   }
 
   function showEditModal(creds) {
     const mod = modal({
       title: "编辑",
-      content: <UpdateDataForm />,
-      onOk,
+      content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
+      footer: null,
     });
 
-    function onOk(values) {}
+    function onOk() {
+      mod.close();
+      utils.success("更新成功！");
+      loadData({
+        skipCount: "1",
+      });
+    }
   }
 
   function showExportModal(creds) {
     const mod = modal({
       title: "批量导入",
-      content: <ExportDataTable />,
-      onOk,
+      width: 720,
+      content: <ExportDataTable onOk={onOk} />,
+      footer: null,
     });
 
-    function onOk(values) {
+    function onOk() {
       mod.close();
     }
   }
 
   function showDeleteModal(creds) {
-    const mod = confirm({ content: `确认移除此条内容`, onOk });
-    function onOk() {
-      mod.close();
+    const mod = confirm({
+      content: `确认删除此条内容, 是否继续?`,
+      onOk,
+    });
+    async function onOk() {
+      try {
+        const res = await blanklistService.deleteBlockAllowUser({
+          id: creds.id,
+        });
+        mod.close();
+        utils.success(`删除成功！`);
+        loadData({ skipCount: "1" });
+      } catch (error) {
+        mod.close();
+        utils.error(error.error.message || `删除失败！`);
+      }
+      // mod.close()
     }
   }
 
@@ -124,7 +144,7 @@ export default function DataTable() {
       dataIndex: "index",
     },
     {
-      title: "真是姓名",
+      title: "姓名",
       dataIndex: "name",
     },
     {
@@ -133,30 +153,38 @@ export default function DataTable() {
     },
     {
       title: "身份证",
-      dataIndex: "user",
-    },
-    {
-      title: "历史不文明行为",
-      dataIndex: "num",
+      dataIndex: "certNumber",
     },
     {
       title: "不文明行为",
-      dataIndex: "phone",
+      dataIndex: "behaviorName",
+    },
+    {
+      title: "不文明行为发生时间",
+      dataIndex: "startTime",
+    },
+    {
+      title: "距离处理到期天数",
+      dataIndex: "daysOfEndBlock",
+    },
+    {
+      title: "处罚",
+      dataIndex: "behaviorDescription",
     },
     {
       title: "操作",
       dataIndex: "options",
-      render() {
+      render(text, creds) {
         return (
           <div className="text-center">
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showEditModal}
+              onClick={showEditModal.bind(this, creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={showDeleteModal}>
+            <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
               删除
             </Button>
           </div>
@@ -177,9 +205,9 @@ export default function DataTable() {
       <Row style={{ paddingBottom: 12 }}>
         <Col flex="auto">
           <Space>
-            <span>今日预约人数:</span>
+            <span>黑名单人数:</span>
             <span className="iconfont1 text-danger">1223</span>
-            <span>今日预约人数:</span>
+            <span>当前限制人数:</span>
             <span className="iconfont1 text-danger">1223</span>
           </Space>
         </Col>
@@ -218,6 +246,7 @@ export default function DataTable() {
       </Form>
 
       <Table
+        rowKey="id"
         dataSource={makeData(dataList)}
         columns={columns}
         pagination={paginationProps}

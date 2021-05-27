@@ -133,13 +133,9 @@ export default function DataTable() {
       dataIndex: "address",
     },
     {
-      title: "门票数量/已预约数量",
+      title: "门票数量",
       dataIndex: "user",
-      render: (text) => text || "3000 / 2401",
-    },
-    {
-      title: "库存提示",
-      dataIndex: "dailyMaxTouristsQuantity",
+      render: (text) => text || "3000",
     },
     {
       title: "操作",

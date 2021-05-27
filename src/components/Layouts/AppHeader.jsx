@@ -41,7 +41,7 @@ class AppHeader extends React.Component {
             flex: 1,
           }}
         >
-          <Menu.Item key="3">入园管理系统</Menu.Item>
+          <Menu.Item key="3"><Link to="/">入园管理系统</Link></Menu.Item>
         </Menu>
         <div style={{ padding: "0 12px" }}>
           <Link to="/login">退出</Link>

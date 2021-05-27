@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from "react";
+import moment from "moment";
 import { Table, Button, DatePicker, Form, Input, Row, Col, Space } from "antd";
+import UpdateDataForm from "./UpdateData2Form";
+import ExportDataTable from "./ExportData2Table";
+import modal from "../../shared/modal";
+import confirm from "../../shared/confirm";
+import utils from "../../shared/utils";
+
 import blanklistService from "../../services/blanklist.service";
+import { behaviorTypeEnum } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
+const secFormat = "YYYY-MM-DD hh:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -24,8 +33,9 @@ export default function DataTable() {
     setQuery(nextQuery);
     setLoading(true);
     try {
-      const { items, totalCount } =
-        await blanklistService.getBlockAllowUserList(makeQuery(nextQuery));
+      const { items, totalCount } = await blanklistService.getBlockBehaviorList(
+        makeQuery(nextQuery)
+      );
       setLoading(false);
       setDataList(items);
       setTotal(totalCount);
@@ -57,6 +67,74 @@ export default function DataTable() {
     }, {});
   }
 
+  function showAddModal() {
+    const mod = modal({
+      title: "新增",
+      content: <UpdateDataForm onOk={onOk} />,
+      footer: null,
+    });
+
+    function onOk() {
+      mod.close();
+      utils.success("添加成功！");
+      loadData({
+        skipCount: "1",
+      });
+    }
+  }
+
+  function showEditModal(creds) {
+    const mod = modal({
+      title: "编辑",
+      content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
+      footer: null,
+    });
+
+    function onOk() {
+      mod.close();
+      utils.success("更新成功！");
+      loadData({
+        skipCount: "1",
+      });
+    }
+  }
+
+  function showExportModal(creds) {
+    const mod = modal({
+      title: "批量导入",
+      width: 720,
+      content: <ExportDataTable onOk={onOk}/>,
+      footer: null,
+    });
+
+    function onOk() {
+      mod.close();
+    }
+  }
+
+  function showDeleteModal(creds) {
+    const mod = confirm({
+      content: `确认删除此条内容, 是否继续?`,
+      onOk,
+    });
+    async function onOk() {
+      try {
+        const res = await blanklistService.deleteBlockBehavior({
+          id: creds.id,
+        });
+        mod.close();
+        utils.success(`删除成功！`);
+        loadData({ skipCount: "1" });
+      } catch (error) {
+        console.log(error);
+        mod.close();
+        utils.error(error.error.message || `删除失败！`);
+      }
+    }
+  }
+
+  function openFile() {}
+
   const columns = [
     {
       title: "序号",
@@ -64,19 +142,45 @@ export default function DataTable() {
     },
     {
       title: "程度",
-      dataIndex: "name",
+      dataIndex: "behaviorType",
+      render(text) {
+        return behaviorTypeEnum[text] || "无";
+      },
     },
     {
       title: "行为",
-      dataIndex: "phone",
+      dataIndex: "name",
     },
     {
       title: "惩罚措施",
-      dataIndex: "user",
+      dataIndex: "note",
     },
     {
       title: "创建时间",
-      dataIndex: "num",
+      dataIndex: "creationTime",
+      render(text) {
+        return text ? moment(text).format(secFormat) : "无";
+      },
+    },
+    {
+      title: "操作",
+      dataIndex: "options",
+      render(text, creds) {
+        return (
+          <div className="text-center">
+            <Button
+              size="small"
+              style={{ marginRight: 4 }}
+              onClick={showEditModal.bind(this, creds)}
+            >
+              编辑
+            </Button>
+            <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+              删除
+            </Button>
+          </div>
+        );
+      },
     },
   ];
 
@@ -92,10 +196,23 @@ export default function DataTable() {
       <Row style={{ paddingBottom: 12 }}>
         <Col flex="auto">
           <Space>
-            <span>今日预约人数:</span>
+            <span>黑名单人数:</span>
             <span className="iconfont1 text-danger">1223</span>
-            <span>今日预约人数:</span>
+            <span>当前限制人数:</span>
             <span className="iconfont1 text-danger">1223</span>
+          </Space>
+        </Col>
+        <Col flex="120px" style={{ textAlign: "right" }}>
+          <Space>
+            <Button size="small" type="primary" onClick={showAddModal}>
+              新增
+            </Button>
+            <Button size="small" type="primary" onClick={showExportModal}>
+              批量导入
+            </Button>
+            <Button size="small" type="primary" onClick={openFile}>
+              下载数据
+            </Button>
           </Space>
         </Col>
       </Row>
@@ -115,6 +232,7 @@ export default function DataTable() {
       </Form>
 
       <Table
+        rowKey="id"
         dataSource={makeData(dataList)}
         columns={columns}
         pagination={paginationProps}

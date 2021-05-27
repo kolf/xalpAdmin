@@ -15,7 +15,11 @@ import faciliyService from "../../services/faciliy.service";
 const { RangePicker } = DatePicker;
 const dateFormat = "YYYY-MM-DD";
 
-const plainOptions = [{value:'1',label:'启用'},{value:'2',label:'再次验证未入园'},{value:'3',label:'可预售'}];
+const plainOptions = [
+  { value: "1", label: "启用" },
+  { value: "2", label: "再次验证未入园" },
+  { value: "3", label: "可预售" },
+];
 
 const layout = {
   labelCol: { span: 8 },

@@ -37,6 +37,18 @@ const checkDeviceTypeEnum = {
   2: "手持机",
 };
 
+export const behaviorTypeEnum = {
+  1: "A类：轻微",
+  2: "B类：中度",
+  3: "C类：严重",
+  4: "D类：恶劣",
+};
+
+export const behaviorTypeOptions = Object.keys(behaviorTypeEnum).map((key) => ({
+  value: key + "",
+  label: behaviorTypeEnum[key],
+}));
+
 export const deviceActiveOptions = Object.keys(deviceActiveEnum).map((key) => ({
   value: key + "",
   label: deviceActiveEnum[key],

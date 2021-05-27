@@ -102,15 +102,15 @@ export default function DataTable() {
     },
     {
       title: "录入人姓名",
-      dataIndex: "--",
+      dataIndex: "creatorName",
     },
     {
       title: "录入人工号",
-      dataIndex: "---",
+      dataIndex: "creatorJobNumber",
     },
     {
       title: "录入人员电话",
-      dataIndex: "-",
+      dataIndex: "creatorPhone",
     },
     {
       title: "在线状态",

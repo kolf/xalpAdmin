@@ -65,7 +65,7 @@ export default function Sidebar() {
         <DataForm />
         <AdmissionChart />
       </div>
-      <div className="panel-footer">
+      <div className="panel-footer" style={{ marginTop: -24 }}>
         <a href="" style={{ marginLeft: "auto" }}>
           导出数据
         </a>
@@ -128,7 +128,7 @@ export default function Sidebar() {
           </Col>
         </Row>
       </div>
-      <div className="panel-footer">
+      <div className="panel-footer" style={{ marginTop: 0 }}>
         <Link to='/data' style={{ marginLeft: "auto" }}>
           查看更多
         </Link>
