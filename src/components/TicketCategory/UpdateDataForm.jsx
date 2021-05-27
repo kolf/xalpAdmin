@@ -15,7 +15,7 @@ import faciliyService from "../../services/faciliy.service";
 const { RangePicker } = DatePicker;
 const dateFormat = "YYYY-MM-DD";
 
-const plainOptions = [];
+const plainOptions = [{value:'1',label:'启用'},{value:'2',label:'再次验证未入园'},{value:'3',label:'可预售'}];
 
 const layout = {
   labelCol: { span: 8 },
@@ -78,24 +78,25 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         <Form.Item label="门票名称" name="jobNumber">
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="票面价格" name="name">
+        <Form.Item label="客户类型" name="name">
           <Radio.Group defaultValue={1}>
-            <Radio value={1}>A</Radio>
-            <Radio value={2}>B</Radio>
+            <Radio value={1}>个人</Radio>
+            <Radio value={2}>团体</Radio>
           </Radio.Group>
         </Form.Item>
         <Form.Item label="票面价格" name="name">
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="票面价格" name="name">
-          <Checkbox.Group options={plainOptions} />
-        </Form.Item>
+
         <Form.Item label="可用次数" name="organizationUnit">
           <Input placeholder="请输入" />
         </Form.Item>
 
         <Form.Item label="包含人数" name="jobNumber">
           <Input placeholder="请输入" />
+        </Form.Item>
+        <Form.Item label="票面价格" name="name">
+          <Checkbox.Group options={plainOptions} />
         </Form.Item>
         <Form.Item label="可预售天数" name="name">
           <Input placeholder="请输入" />

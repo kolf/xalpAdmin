@@ -176,7 +176,7 @@ export default function DataTable() {
         <Col flex="120px" style={{ textAlign: "right" }}>
           <Space>
             <Button size="small" type="primary" onClick={showAddModal}>
-              新增1
+              新增
             </Button>
             <Button size="small" type="primary" onClick={openFile}>
               下载数据

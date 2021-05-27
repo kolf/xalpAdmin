@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, DatePicker, Form, Input, Row, Col, Space } from "antd";
-import UpdateDataForm from "./UpdateDataForm";
+import UpdateDataForm from "./UpdateData1Form";
 import ExportDataTable from "./ExportDataTable";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
@@ -155,7 +155,7 @@ export default function DataTable() {
               编辑
             </Button>
             <Button size="small" onClick={showDeleteModal}>
-              移除
+              删除
             </Button>
           </div>
         );
