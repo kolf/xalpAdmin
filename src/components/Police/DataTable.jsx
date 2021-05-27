@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, DatePicker, Form, Input, Select } from "antd";
-import blanklistService from "../../services/blanklist.service";
+import policeService from "../../services/police.service";
 import modal from "../../shared/modal";
 import LogDataTable from "./LogDataTable";
 import UpdateDataForm from "./UpdateDataForm";
@@ -33,8 +33,9 @@ export default function DataTable() {
     setQuery(nextQuery);
     setLoading(true);
     try {
-      const { items, totalCount } =
-        await blanklistService.getBlockAllowUserList(makeQuery(nextQuery));
+      const { items, totalCount } = await policeService.getDeviceList(
+        makeQuery(nextQuery)
+      );
       setLoading(false);
       setDataList(items);
       setTotal(totalCount);
@@ -45,7 +46,7 @@ export default function DataTable() {
 
   function makeData(data) {
     return data.map((item, index) => {
-      return { ...item, index: index + 1 };
+      return { ...item.device, index: index + 1 };
     });
   }
 
@@ -62,20 +63,23 @@ export default function DataTable() {
     }, {});
   }
 
-  function showEditModal() {
+  function showEditModal(creds) {
     const mod = modal({
       title: "编辑",
-      content: <UpdateDataForm></UpdateDataForm>,
+      content: (
+        <UpdateDataForm onOk={onOk} defaultValues={creds}></UpdateDataForm>
+      ),
       onOk,
+      footer: null,
     });
 
     function onOk() {}
   }
 
-  function showLogModal() {
+  function showLogModal(creds) {
     const mod = modal({
       title: "操作日志",
-      content: <LogDataTable />,
+      content: <LogDataTable id={creds.id}/>,
       footer: null,
       onOk,
     });
@@ -86,31 +90,34 @@ export default function DataTable() {
   const columns = [
     {
       title: "设备IP",
-      dataIndex: "name",
+      dataIndex: "ipAddress",
     },
     {
       title: "设备名称",
-      dataIndex: "age",
+      dataIndex: "name",
     },
     {
       title: "设备类型",
-      dataIndex: "address",
+      dataIndex: "checkDeviceType",
     },
     {
       title: "录入人姓名",
-      dataIndex: "user",
+      dataIndex: "--",
     },
     {
       title: "录入人工号",
-      dataIndex: "num",
+      dataIndex: "---",
     },
     {
       title: "录入人员电话",
-      dataIndex: "phone",
+      dataIndex: "-",
     },
     {
       title: "在线状态",
-      dataIndex: "online",
+      dataIndex: "isOnline",
+      render(text) {
+        return text ? "在线" : "离线";
+      },
     },
     {
       title: "操作",
@@ -150,14 +157,17 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={loadData}
       >
-        <Form.Item name="aa" style={{ marginBottom: 6,width:100 }}>
+        <Form.Item
+          name="CheckDeviceType"
+          style={{ marginBottom: 6, width: 100 }}
+        >
           <Select size="small" placeholder="选择设备" allowClear>
             {deviceOptions.map((o) => (
               <Option key={o.value}>{o.label}</Option>
             ))}
           </Select>
         </Form.Item>
-        <Form.Item name="a2" style={{ marginBottom: 6,width:100 }}>
+        <Form.Item name="isActive" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="设备状态" allowClear>
             {onlineOptions.map((o) => (
               <Option key={o.value}>{o.label}</Option>
@@ -172,6 +182,7 @@ export default function DataTable() {
       </Form>
 
       <Table
+        rowKey="id"
         dataSource={makeData(dataList)}
         columns={columns}
         pagination={paginationProps}

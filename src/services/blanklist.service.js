@@ -55,7 +55,7 @@ class BlacklistService {
       const res = await api.get(
         `api/BlockBehavior/List?${queryString.stringify(creds)}`
       );
-      return res.data.items;
+      return res.data;
     } catch (error) {
       return Promise.reject(error);
     }

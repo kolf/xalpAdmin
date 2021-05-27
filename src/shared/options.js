@@ -15,6 +15,11 @@ const onlineEnum = {
   2: "离线",
 };
 
+const deviceActiveEnum = {
+  1: "启用",
+  2: "停用",
+};
+
 const reviewEnum = {
   1: "有效期内",
   2: "已过期",
@@ -26,6 +31,23 @@ const merchantEnum = {
   3: "公共",
   4: "其它",
 };
+
+const checkDeviceTypeEnum = {
+  1: "闸机",
+  2: "手持机",
+};
+
+export const deviceActiveOptions = Object.keys(deviceActiveEnum).map((key) => ({
+  value: key + "",
+  label: deviceActiveEnum[key],
+}));
+
+export const checkDeviceTypeOptions = Object.keys(checkDeviceTypeEnum).map(
+  (key) => ({
+    value: key + "",
+    label: checkDeviceTypeEnum[key],
+  })
+);
 
 export const areaOptions = Object.keys(areaEnum).map((key) => ({
   value: key + "",

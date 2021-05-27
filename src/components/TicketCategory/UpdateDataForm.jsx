@@ -56,9 +56,6 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       (result, key) => {
         const value = values[key];
         if (key === "date" && value) {
-          const [start, end] = value;
-          result.startPermissionDate = start.format(dateFormat);
-          result.endPermissionDate = end.format(dateFormat);
         } else if (value !== undefined && value !== "-1") {
           result[key] = value;
         }
@@ -91,7 +88,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           <Input placeholder="请输入" />
         </Form.Item>
         <Form.Item label="票面价格" name="name">
-          <CheckboxGroup options={plainOptions} />
+          <Checkbox.Group options={plainOptions} />
         </Form.Item>
         <Form.Item label="可用次数" name="organizationUnit">
           <Input placeholder="请输入" />

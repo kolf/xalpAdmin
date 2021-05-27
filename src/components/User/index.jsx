@@ -20,7 +20,7 @@ export default function Home() {
       }}
       header={
         <Tabs activeKey={tabKey} onChange={setTabKey}>
-          <TabPane tab="权限管理" key="1" />
+          <TabPane tab="用户管理" key="1" />
           <TabPane tab="角色管理" key="2" />
         </Tabs>
       }

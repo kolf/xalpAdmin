@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, DatePicker, Form, Input, Row, Col, Space } from "antd";
-import UpdateDataForm from "./UpdateDataForm";
+import UpdateDataForm from "./UpdateData1Form";
 import modal from "../../shared/modal";
-import blanklistService from "../../services/blanklist.service";
+import userService from "../../services/user.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
@@ -26,8 +26,9 @@ export default function DataTable() {
     setQuery(nextQuery);
     setLoading(true);
     try {
-      const { items, totalCount } =
-        await blanklistService.getBlockAllowUserList(makeQuery(nextQuery));
+      const { items, totalCount } = await userService.getUserList(
+        makeQuery(nextQuery)
+      );
       setLoading(false);
       setDataList(items);
       setTotal(totalCount);
@@ -62,11 +63,14 @@ export default function DataTable() {
   function showEditModal(creds) {
     const mod = modal({
       title: "编辑",
-      content: <UpdateDataForm />,
+      content: (
+        <UpdateDataForm onOk={onOk} defaultValues={creds}></UpdateDataForm>
+      ),
       onOk,
+      footer: null,
     });
 
-    function onOk(values) {}
+    function onOk() {}
   }
 
   function openFile() {}
@@ -78,7 +82,7 @@ export default function DataTable() {
     },
     {
       title: "姓名",
-      dataIndex: "num",
+      dataIndex: "userName",
     },
     {
       title: "角色名称",
@@ -86,7 +90,7 @@ export default function DataTable() {
     },
     {
       title: "权限详情",
-      dataIndex: "online",
+      dataIndex: "roleNames",
     },
     {
       title: "操作",
@@ -143,6 +147,7 @@ export default function DataTable() {
       </Form>
 
       <Table
+        rowKey="id"
         dataSource={makeData(dataList)}
         columns={columns}
         pagination={paginationProps}

@@ -2,64 +2,84 @@ import queryString from "query-string";
 import api from "../core/http";
 
 class UserService {
-  getBlockBehaviorList = async (creds) => {
+  getAllRole = async (creds) => {
     try {
       const res = await api.get(
-        `api/BlockBehavior/List?${queryString.stringify(creds)}`
-      );
-      return res.data.items;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  getBlockAllowUserList = async (creds) => {
-    try {
-      const res = await api.get(
-        `api/BlockAllowUser/List?${queryString.stringify(creds)}`
+        `api/identity/roles/all?${queryString.stringify(creds)}`
       );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
     }
   };
-  deleteBlockBehavior = async (creds) => {
+  getRoleList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/identity/roles?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  updateRole = async (creds) => {
+    try {
+      const res = await api.put(`api/Role/${creds.id}`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  addRole = async (creds) => {
+    try {
+      const res = await api.post(`api/Role`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  deleteRole = async (creds) => {
+    try {
+      const res = await api.delete(`api/Role?${queryString.stringify(creds)}`);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  getUserList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/identity/users?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  updateUser = async (creds) => {
+    try {
+      const res = await api.put(`api/identity/users​/${creds.id}`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  addUser = async (creds) => {
+    try {
+      const res = await api.post(`api/identity/users​`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  deleteUser = async (creds) => {
     try {
       const res = await api.delete(
-        `api/BlockBehavior?${queryString.stringify(creds)}`
-      );
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  updateBlockBehavior = async (creds) => {
-    try {
-      const res = await api.post(`api/BlockBehavior/${creds.id}`, creds);
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  addBlockBehavior = async (creds) => {
-    try {
-      const res = await api.post(`api/BlockBehavior`, creds);
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  exportBlockBehavior = async (creds) => {
-    try {
-      const res = await api.post(`api/BlockBehavior/Import`, creds);
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  getBlockBehaviorFile = async (creds) => {
-    try {
-      const res = await api.get(
-        `api/UploadFile/GetSampleFile/${queryString.stringify(creds)}`
+        `api/identity/users​?${queryString.stringify(creds)}`
       );
       return res.data;
     } catch (error) {

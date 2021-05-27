@@ -2,63 +2,49 @@ import queryString from "query-string";
 import api from "../core/http";
 
 class PoliceService {
-  getBlockBehaviorList = async (creds) => {
+  getDeviceLogList = async (creds) => {
     try {
       const res = await api.get(
-        `api/BlockBehavior/List?${queryString.stringify(creds)}`
-      );
-      return res.data.items;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  getBlockAllowUserList = async (creds) => {
-    try {
-      const res = await api.get(
-        `api/BlockAllowUser/List?${queryString.stringify(creds)}`
+        `api/DeviceLog/InteractionList?${queryString.stringify(creds)}`
       );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
     }
   };
-  deleteBlockBehavior = async (creds) => {
+  getDeviceList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Device/List?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  updateDevice = async (creds) => {
+    try {
+      const res = await api.put(`api/Device/${creds.id}`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  addDevice = async (creds) => {
+    try {
+      const res = await api.post(`api/Device`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  deleteDevice = async (creds) => {
     try {
       const res = await api.delete(
-        `api/BlockBehavior?${queryString.stringify(creds)}`
+        `api/Device?${queryString.stringify(creds)}`
       );
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  updateBlockBehavior = async (id) => {
-    try {
-      const res = await api.put(`api/BlockBehavior/${id}`);
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  addBlockBehavior = async (id) => {
-    try {
-      const res = await api.put(`api/BlockBehavior/${id}`);
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  exportBlockBehavior = async (id) => {
-    try {
-      const res = await api.put(`api/BlockBehavior/${id}`);
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  getBlockBehaviorFile = async (id) => {
-    try {
-      const res = await api.put(`api/BlockBehavior/${id}`);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
