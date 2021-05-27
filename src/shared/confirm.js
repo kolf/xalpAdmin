@@ -44,7 +44,6 @@ export default function confirm(config) {
             <Button
               type="primary"
               onClick={(e) => {
-                mod.close();
                 config.onOk();
               }}
             >

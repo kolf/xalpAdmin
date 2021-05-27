@@ -83,16 +83,17 @@ export default function DataTable() {
       content: `此操作将删除这条数据, 是否继续?`,
       onOk,
     });
-    async function onOk(done) {
+    async function onOk() {
       try {
         const res = await faciliyService.deleteReservationTimeSetting(creds);
+        mod.close()
         utils.success(`删除成功！`);
         
         loadData({
           skipCount: "1",
         });
       } catch (error) {
-        
+        mod.close()
       }
     }
   }

@@ -83,17 +83,18 @@ export default function DataTable() {
   }
 
   function showDeleteModal(creds) {
-    confirm({
+    const mod = confirm({
       content: `此操作将取消该票, 是否继续?`,
       onOk,
     });
     async function onOk() {
       try {
         const res = await facilityService.cancelOrder({ id: creds.id });
-
+        mod.close();
         utils.success(`取消成功！`);
         loadData({ skipCount: "1" });
       } catch (error) {
+        mod.close();
         utils.error(error.error.message || `取消失败！`);
       }
       // mod.close()
@@ -101,23 +102,30 @@ export default function DataTable() {
   }
 
   function showReviewModal(creds) {
-    confirm({
+    const mod = confirm({
       content: `此操作将核销该票, 是否继续?`,
       onOk,
     });
     async function onOk() {
       try {
         const res = await facilityService.checkOrder({ id: creds.id });
-
+        mod.close();
         utils.success(`核销成功！`);
         loadData({ skipCount: "1" });
       } catch (error) {
+        mod.close();
         utils.error(error.error.message || `核销失败！`);
       }
     }
   }
 
   function openFile() {}
+
+  function getRowClassName(creds, index){
+    if(creds.status !== 1){
+      return 'ant-table-row-disabled'
+    }
+  }
 
   const columns = [
     {
@@ -204,6 +212,7 @@ export default function DataTable() {
         return (
           <div className="text-center">
             <Button
+              disabled={creds.status !== 1}
               size="small"
               style={{ marginRight: 4 }}
               onClick={showReviewModal.bind(this, creds.orderDetail)}
@@ -211,6 +220,7 @@ export default function DataTable() {
               核销
             </Button>
             <Button
+              disabled={creds.status !== 1}
               size="small"
               onClick={showDeleteModal.bind(this, creds.orderDetail)}
             >
@@ -296,6 +306,7 @@ export default function DataTable() {
       <Table
         dataSource={makeData(dataList)}
         columns={columns}
+        rowClassName={getRowClassName}
         pagination={false}
         size="small"
         bordered

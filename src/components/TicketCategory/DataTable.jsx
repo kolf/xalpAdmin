@@ -71,15 +71,18 @@ export default function DataTable() {
       content: `此操作将删除此票种, 是否继续?`,
       onOk,
     });
-    async function onOk(done) {
+    async function onOk() {
       try {
         const res = await faciliyService.deleteStaff(creds);
+        mod.close();
         utils.success(`删除成功！`);
 
         loadData({
           skipCount: "1",
         });
-      } catch (error) {}
+      } catch (error) {
+        mod.close();
+      }
     }
   }
 

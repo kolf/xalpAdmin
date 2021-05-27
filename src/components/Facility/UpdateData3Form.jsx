@@ -29,29 +29,25 @@ const tailLayout = {
 };
 
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
-  const [merchantOptions, setMerchantOptions] = useState([]);
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  async function loadData() {
-    try {
-      const { items } = await commonService.getOptions({ id: 40 });
-      setMerchantOptions(items);
-    } catch (error) {}
-  }
-
   async function onFinish(values) {
     let res = null;
     if (defaultValues.id) {
-      res = await faciliyService.updateStaff({
-        ...makeParams(values),
-        id: defaultValues.id,
-      });
-      utils.success(`更新成功！`);
+      try {
+        res = await faciliyService.updateStaff({
+          ...makeParams(values),
+          id: defaultValues.id,
+        });
+        utils.success(`更新成功！`);
+      } catch (error) {
+        utils.error(error.error.message || "请求失败！");
+      }
     } else {
-      res = await faciliyService.addStaff(makeParams(values));
-      utils.success(`添加成功！`);
+      try {
+        res = await faciliyService.addStaff(makeParams(values));
+        utils.success(`添加成功！`);
+      } catch (error) {
+        utils.error(error.error.message || "请求失败！");
+      }
     }
 
     onOk && onOk(res);

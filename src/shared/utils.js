@@ -2,17 +2,18 @@ import { message } from "antd";
 
 import moment from "moment";
 
+let _timer = null;
 class Utils {
   success = (msg, duration = 1) => {
-    const timer = setTimeout(() => {
-      clearTimeout(timer);
+    clearTimeout(_timer);
+    _timer = setTimeout(() => {
       message.success(msg, duration);
     }, 30);
   };
 
   error = (msg, duration = 1) => {
-    const timer = setTimeout(() => {
-      clearTimeout(timer);
+    clearTimeout(_timer);
+    _timer = setTimeout(() => {
       message.error(msg, duration);
     }, 30);
   };

@@ -91,12 +91,15 @@ export default function DataTable() {
     async function onOk(done) {
       try {
         const res = await faciliyService.deleteStaff(creds);
+        mod.close();
         utils.success(`删除成功！`);
 
         loadData({
           skipCount: "1",
         });
-      } catch (error) {}
+      } catch (error) {
+        mod.close();
+      }
     }
   }
 
@@ -180,8 +183,8 @@ export default function DataTable() {
       title: "更新时间",
       dataIndex: "creationTime",
       render(text) {
-        return text ? moment(text).format(secFormat) : '无'
-      }
+        return text ? moment(text).format(secFormat) : "无";
+      },
     },
     {
       title: "有效入园时间",

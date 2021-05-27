@@ -104,13 +104,15 @@ export default function DataTable() {
       onOk,
     });
 
-    function onOk(values) {}
+    function onOk(values) {
+      mod.close();
+    }
   }
 
   function showDeleteModal(creds) {
     const mod = confirm({ content: `确认移除此条内容`, onOk });
-    function onOk(done) {
-      // mod.close()
+    function onOk() {
+      mod.close();
     }
   }
 

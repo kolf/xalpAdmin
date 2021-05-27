@@ -81,10 +81,10 @@ export default function DataTable() {
   function showDetailsModal(creds) {
     const mod = modal({
       title: "团体赛详情",
-      width:640,
+      width: 640,
       content: <DetailsDataTable></DetailsDataTable>,
-      footer:null,
-      onOk
+      footer: null,
+      onOk,
     });
 
     function onOk() {}
@@ -92,15 +92,15 @@ export default function DataTable() {
 
   function showDeleteModal(creds) {
     const mod = confirm({ content: `此操作将取消该票, 是否继续?`, onOk });
-    function onOk(done) {
-      // mod.close()
+    function onOk() {
+      mod.close()
     }
   }
 
   function showReviewModal(creds) {
     const mod = confirm({ content: `此操作将核销该票, 是否继续?`, onOk });
-    function onOk(done) {
-      // mod.close()
+    function onOk() {
+      mod.close()
     }
   }
 

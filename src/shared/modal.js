@@ -97,14 +97,6 @@ function modal(config) {
     visible: true,
   };
 
-  if (config.async) {
-    currentConfig.onOk = function () {
-      return new Promise((resolve) => {
-        resolve(config.onOk);
-      });
-    };
-  }
-
   function close(...args) {
     currentConfig = {
       ...currentConfig,
