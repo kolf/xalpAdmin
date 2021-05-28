@@ -89,8 +89,8 @@ export default function DataTable({ id }) {
   };
 
   return (
-    <div>
-      <div style={{ paddingBottom: 12 }}>
+    <>
+      <div style={{ paddingBottom: 12, marginTop: -12 }}>
         <Space>
           <Button size="small" type="primary" onClick={openTemplateFile}>
             模板下载
@@ -110,6 +110,6 @@ export default function DataTable({ id }) {
         bordered
         loading={loading}
       />
-    </div>
+    </>
   );
 }

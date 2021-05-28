@@ -15,14 +15,22 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
   async function onFinish(values) {
     let res = null;
     if (defaultValues.id) {
-      res = await userService.updateUser({
-        ...makeParams(values),
-        id: defaultValues.id,
-      });
-      utils.success(`更新成功！`);
+      try {
+        res = await userService.updateUser({
+          ...makeParams(values),
+          id: defaultValues.id,
+        });
+        utils.success(`更新成功！`);
+      } catch (error) {
+        utils.error((error.error || {}).message || "请求失败！");
+      }
     } else {
-      res = await userService.addUser(makeParams(values));
-      utils.success(`添加成功！`);
+      try {
+        res = await userService.addUser(makeParams(values));
+        utils.success(`添加成功！`);
+      } catch (error) {
+        utils.error((error.error || {}).message || "请求失败！");
+      }
     }
 
     onOk && onOk(res);
@@ -56,7 +64,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         initialValues={makeDefaultValues(defaultValues)}
       >
         <Form.Item label="选择角色">
-          <Select placeholder='请选择'>
+          <Select placeholder="请选择">
             <Select.Option value="demo">Demo</Select.Option>
           </Select>
         </Form.Item>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, DatePicker, Form, Input, Row, Col, Space } from "antd";
+import { Table, Button, DatePicker, Form, Input, Row, Col, Space,Pagination } from "antd";
 import modal from "../../shared/modal";
 import blanklistService from "../../services/blanklist.service";
 const { RangePicker } = DatePicker;
@@ -14,6 +14,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
+    Keyword: "",
   });
 
   useEffect(() => {
@@ -36,6 +37,9 @@ export default function DataTable() {
   }
 
   function makeData(data) {
+    if (!data) {
+      return [];
+    }
     return data.map((item, index) => {
       return { ...item, index: index + 1 };
     });
@@ -84,10 +88,24 @@ export default function DataTable() {
   ];
 
   const paginationProps = {
+    showQuickJumper: true,
+    showSizeChanger: true,
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
     total,
     position: ["", "bottomCenter"],
+    size: "small",
+    onChange(pageNum, pageSize) {
+      let nextPageNum = pageNum;
+      if (pageSize != query.maxResultCount * 1) {
+        nextPageNum = 1;
+      }
+
+      loadData({
+        skipCount: nextPageNum + "",
+        maxResultCount: pageSize + "",
+      });
+    },
   };
 
   return (
@@ -115,18 +133,26 @@ export default function DataTable() {
           </Button>
         </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
-          <Search size="small" placeholder="模糊搜索" />
+          <Search
+            size="small"
+            placeholder="模糊搜索"
+            onSearch={(value) => loadData({ Keyword: value })}
+          />
         </Form.Item>
       </Form>
 
       <Table
+        rowKey="id"
         dataSource={makeData(dataList)}
         columns={columns}
-        pagination={paginationProps}
+        pagination={false}
         size="small"
         bordered
         loading={loading}
       />
+      <div className="page-container">
+        <Pagination {...paginationProps} />
+      </div>
     </div>
   );
 }

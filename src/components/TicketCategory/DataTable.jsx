@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Form, Input, Row, Col, Space, Pagination } from "antd";
+import UpdateDataForm from "./UpdateDataForm";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
-import UpdateDataForm from "./UpdateDataForm";
 import ticketCategoryService from "../../services/ticket-category.service";
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
@@ -45,7 +45,7 @@ export default function DataTable() {
       return [];
     }
     return data.map((item, index) => {
-      return { ...item.staff, webUrl: item.webUrl, index: index + 1 };
+      return { ...item.product,index: index + 1 };
     });
   }
 
@@ -62,7 +62,7 @@ export default function DataTable() {
         return result;
       },
       {
-        ProductType: 1,
+        ProductType: 0,
       }
     );
   }
@@ -90,12 +90,10 @@ export default function DataTable() {
   function showEditModal(creds) {
     const mod = modal({
       title: "编辑",
-      content: (
-        <UpdateDataForm defaultValues={creds} onOk={onOk}></UpdateDataForm>
-      ),
+      content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
       footer: null,
     });
-    function onOk(done) {
+    function onOk() {
       mod.close();
       loadData({
         skipCount: "1",
@@ -106,10 +104,10 @@ export default function DataTable() {
   function showAddModal() {
     const mod = modal({
       title: "新增",
-      content: <UpdateDataForm onOk={onOk}></UpdateDataForm>,
+      content: <UpdateDataForm onOk={onOk}/>,
       footer: null,
     });
-    function onOk(done) {
+    function onOk() {
       mod.close();
       loadData({
         skipCount: "1",
@@ -122,11 +120,14 @@ export default function DataTable() {
   const columns = [
     {
       title: "名称",
-      dataIndex: "jobNumber",
+      dataIndex: "name",
     },
     {
       title: "是否启用",
-      dataIndex: "name",
+      dataIndex: "isActive",
+      render(text, creds){
+        return text ? '是启用' : '未启用'
+      }
     },
     {
       title: "操作",
@@ -205,13 +206,13 @@ export default function DataTable() {
       </Form>
 
       <Table
+        rowKey="creatorId"
         dataSource={makeData(dataList)}
         columns={columns}
         pagination={false}
         size="small"
         bordered
         loading={loading}
-        rowKey="creatorId"
         // scroll={{ x: 1200 }}
       />
       <div className="page-container">

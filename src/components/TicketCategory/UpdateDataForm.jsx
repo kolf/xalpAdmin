@@ -89,13 +89,46 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   }
 
   function makeDefaultValues() {
-    const { id, name } = defaultValues;
+    const {
+      id,
+      name,
+      clientType,
+      priceSale,
+      enterTimes,
+      unitUserCount,
+      isActive,
+      isCanBeRechecked,
+      isCanPresale,
+      presaleDays,
+      validDays,
+      note,
+    } = defaultValues;
 
     if (!id) {
       return {};
     }
+    let options = [];
+
+    if (isActive) {
+      options.push("1");
+    }
+    if (isCanBeRechecked) {
+      options.push("2");
+    }
+    if (isCanPresale) {
+      options.push("3");
+    }
+
     return {
       name,
+      clientType,
+      priceSale,
+      enterTimes,
+      unitUserCount,
+      options,
+      presaleDays,
+      validDays,
+      note,
     };
   }
 
@@ -111,7 +144,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           <Input placeholder="请输入" />
         </Form.Item>
         <Form.Item label="客户类型" name="clientType">
-          <Radio.Group defaultValue={1}>
+          <Radio.Group>
             <Radio value={1}>个人</Radio>
             <Radio value={2}>团体</Radio>
           </Radio.Group>

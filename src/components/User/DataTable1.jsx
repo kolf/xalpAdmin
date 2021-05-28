@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, DatePicker, Form, Input, Row, Col, Space } from "antd";
+import moment from "moment";
+import { Table, Button, DatePicker, Form, Input, Row, Col, Space,Pagination } from "antd";
 import UpdateDataForm from "./UpdateData1Form";
 import modal from "../../shared/modal";
+import confirm from "../../shared/confirm";
+import utils from "../../shared/utils";
 import userService from "../../services/user.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
+const secFormat = "YYYY-MM-DD hh:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -15,6 +19,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
+    Keyword: "",
   });
 
   useEffect(() => {
@@ -38,6 +43,9 @@ export default function DataTable() {
   }
 
   function makeData(data) {
+    if (!data) {
+      return [];
+    }
     return data.map((item, index) => {
       return { ...item, index: index + 1 };
     });
@@ -63,22 +71,23 @@ export default function DataTable() {
   function showEditModal(creds) {
     const mod = modal({
       title: "编辑",
-      content: (
-        <UpdateDataForm onOk={onOk} defaultValues={creds}></UpdateDataForm>
-      ),
-      onOk,
+      content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
       footer: null,
     });
 
-    function onOk() {}
+    function onOk() {
+      mod.close();
+      loadData({
+        skipCount: "1",
+      });
+    }
   }
-
   function openFile() {}
 
   const columns = [
     {
       title: "工号",
-      dataIndex: "user",
+      dataIndex: "jobNumber",
     },
     {
       title: "姓名",
@@ -86,10 +95,6 @@ export default function DataTable() {
     },
     {
       title: "角色名称",
-      dataIndex: "phone",
-    },
-    {
-      title: "权限详情",
       dataIndex: "roleNames",
     },
     {
@@ -99,7 +104,7 @@ export default function DataTable() {
         return (
           <div className="text-center">
             <Button size="small" onClick={showEditModal.bind(this, creds)}>
-              编辑
+              编辑角色
             </Button>
           </div>
         );
@@ -108,10 +113,24 @@ export default function DataTable() {
   ];
 
   const paginationProps = {
+    showQuickJumper: true,
+    showSizeChanger: true,
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
     total,
     position: ["", "bottomCenter"],
+    size: "small",
+    onChange(pageNum, pageSize) {
+      let nextPageNum = pageNum;
+      if (pageSize != query.maxResultCount * 1) {
+        nextPageNum = 1;
+      }
+
+      loadData({
+        skipCount: nextPageNum + "",
+        maxResultCount: pageSize + "",
+      });
+    },
   };
 
   return (
@@ -142,7 +161,11 @@ export default function DataTable() {
           </Button>
         </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
-          <Search size="small" placeholder="模糊搜索" />
+          <Search
+            size="small"
+            placeholder="模糊搜索"
+            onSearch={(value) => loadData({ Keyword: value })}
+          />
         </Form.Item>
       </Form>
 
@@ -150,11 +173,14 @@ export default function DataTable() {
         rowKey="id"
         dataSource={makeData(dataList)}
         columns={columns}
-        pagination={paginationProps}
+        pagination={false}
         size="small"
         bordered
         loading={loading}
       />
+      <div className="page-container">
+        <Pagination {...paginationProps} />
+      </div>
     </div>
   );
 }

@@ -121,9 +121,9 @@ export default function DataTable() {
 
   function openFile() {}
 
-  function getRowClassName(creds, index){
-    if(creds.status !== 1){
-      return 'ant-table-row-disabled'
+  function getRowClassName(creds, index) {
+    if (creds.status !== 1) {
+      return "ant-table-row-disabled";
     }
   }
 
@@ -215,14 +215,18 @@ export default function DataTable() {
               disabled={creds.status !== 1}
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showReviewModal.bind(this, creds.orderDetail)}
+              onClick={(e) => {
+                showReviewModal(creds.orderDetail);
+              }}
             >
               核销
             </Button>
             <Button
               disabled={creds.status !== 1}
               size="small"
-              onClick={showDeleteModal.bind(this, creds.orderDetail)}
+              onClick={e => {
+                showDeleteModal(creds.orderDetail)
+              }}
             >
               取消
             </Button>
