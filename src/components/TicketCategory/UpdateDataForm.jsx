@@ -11,7 +11,7 @@ import {
   message,
 } from "antd";
 import utils from "../../shared/utils";
-import faciliyService from "../../services/faciliy.service";
+import ticketCategoryService from "../../services/ticket-category.service";
 const { RangePicker } = DatePicker;
 const dateFormat = "YYYY-MM-DD";
 
@@ -42,14 +42,22 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   async function onFinish(values) {
     let res = null;
     if (defaultValues.id) {
-      res = await faciliyService.updateStaff({
-        ...makeParams(values),
-        id: defaultValues.id,
-      });
-      utils.success(`更新成功！`);
+      try {
+        res = await ticketCategoryService.updateProduct({
+          ...makeParams(values),
+          id: defaultValues.id,
+        });
+        utils.success(`更新成功！`);
+      } catch (error) {
+        utils.error((error.error || {}).message || "请求失败！");
+      }
     } else {
-      res = await faciliyService.addStaff(makeParams(values));
-      utils.success(`添加成功！`);
+      try {
+        res = await ticketCategoryService.addProduct(makeParams(values));
+        utils.success(`添加成功！`);
+      } catch (error) {
+        utils.error((error.error || {}).message || "请求失败！");
+      }
     }
 
     onOk && onOk(res);
@@ -59,7 +67,16 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     return Object.keys(values).reduce(
       (result, key) => {
         const value = values[key];
-        if (key === "date" && value) {
+        if (key === "options") {
+          if (!value) {
+            result.isActive = false;
+            result.isCanBeRechecked = false;
+            result.isCanPresale = false;
+          } else {
+            result.isActive = value.includes("1");
+            result.isCanBeRechecked = value.includes("2");
+            result.isCanPresale = value.includes("3");
+          }
         } else if (value !== undefined && value !== "-1") {
           result[key] = value;
         }
@@ -71,44 +88,55 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     );
   }
 
+  function makeDefaultValues() {
+    const { id, name } = defaultValues;
+
+    if (!id) {
+      return {};
+    }
+    return {
+      name,
+    };
+  }
+
   return (
     <>
       <Form
         {...layout}
         size="small"
         onFinish={onFinish}
-        initialValues={defaultValues}
+        initialValues={makeDefaultValues()}
       >
-        <Form.Item label="门票名称" name="jobNumber">
+        <Form.Item label="门票名称" name="name">
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="客户类型" name="name">
+        <Form.Item label="客户类型" name="clientType">
           <Radio.Group defaultValue={1}>
             <Radio value={1}>个人</Radio>
             <Radio value={2}>团体</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item label="票面价格" name="name">
-          <Input placeholder="请输入" />
+        <Form.Item label="票面价格" name="priceSale">
+          <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
         </Form.Item>
 
-        <Form.Item label="可用次数" name="organizationUnit">
-          <Input placeholder="请输入" />
+        <Form.Item label="可用次数" name="enterTimes">
+          <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
         </Form.Item>
 
-        <Form.Item label="包含人数" name="jobNumber">
-          <Input placeholder="请输入" />
+        <Form.Item label="包含人数" name="unitUserCount">
+          <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
         </Form.Item>
-        <Form.Item label="票面价格" name="name">
+        <Form.Item label="选项" name="options">
           <Checkbox.Group options={plainOptions} />
         </Form.Item>
-        <Form.Item label="可预售天数" name="name">
-          <Input placeholder="请输入" />
+        <Form.Item label="可预售天数" name="presaleDays">
+          <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
         </Form.Item>
-        <Form.Item label="有效天数" name="organizationUnit">
-          <Input placeholder="请输入" />
+        <Form.Item label="有效天数" name="validDays">
+          <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
         </Form.Item>
-        <Form.Item label="详情描述" name="organizationUnit">
+        <Form.Item label="详情描述" name="note">
           <Input.TextArea placeholder="请输入" />
         </Form.Item>
 

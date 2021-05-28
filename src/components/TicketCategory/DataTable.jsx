@@ -4,7 +4,7 @@ import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import UpdateDataForm from "./UpdateDataForm";
-import faciliyService from "../../services/faciliy.service";
+import ticketCategoryService from "../../services/ticket-category.service";
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
 const secFormat = "YYYY-MM-DD hh:mm:ss";
@@ -29,7 +29,7 @@ export default function DataTable() {
     setQuery(nextQuery);
     setLoading(true);
     try {
-      const { items, totalCount } = await faciliyService.getStaffList(
+      const { items, totalCount } = await ticketCategoryService.getProductList(
         makeQuery(nextQuery)
       );
       setLoading(false);
@@ -50,20 +50,21 @@ export default function DataTable() {
   }
 
   function makeQuery(query) {
-    return Object.keys(query).reduce((result, key) => {
-      const value = query[key];
-      if (key === "date" && value) {
-        const [start, end] = value;
-        result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
-        result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
-      } else if (value !== undefined && value !== "-1") {
-        result[key] = value;
+    return Object.keys(query).reduce(
+      (result, key) => {
+        const value = query[key];
+        if (value !== undefined && value !== "-1") {
+          result[key] = value;
+        }
+        if (query.skipCount) {
+          result.skipCount = (query.skipCount - 1) * query.maxResultCount;
+        }
+        return result;
+      },
+      {
+        ProductType: 1,
       }
-      if (query.skipCount) {
-        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
-      }
-      return result;
-    }, {});
+    );
   }
 
   function showDeleteModal(creds) {
@@ -73,7 +74,7 @@ export default function DataTable() {
     });
     async function onOk() {
       try {
-        const res = await faciliyService.deleteStaff(creds);
+        const res = await ticketCategoryService.deleteProduct(creds);
         mod.close();
         utils.success(`删除成功！`);
 
