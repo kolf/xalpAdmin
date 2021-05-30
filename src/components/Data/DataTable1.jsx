@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, DatePicker, Form, Input, Row, Col, Space,Pagination } from "antd";
+import {
+  Table,
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Row,
+  Col,
+  Space,
+  Pagination,
+} from "antd";
 import modal from "../../shared/modal";
-import blanklistService from "../../services/blanklist.service";
+import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
@@ -11,6 +21,7 @@ export default function DataTable() {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -18,16 +29,15 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();
+  }, [JSON.stringify(query), counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  async function loadData() {
     setLoading(true);
     try {
-      const { items, totalCount } =
-        await blanklistService.getBlockAllowUserList(makeQuery(nextQuery));
+      const { items, totalCount } = await dataService.getOrderAreaList(
+        makeQuery(query)
+      );
       setLoading(false);
       setDataList(items);
       setTotal(totalCount);
@@ -50,8 +60,8 @@ export default function DataTable() {
       const value = query[key];
       if (key === "date" && value) {
         const [start, end] = value;
-        result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
-        result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
+        result.startDate = start.format(dateFormat) + " 00:00:00";
+        result.endDate = end.format(dateFormat) + " 23:59:59";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
@@ -66,24 +76,26 @@ export default function DataTable() {
 
   const columns = [
     {
-      title: "序号",
-      dataIndex: "index",
-    },
-    {
       title: "排名",
-      dataIndex: "name",
+      dataIndex: "rankNumber",
     },
     {
       title: "省级",
-      dataIndex: "phone",
+      dataIndex: "sourceProvince",
+      render(text){
+        return text || "无";
+      }
     },
     {
       title: "市级",
-      dataIndex: "user",
+      dataIndex: "sourceCity",
+      render(text){
+        return text || "无";
+      }
     },
     {
       title: "人数",
-      dataIndex: "num",
+      dataIndex: "ticketCount",
     },
   ];
 
@@ -101,7 +113,8 @@ export default function DataTable() {
         nextPageNum = 1;
       }
 
-      loadData({
+      setQuery({
+        ...query,
         skipCount: nextPageNum + "",
         maxResultCount: pageSize + "",
       });
@@ -112,7 +125,12 @@ export default function DataTable() {
     <div>
       <Row style={{ paddingBottom: 12 }}>
         <Col flex="auto">
-          <Button size="small" type="primary" onClick={openFile}>
+          <Button
+            size="small"
+            type="primary"
+            onClick={openFile}
+            disabled={dataList.length === 0}
+          >
             下载数据
           </Button>
         </Col>
@@ -122,7 +140,7 @@ export default function DataTable() {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={loadData}
+        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
         <Form.Item name="date">
           <RangePicker size="small" />
@@ -136,13 +154,15 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) => loadData({ Keyword: value })}
+            onSearch={(value) =>
+              setQuery({ ...query, skipCount: "1", Keyword: value })
+            }
           />
         </Form.Item>
       </Form>
 
       <Table
-        rowKey="id"
+        rowKey="index"
         dataSource={makeData(dataList)}
         columns={columns}
         pagination={false}

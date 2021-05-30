@@ -22,6 +22,7 @@ class PoliceService {
       return Promise.reject(error);
     }
   };
+
   updateDevice = async (creds) => {
     try {
       const res = await api.put(`api/Device/${creds.id}`, creds);

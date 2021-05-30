@@ -6,7 +6,7 @@ class BlacklistService {
   getUploadPath = async (creds) => {
     try {
       const res = await api.get(
-        `/api/UploadFile/GetTempFileItem?${queryString.stringify(creds)}`
+        `api/UploadFile/GetTempFileItem?${queryString.stringify(creds)}`
       );
       return res.data;
     } catch (error) {
@@ -16,7 +16,7 @@ class BlacklistService {
 
   getOptions = async (creds) => {
     try {
-      const res = await api.get(`/api/OptionItem?Category=${creds.id}`);
+      const res = await api.get(`api/OptionItem?Category=${creds.id}`);
       return res.data;
     } catch (error) {
       return Promise.reject(error);

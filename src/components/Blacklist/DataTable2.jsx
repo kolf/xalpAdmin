@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { Table, Button, DatePicker, Form, Input, Row, Col, Space,Pagination } from "antd";
+import {
+  Table,
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Row,
+  Col,
+  Space,
+  Pagination,
+} from "antd";
 import UpdateDataForm from "./UpdateData2Form";
 import ExportDataTable from "./ExportData2Table";
 import modal from "../../shared/modal";
@@ -8,6 +18,7 @@ import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 
 import blanklistService from "../../services/blanklist.service";
+import dataService from "../../services/data.service";
 import { behaviorTypeEnum } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -19,6 +30,8 @@ export default function DataTable() {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
+  const [totalArr, setTotalArr] = useState([0, 0]);
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -26,19 +39,20 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();
+  }, [JSON.stringify(query), counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  async function loadData() {
     setLoading(true);
     try {
       const { items, totalCount } = await blanklistService.getBlockBehaviorList(
-        makeQuery(nextQuery)
+        makeQuery(query)
       );
+      const { totalBlockingCount, totalCount: AllTotalCount } =
+        await blanklistService.getBlockAllowUserList();
       setLoading(false);
       setDataList(items);
+      setTotalArr([AllTotalCount, totalBlockingCount]);
       setTotal(totalCount);
     } catch (error) {
       setLoading(false);
@@ -59,8 +73,8 @@ export default function DataTable() {
       const value = query[key];
       if (key === "date" && value) {
         const [start, end] = value;
-        result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
-        result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
+        result.StartCreationTime = start.format(dateFormat) + " 00:00:00";
+        result.EndCreationTime = end.format(dateFormat) + " 23:59:59";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
@@ -80,8 +94,9 @@ export default function DataTable() {
 
     function onOk() {
       mod.close();
-      utils.success("添加成功！");
-      loadData({
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
         skipCount: "1",
       });
     }
@@ -96,7 +111,9 @@ export default function DataTable() {
 
     function onOk() {
       mod.close();
-      loadData({
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
         skipCount: "1",
       });
     }
@@ -106,12 +123,17 @@ export default function DataTable() {
     const mod = modal({
       title: "批量导入",
       width: 720,
-      content: <ExportDataTable onOk={onOk}/>,
+      content: <ExportDataTable onOk={onOk} />,
       footer: null,
     });
 
     function onOk() {
       mod.close();
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
+        skipCount: "1",
+      });
     }
   }
 
@@ -127,16 +149,21 @@ export default function DataTable() {
         });
         mod.close();
         utils.success(`删除成功！`);
-        loadData({ skipCount: "1" });
+        setCounter(counter + 1);
+        setQuery({ ...query, skipCount: "1" });
       } catch (error) {
-        console.log(error);
         mod.close();
-        utils.error(error.error.message || `删除失败！`);
       }
     }
   }
 
-  function openFile() {}
+  async function openFile() {
+    try {
+      const res = await dataService.exportBlockBehavior(makeQuery(query));
+      window.open(res);
+      console.log(res, "res");
+    } catch (error) {}
+  }
 
   const columns = [
     {
@@ -201,7 +228,8 @@ export default function DataTable() {
         nextPageNum = 1;
       }
 
-      loadData({
+      setQuery({
+        ...query,
         skipCount: nextPageNum + "",
         maxResultCount: pageSize + "",
       });
@@ -214,9 +242,9 @@ export default function DataTable() {
         <Col flex="auto">
           <Space>
             <span>黑名单人数:</span>
-            <span className="iconfont1 text-danger">1223</span>
+            <span className="iconfont1 text-danger">{totalArr[0]}</span>
             <span>当前限制人数:</span>
-            <span className="iconfont1 text-danger">1223</span>
+            <span className="iconfont1 text-danger">{totalArr[1]}</span>
           </Space>
         </Col>
         <Col flex="120px" style={{ textAlign: "right" }}>
@@ -238,7 +266,7 @@ export default function DataTable() {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={loadData}
+        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
         <Form.Item name="date">
           <RangePicker size="small" />
@@ -252,7 +280,9 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) => loadData({ Keyword: value })}
+            onSearch={(value) =>
+              setQuery({ ...query, skipCount: "1", Keyword: value })
+            }
           />
         </Form.Item>
       </Form>

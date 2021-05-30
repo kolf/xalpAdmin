@@ -1,60 +1,67 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
-import { Row, Col, Progress, Tabs } from "antd";
-import DataForm from "./DataForm";
 import ProgressArc from "../UI/ProgressArc";
+import DeviceTotal from "./DeviceTotal";
 import AdmissionChart from "./AdmissionChart";
 import TouristChart from "./TouristChart";
-import modal from "../../shared/modal";
+import dataService from "../../services/data.service";
 import "./Sidebar.less";
+import headerImageUrl from "../../assets/img/header1.png";
 
 export default function Sidebar() {
   const [height, setHeight] = useState(640);
+  const [orderRealTimeData, setOrderRealTimeData] = useState({
+    todayTicketCount: 0,
+    todayUsedTicketCount: 0,
+    quarterTicketCount: 0,
+    quarterUsedTicketCount: 0,
+  });
 
-  useEffect(() => {
+  useEffect(async () => {
     const windowHeight = window.innerHeight;
     setHeight(windowHeight - 102);
-  }, []);
+    loadData();
+
+    async function loadData() {
+      const res1 = await dataService.getOrderRealTimeStatistics();
+      setOrderRealTimeData(res1);
+    }
+  }, [window.innerHeight]);
 
   return (
     <div className="sidebar-root" style={{ maxHeight: height }}>
-      <Row style={{ padding: "12px 0", marginLeft: "140px" }}>
-        <Col span={8}>
-          <div className="sidebar-heading-num">04</div>
-          <div>设备总数</div>
-        </Col>
-        <Col span={8}>
-          <div className="sidebar-heading-num">04</div>
-          <div>在线设备</div>
-        </Col>
-        <Col span={8}>
-          <div className="sidebar-heading-num">01</div>
-          <div>离线设备</div>
-        </Col>
-      </Row>
+      <div className="sidebar-heading">
+        <span style={{ backgroundImage: "url(" + headerImageUrl + ")" }}>
+          入园管理
+        </span>
+        <div style={{flex: 1,paddingLeft:12,marginTop:-4,textAlign: "center"}}><DeviceTotal /></div>
+      </div>
       <div className="panel-heading">入园概览</div>
       <div className="panel-body">
         <ProgressArc
           dataSource={[
             {
-              value: "34",
-              prefix: "个",
+              key: "todayTicketCount",
+              value: orderRealTimeData.todayTicketCount,
+              prefix: "人",
               title: [<div>今日预约</div>, <div>人数</div>],
             },
             {
-              value: "02",
-              prefix: "个",
+              key: "todayUsedTicketCount",
+              value: orderRealTimeData.todayUsedTicketCount,
+              prefix: "人",
               title: [<div>今日已核销</div>, <div>人数</div>],
             },
             {
-              value: "08",
-              prefix: "个",
+              key: "quarterTicketCount",
+              value: orderRealTimeData.quarterTicketCount,
+              prefix: "人",
               title: [<div>当季预约</div>, <div>人数</div>],
             },
             {
-              value: "12",
-              prefix: "个",
+              key: "quarterUsedTicketCount",
+              value: orderRealTimeData.quarterUsedTicketCount,
+              prefix: "人",
               title: [<div>当季已核销</div>, <div>人数</div>],
             },
           ]}
@@ -62,74 +69,14 @@ export default function Sidebar() {
       </div>
       <div className="panel-heading">入园数据</div>
       <div className="panel-body">
-        <DataForm />
         <AdmissionChart />
-      </div>
-      <div className="panel-footer" style={{ marginTop: -24 }}>
-        <a href="" style={{ marginLeft: "auto" }}>
-          导出数据
-        </a>
       </div>
       <div className="panel-heading">当月游客分析</div>
       <div className="panel-body">
         <TouristChart />
-        <Row>
-          <Col span={4}>
-            <span
-              className="iconfont1"
-              style={{ fontSize: 18, lineHeight: 1.2 }}
-            >
-              TOP1
-            </span>
-          </Col>
-          <Col span={3}>湖北</Col>
-          <Col span={16}>
-            <Progress
-              percent={30}
-              strokeLinecap="square"
-              format={() => "23651"}
-            />
-          </Col>
-        </Row>
-        <Row style={{ padding: "12px 0" }}>
-          <Col span={4}>
-            <span
-              className="iconfont1"
-              style={{ fontSize: 18, lineHeight: 1.2 }}
-            >
-              TOP2
-            </span>
-          </Col>
-          <Col span={3}>北京</Col>
-          <Col span={16}>
-            <Progress
-              percent={30}
-              strokeLinecap="square"
-              format={() => "23651"}
-            />
-          </Col>
-        </Row>
-        <Row>
-          <Col span={4}>
-            <span
-              className="iconfont1"
-              style={{ fontSize: 18, lineHeight: 1.2 }}
-            >
-              TOP3
-            </span>
-          </Col>
-          <Col span={3}>天津</Col>
-          <Col span={16}>
-            <Progress
-              percent={30}
-              strokeLinecap="square"
-              format={() => "23651"}
-            />
-          </Col>
-        </Row>
       </div>
       <div className="panel-footer" style={{ marginTop: 0 }}>
-        <Link to='/data' style={{ marginLeft: "auto" }}>
+        <Link to="/data" style={{ marginLeft: "auto" }}>
           查看更多
         </Link>
       </div>

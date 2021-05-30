@@ -12,21 +12,31 @@ import {
   Pagination,
   message,
 } from "antd";
+import DetailsDataTable from "./DetailsDataTable";
+import moment from "moment";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
-import DetailsDataTable from "./DetailsDataTable";
-import blanklistService from "../../services/blanklist.service";
-import { reviewOptions } from "../../shared/options";
+import utils from "../../shared/utils";
+import facilityService from "../../services/faciliy.service";
+import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
-
+const reviewOptions = [
+  { value: "3", label: "已核销" },
+  { value: "1", label: "未核销" },
+];
 export default function DataTable() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
+  const [totalData, setTotalData] = useState({
+    travelTouristCount: 0,
+    usedTicketCount: 0,
+  });
   const [total, setTotal] = useState(0);
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -34,16 +44,29 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();
+    async function loadData() {
+      try {
+        const res = await dataService.getOrderStatistics({
+          ClientType: 1,
+          StartTravelTime: moment().format(dateFormat) + " 00:00:00",
+          EndTravelTime: moment().format(dateFormat) + " 23:59:59",
+        });
+        setTotalData(res);
+      } catch (error) {}
+    }
+  }, [JSON.stringify(totalData),counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  useEffect(() => {
+    loadData();
+  }, [JSON.stringify(query)]);
+
+  async function loadData() {
     setLoading(true);
     try {
-      const { items, totalCount } =
-        await blanklistService.getBlockAllowUserList(makeQuery(nextQuery));
+      const { items, totalCount } = await facilityService.getOrderDetailList(
+        makeQuery(query)
+      );
       setLoading(false);
       setDataList(items);
       setTotal(totalCount);
@@ -57,7 +80,10 @@ export default function DataTable() {
       return [];
     }
     return data.map((item, index) => {
-      return { ...item, index: index + 1 };
+      return {
+        ...item,
+        index: index + 1,
+      };
     });
   }
 
@@ -78,33 +104,54 @@ export default function DataTable() {
     }, {});
   }
 
-  function showDetailsModal(creds) {
-    const mod = modal({
-      title: "团体赛详情",
-      width: 640,
-      content: <DetailsDataTable></DetailsDataTable>,
-      footer: null,
-      onOk,
-    });
-
-    function onOk() {}
-  }
+  function showDetailsModal() {}
 
   function showDeleteModal(creds) {
-    const mod = confirm({ content: `此操作将取消该票, 是否继续?`, onOk });
-    function onOk() {
-      mod.close()
+    const mod = confirm({
+      content: `此操作将取消该票, 是否继续?`,
+      onOk,
+    });
+    async function onOk() {
+      try {
+        const res = await facilityService.cancelOrder({ id: creds.id });
+        mod.close();
+        utils.success(`取消成功！`);
+        setCounter(counter + 1);
+        setQuery({ ...query, skipCount: "1" });
+      } catch (error) {
+        mod.close();
+
+      }
+      // mod.close()
     }
   }
 
   function showReviewModal(creds) {
-    const mod = confirm({ content: `此操作将核销该票, 是否继续?`, onOk });
-    function onOk() {
-      mod.close()
+    const mod = confirm({
+      content: `此操作将核销该票, 是否继续?`,
+      onOk,
+    });
+    async function onOk() {
+      try {
+        const res = await facilityService.checkOrder({ id: creds.id });
+        mod.close();
+        utils.success(`核销成功！`);
+        setCounter(counter + 1);
+        setQuery({ ...query, skipCount: "1" });
+      } catch (error) {
+        mod.close();
+
+      }
     }
   }
 
   function openFile() {}
+
+  function getRowClassName(creds, index) {
+    if (creds.status !== 1) {
+      return "ant-table-row-disabled";
+    }
+  }
 
   const columns = [
     {
@@ -175,8 +222,8 @@ export default function DataTable() {
       if (pageSize != query.maxResultCount * 1) {
         nextPageNum = 1;
       }
-
-      loadData({
+      setQuery({
+        ...query,
         skipCount: nextPageNum + "",
         maxResultCount: pageSize + "",
       });
@@ -189,9 +236,13 @@ export default function DataTable() {
         <Col flex="auto">
           <Space>
             <span>今日预约人数:</span>
-            <span className="iconfont1 text-danger">1223</span>
-            <span>今日预约人数:</span>
-            <span className="iconfont1 text-danger">1223</span>
+            <span className="iconfont1 text-danger">
+              {totalData.travelTouristCount}
+            </span>
+            <span>已核销人数:</span>
+            <span className="iconfont1 text-danger">
+              {totalData.usedTicketCount}
+            </span>
           </Space>
         </Col>
         <Col flex="120px" style={{ textAlign: "right" }}>
@@ -207,9 +258,15 @@ export default function DataTable() {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={loadData}
+        onFinish={(values) => {
+          setQuery({
+            ...query,
+            ...values,
+            skipCount: "1",
+          });
+        }}
       >
-        <Form.Item name="a1" style={{ marginBottom: 6, width: 100 }}>
+        <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="核销状态" allowClear>
             {reviewOptions.map((o) => (
               <Option key={o.value}>{o.label}</Option>
@@ -228,7 +285,9 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) => loadData({ Keyword: value })}
+            onSearch={(value) =>
+              setQuery({ ...query, skipCount: "1", Keyword: value })
+            }
           />
         </Form.Item>
       </Form>
@@ -236,12 +295,13 @@ export default function DataTable() {
       <Table
         dataSource={makeData(dataList)}
         columns={columns}
+        rowClassName={getRowClassName}
         pagination={false}
         size="small"
         bordered
         loading={loading}
         rowKey="id"
-        // scroll={{ x: 1200 }}
+        // scroll={{ x: 1400 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

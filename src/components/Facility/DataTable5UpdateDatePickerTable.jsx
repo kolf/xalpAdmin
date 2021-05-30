@@ -66,7 +66,7 @@ export default function DataTable() {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [editingKey, setEditingKey] = useState("");
-
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -74,16 +74,14 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();
+  }, [JSON.stringify(query), counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  async function loadData() {
     setLoading(true);
     try {
       const { items } = await faciliyService.getReservationTimeItemOptions(
-        makeQuery(nextQuery)
+        makeQuery(query)
       );
       setLoading(false);
       setDataList(
@@ -158,34 +156,24 @@ export default function DataTable() {
     }
   }
 
-  async function update({ key, startTime, endTime, displayText }) {
-    try {
-      const res = await faciliyService.updateReservationTimeItem({
-        timeRangeName: displayText,
-        startTimeRange: startTime,
-        endTimeRange: endTime,
-        maxTouristsQuantity: 0,
-        id: key,
-      });
-      return res;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+  function update({ key, startTime, endTime, displayText }) {
+    return faciliyService.updateReservationTimeItem({
+      timeRangeName: displayText,
+      startTimeRange: startTime,
+      endTimeRange: endTime,
+      maxTouristsQuantity: 0,
+      id: key,
+    });
   }
 
-  async function create({ key, startTime, endTime, displayText }) {
-    try {
-      const res = await faciliyService.addReservationTimeItem({
-        timeRangeName: displayText,
-        startTimeRange: startTime,
-        endTimeRange: endTime,
-        maxTouristsQuantity: 0,
-        id: key,
-      });
-      return res;
-    } catch (error) {
-      return Promise.reject(error);
-    }
+  function create({ key, startTime, endTime, displayText }) {
+    return faciliyService.addReservationTimeItem({
+      timeRangeName: displayText,
+      startTimeRange: startTime,
+      endTimeRange: endTime,
+      maxTouristsQuantity: 0,
+      id: key,
+    });
   }
 
   function onEdit(record) {
@@ -237,7 +225,6 @@ export default function DataTable() {
     {
       title: "操作",
       dataIndex: "options",
-      fixed: "right",
       width: 120,
       render(text, creds) {
         const editable = isEditing(creds);

@@ -44,6 +44,25 @@ export const behaviorTypeEnum = {
   4: "D类：恶劣",
 };
 
+export const enterEnum = {
+  1: "出口",
+  2: "入口",
+};
+
+export const colors = [
+  "#1890FF",
+  "#13C2C2",
+  "#2FC25B",
+  "#FACC14",
+  "#F04864",
+  "#8543E0",
+];
+
+export const enterOptions = Object.keys(enterEnum).map((key) => ({
+  value: key + "",
+  label: enterEnum[key],
+}));
+
 export const behaviorTypeOptions = Object.keys(behaviorTypeEnum).map((key) => ({
   value: key + "",
   label: behaviorTypeEnum[key],

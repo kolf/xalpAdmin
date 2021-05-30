@@ -1,16 +1,7 @@
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  Row,
-  Col,
-  Space,
-  Pagination,
-} from "antd";
+import { Table, Button, DatePicker, Form, Input, Pagination } from "antd";
 import UpdateDataForm from "./UpdateData2Form";
+import moment from "moment";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
@@ -18,12 +9,14 @@ import userService from "../../services/user.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
+const secFormat = "YYYY-MM-DD hh:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -31,16 +24,14 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();
+  }, [JSON.stringify(query), counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  async function loadData() {
     setLoading(true);
     try {
       const { items, totalCount } = await userService.getRoleList(
-        makeQuery(nextQuery)
+        makeQuery(query)
       );
       setLoading(false);
       setDataList(items);
@@ -85,7 +76,9 @@ export default function DataTable() {
 
     function onOk() {
       mod.close();
-      loadData({
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
         skipCount: "1",
       });
     }
@@ -103,16 +96,13 @@ export default function DataTable() {
         });
         mod.close();
         utils.success(`删除成功！`);
-        loadData({ skipCount: "1" });
+        setCounter(counter + 1);
+        setQuery({ ...query, skipCount: "1" });
       } catch (error) {
         mod.close();
-        utils.error(error.error.message || `删除失败！`);
       }
-      // mod.close()
     }
   }
-
-  function openFile() {}
 
   const columns = [
     {
@@ -121,11 +111,14 @@ export default function DataTable() {
     },
     {
       title: "最后编辑时间",
-      dataIndex: "age",
+      dataIndex: "lastModificationTime",
+      render(text) {
+        return text ? moment(text).format(secFormat) : "无";
+      },
     },
     {
       title: "权限详情",
-      dataIndex: "address",
+      dataIndex: "roleNames",
     },
     {
       title: "操作",
@@ -135,8 +128,8 @@ export default function DataTable() {
           <div className="text-center">
             <Button
               size="small"
-              onClick={showEditModal.bind(this, creds)}
               style={{ marginRight: 4 }}
+              onClick={showEditModal.bind(this, creds)}
             >
               编辑
             </Button>
@@ -163,7 +156,8 @@ export default function DataTable() {
         nextPageNum = 1;
       }
 
-      loadData({
+      setQuery({
+        ...query,
         skipCount: nextPageNum + "",
         maxResultCount: pageSize + "",
       });
@@ -177,7 +171,7 @@ export default function DataTable() {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={loadData}
+        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
         <Form.Item name="date">
           <RangePicker size="small" />
@@ -191,7 +185,9 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) => loadData({ Keyword: value })}
+            onSearch={(value) =>
+              setQuery({ ...query, skipCount: "1", Keyword: value })
+            }
           />
         </Form.Item>
       </Form>

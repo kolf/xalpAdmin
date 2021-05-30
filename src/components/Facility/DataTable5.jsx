@@ -24,10 +24,10 @@ export default function DataTable() {
 
   function showAddModal() {
     const mod = modal({
-      content: <UpdateDataForm onOk={onOk}></UpdateDataForm>,
+      content: <UpdateDataForm onOk={onOk}/>,
       footer: null,
     });
-    function onOk(done) {
+    function onOk() {
       mod.close();
     }
   }
@@ -60,7 +60,7 @@ export default function DataTable() {
               </Space>
             </Col>
           </Row>
-       
+
           <DataTableList />
         </>
       )}
@@ -79,7 +79,7 @@ export default function DataTable() {
             </Col>
             <Col flex="120px" style={{ textAlign: "right" }}>
               <Space>
-                <Button size="small" type="primary" onClick={openFile}>
+                <Button size="small" type="primary" onClick={showAddModal}>
                   批量上票
                 </Button>
               </Space>

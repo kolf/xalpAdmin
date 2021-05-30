@@ -13,6 +13,16 @@ class FaciliyService {
       return Promise.reject(error);
     }
   };
+  exportProductList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Product/Export?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
   updateProduct = async (creds) => {
     try {
       const res = await api.put(`api/Product/${creds.id}/UpdateQuickly`, creds);

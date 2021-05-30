@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, DatePicker, Form, Input, Select,Pagination } from "antd";
+import {
+  Table,
+  Button,
+  Row,
+  Col,
+  Space,
+  Form,
+  Input,
+  Select,
+  Pagination,
+} from "antd";
 import LogDataTable from "./LogDataTable";
 import UpdateDataForm from "./UpdateDataForm";
 import policeService from "../../services/police.service";
 import modal from "../../shared/modal";
 
-import {
-  areaOptions,
-  yearOptions,
-  deviceOptions,
-  mouthOptions,
-  onlineOptions,
-} from "../../shared/options";
+import { deviceOptions, onlineOptions } from "../../shared/options";
 const { Option } = Select;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
@@ -21,6 +25,7 @@ export default function DataTable() {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -28,16 +33,14 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();
+  }, [JSON.stringify(query), counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  async function loadData() {
     setLoading(true);
     try {
       const { items, totalCount } = await policeService.getDeviceList(
-        makeQuery(nextQuery)
+        makeQuery(query)
       );
       setLoading(false);
       setDataList(items);
@@ -52,7 +55,7 @@ export default function DataTable() {
       return [];
     }
     return data.map((item, index) => {
-      return { ...item.device, index: index + 1 };
+      return { ...item, ...item.device, device: undefined, index: index + 1 };
     });
   }
 
@@ -61,6 +64,9 @@ export default function DataTable() {
       const value = query[key];
       if (value !== undefined && value !== "-1") {
         result[key] = value;
+      }
+      if (key === "isOnline" && value) {
+        result[key] = value === "1";
       }
       if (query.skipCount) {
         result.skipCount = (query.skipCount - 1) * query.maxResultCount;
@@ -77,8 +83,27 @@ export default function DataTable() {
     });
 
     function onOk() {
-       mod.close();
-      loadData({
+      mod.close();
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
+        skipCount: "1",
+      });
+    }
+  }
+
+  function showAddModal() {
+    const mod = modal({
+      title: "新增",
+      content: <UpdateDataForm onOk={onOk} />,
+      footer: null,
+    });
+
+    function onOk() {
+      mod.close();
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
         skipCount: "1",
       });
     }
@@ -86,9 +111,9 @@ export default function DataTable() {
 
   function showLogModal(creds) {
     const mod = modal({
-      title: "操作日志",
-      width:720,
-      content: <LogDataTable id={creds.id}/>,
+      title: "系统日志",
+      width: 720,
+      content: <LogDataTable id={creds.id} />,
       footer: null,
       onOk,
     });
@@ -100,10 +125,17 @@ export default function DataTable() {
     {
       title: "设备IP",
       dataIndex: "ipAddress",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "设备名称",
       dataIndex: "name",
+    },
+    {
+      title: "设备编码",
+      dataIndex: "code",
     },
     {
       title: "设备类型",
@@ -112,20 +144,36 @@ export default function DataTable() {
     {
       title: "录入人姓名",
       dataIndex: "creatorName",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "录入人工号",
       dataIndex: "creatorJobNumber",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "录入人员电话",
       dataIndex: "creatorPhone",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "在线状态",
       dataIndex: "isOnline",
       render(text) {
         return text ? "在线" : "离线";
+      },
+    },
+    {
+      title: "出入口状态",
+      dataIndex: "isDirectionEnter",
+      render(text) {
+        return text ? "入口" : "出口";
       },
     },
     {
@@ -139,7 +187,7 @@ export default function DataTable() {
               style={{ marginRight: 4 }}
               onClick={showLogModal.bind(this, creds)}
             >
-              查看操作日志
+              查看系统日志
             </Button>
             <Button size="small" onClick={showEditModal.bind(this, creds)}>
               编辑
@@ -164,7 +212,8 @@ export default function DataTable() {
         nextPageNum = 1;
       }
 
-      loadData({
+      setQuery({
+        ...query,
         skipCount: nextPageNum + "",
         maxResultCount: pageSize + "",
       });
@@ -173,12 +222,22 @@ export default function DataTable() {
 
   return (
     <div>
+      <Row style={{ paddingBottom: 12 }}>
+        <Col flex="auto"></Col>
+        <Col flex="120px" style={{ textAlign: "right" }}>
+          <Space>
+            <Button size="small" type="primary" onClick={showAddModal}>
+              新增
+            </Button>
+          </Space>
+        </Col>
+      </Row>
       <Form
         form={form}
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={loadData}
+        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
         <Form.Item
           name="CheckDeviceType"
@@ -190,7 +249,7 @@ export default function DataTable() {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item name="isActive" style={{ marginBottom: 6, width: 100 }}>
+        <Form.Item name="isOnline" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="设备状态" allowClear>
             {onlineOptions.map((o) => (
               <Option key={o.value}>{o.label}</Option>
@@ -206,7 +265,9 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) => loadData({ Keyword: value })}
+            onSearch={(value) =>
+              setQuery({ ...query, skipCount: "1", Keyword: value })
+            }
           />
         </Form.Item>
       </Form>

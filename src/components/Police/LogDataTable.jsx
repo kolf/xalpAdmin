@@ -9,22 +9,21 @@ export default function DataTable({ id }) {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();;
+  }, [JSON.stringify(query),counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  async function loadData() {
     setLoading(true);
     try {
       const { items, totalCount } = await policeService.getDeviceLogList(
-        makeQuery(nextQuery)
+        makeQuery(query)
       );
       setLoading(false);
       setDataList(items);
@@ -91,7 +90,7 @@ export default function DataTable({ id }) {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={loadData}
+        onFinish={values => setQuery({ ...query, ...values, skipCount: "1" })}
       >
         <Form.Item name="date">
           <RangePicker size="small" />

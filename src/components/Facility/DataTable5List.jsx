@@ -20,11 +20,26 @@ const { Search } = Input;
 
 const dateFormat = "YYYY-MM-DD";
 
+const expandedRowRender = (value, row, index) => {
+  const obj = {
+    children: value,
+    props: {},
+  };
+  if (row.index !== -1) {
+    obj.props.rowSpan = row.size;
+  } else {
+    obj.props.rowSpan = 0;
+  }
+
+  return obj;
+};
+
 export default function DataTable() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -32,18 +47,14 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();
+  }, [JSON.stringify(query), counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  async function loadData() {
     setLoading(true);
     try {
       const { items, totalCount } =
-        await faciliyService.getReservationTimeSettingList(
-          makeQuery(nextQuery)
-        );
+        await faciliyService.getReservationTimeSettingList(makeQuery(query));
       setLoading(false);
       setDataList(items);
       setTotal(totalCount);
@@ -56,9 +67,18 @@ export default function DataTable() {
     if (!data) {
       return [];
     }
-    return data.map((item, index) => {
-      return { ...item, index: index + 1 };
-    });
+    return data.reduce((result, item, i) => {
+      const { timeItems } = item;
+      return [
+        ...result,
+        ...timeItems.map((t, j) => ({
+          ...item,
+          ...t,
+          index: j === 0 ? i + j + 1 : -1,
+          size: timeItems.length,
+        })),
+      ];
+    }, []);
   }
 
   function makeQuery(query) {
@@ -86,29 +106,31 @@ export default function DataTable() {
     async function onOk() {
       try {
         const res = await faciliyService.deleteReservationTimeSetting(creds);
-        mod.close()
+        mod.close();
         utils.success(`删除成功！`);
-        
-        loadData({
+        setCounter(counter + 1);
+        setQuery({
+          ...query,
           skipCount: "1",
         });
       } catch (error) {
-        mod.close()
+        mod.close();
       }
     }
   }
 
   function showEditModal(creds) {
-    console.log(creds, "creds");
     const mod = modal({
       content: (
         <UpdateDataForm defaultValues={creds} onOk={onOk}></UpdateDataForm>
       ),
       footer: null,
     });
-    function onOk(done) {
+    function onOk() {
       mod.close();
-      loadData({
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
         skipCount: "1",
       });
     }
@@ -118,6 +140,7 @@ export default function DataTable() {
     {
       title: "序号",
       dataIndex: "index",
+      render: expandedRowRender,
     },
     {
       title: "起始日期",
@@ -130,20 +153,55 @@ export default function DataTable() {
     },
     {
       title: "单日时段",
-      dataIndex: "address",
+      dataIndex: "TimeRange",
+      render(text, creds) {
+        return creds.startTimeRange + "-" + creds.endTimeRange;
+      },
     },
     {
-      title: "门票数量",
-      dataIndex: "user",
-      render: (text) => text || "3000",
+      title: "门票数量/剩余数量",
+      dataIndex: "maxTouristsQuantity",
+      render(text, creds) {
+        const maxNum =
+          creds.maxTouristsQuantity + creds.groupMaxTouristsQuantity;
+        const currentNum =
+          creds.individualWarningLeftQuantity + creds.groupWarningLeftQuantity;
+        return maxNum + "/" + currentNum;
+      },
+    },
+    {
+      title: "个人时段票数量/剩余数量",
+      dataIndex: "individualMaxTouristsQuantity",
+      render(text, creds) {
+        if (!text && text !== 0) {
+          return "无";
+        }
+        return (
+          creds.individualMaxTouristsQuantity +
+          "/" +
+          creds.individualWarningLeftQuantity
+        );
+      },
+    },
+    {
+      title: "团体时段票数量/剩余数量",
+      dataIndex: "groupMaxTouristsQuantity",
+      render(text, creds) {
+        if (!text && text !== 0) {
+          return "无";
+        }
+        return (
+          creds.groupMaxTouristsQuantity + "/" + creds.groupWarningLeftQuantity
+        );
+      },
     },
     {
       title: "操作",
       dataIndex: "options",
       fixed: "right",
       width: 120,
-      render(text, creds) {
-        return (
+      render(text, creds, index) {
+        const buttons = (
           <div className="text-center">
             <Button
               size="small"
@@ -157,6 +215,7 @@ export default function DataTable() {
             </Button>
           </div>
         );
+        return expandedRowRender(buttons, creds, index);
       },
     },
   ];
@@ -170,7 +229,8 @@ export default function DataTable() {
     position: ["", "bottomCenter"],
     size: "small",
     onChange(value) {
-      loadData({
+      setQuery({
+        ...query,
         skipCount: value + "",
       });
     },
@@ -183,7 +243,7 @@ export default function DataTable() {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={loadData}
+        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
         <Form.Item name="date">
           <RangePicker size="small" />
@@ -197,7 +257,9 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) => loadData({ Keyword: value })}
+            onSearch={(value) =>
+              setQuery({ ...query, skipCount: "1", Keyword: value })
+            }
           />
         </Form.Item>
       </Form>
@@ -209,7 +271,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        rowKey="creatorId"
+        rowKey="id"
         // scroll={{ x: 1200 }}
       />
       <div className="page-container">

@@ -1,66 +1,36 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, DatePicker, Form, Space, Select } from "antd";
-import policeService from "../../services/police.service";
+import { Table, Button, DatePicker, Form, Space, Upload } from "antd";
+import dataService from "../../services/data.service";
+import sessionService from "../../services/session.service";
+import utils from "../../shared/utils";
 const { RangePicker } = DatePicker;
 const dateFormat = "YYYY-MM-DD";
 
-export default function DataTable({ id }) {
+export default function DataTable({ id, onOk }) {
+  const uersToken = sessionService.getUserToken();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [query, setQuery] = useState({
-    skipCount: "1",
-    maxResultCount: "10",
-  });
-
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
-    setLoading(true);
-    try {
-      const { items, totalCount } = await policeService.getDeviceLogList(
-        makeQuery(nextQuery)
-      );
-      setLoading(false);
-      setDataList(items);
-      setTotal(totalCount);
-    } catch (error) {
-      setLoading(false);
-    }
-  }
+  const [fileName, setFileName] = useState("");
 
   function makeData(data) {
     return data.map((item, index) => {
-      return { ...item.device, index: index + 1 };
+      return { ...item, index: index + 1 };
     });
   }
 
-  function makeQuery(query) {
-    return Object.keys(query).reduce(
-      (result, key) => {
-        const value = query[key];
-        if (key === "date" && value) {
-          const [start, end] = value;
-          result.StartTime = start.format(dateFormat) + " 00:00:00";
-          result.EndTime = end.format(dateFormat) + " 23:59:59";
-        } else if (value !== undefined && value !== "-1") {
-          result[key] = value;
-        }
-        if (query.skipCount) {
-          result.skipCount = (query.skipCount - 1) * query.maxResultCount;
-        }
-        return result;
-      },
-      {
-        DeviceId: id,
-      }
-    );
+  function openTemplateFile() {
+    window.open(`${dataService.getTemplateFileUrl(3)}`);
   }
 
-  function openTemplateFile() {}
-
-  function exportTableData() {}
+  async function onFinish() {
+    try {
+      const res = await dataService.importBlockAllowRecord({ fileName });
+      utils.success(`导入成功！`);
+    } catch (error) {}
+    console.log("onFinish");
+    onOk && onOk();
+  }
 
   const columns = [
     {
@@ -68,24 +38,45 @@ export default function DataTable({ id }) {
       dataIndex: "index",
     },
     {
-      title: "设备IP地址",
-      dataIndex: "ipAddress",
+      title: "姓名",
+      dataIndex: "name",
     },
     {
-      title: "操作时间",
-      dataIndex: "interactionTime",
+      title: "手机号",
+      dataIndex: "phone",
     },
     {
-      title: "操作详情",
-      dataIndex: "logContent",
+      title: "不文明行为",
+      dataIndex: "behaviorName",
+    },
+    {
+      title: "处罚",
+      dataIndex: "behaviorDescription",
     },
   ];
 
-  const paginationProps = {
-    current: query.skipCount * 1,
-    pageSize: query.maxResultCount * 1,
-    total,
-    position: ["", "bottomCenter"],
+  const uploadProps = {
+    name: "file",
+    showUploadList: false,
+    action: "api/BlockAllowRecord/Check",
+    headers: {
+      authorization: "Bearer " + uersToken,
+    },
+    onChange(info) {
+      if (info.file.status !== "uploading") {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        try {
+          setDataList(info.file.response.blockAllowRecords);
+          setFileName(info.file.response.tempExcelFileName);
+        } catch (error) {
+          utils.error(`文件格式有误！`);
+        }
+      } else if (info.file.status === "error") {
+        utils.error(`${info.file.name} 上传失败！`);
+      }
+    },
   };
 
   return (
@@ -95,9 +86,11 @@ export default function DataTable({ id }) {
           <Button size="small" type="primary" onClick={openTemplateFile}>
             模板下载
           </Button>
-          <Button size="small" type="primary" onClick={exportTableData}>
-            表格导入
-          </Button>
+          <Upload {...uploadProps}>
+            <Button size="small" type="primary">
+              表格导入
+            </Button>
+          </Upload>
         </Space>
       </div>
 
@@ -105,11 +98,16 @@ export default function DataTable({ id }) {
         rowKey="id"
         dataSource={makeData(dataList)}
         columns={columns}
-        pagination={paginationProps}
+        pagination={false}
         size="small"
         bordered
         loading={loading}
       />
+      <div className="text-right" style={{ paddingTop: 12 }}>
+        <Button size="small" type="primary" onClick={onFinish}>
+          确定导入
+        </Button>
+      </div>
     </>
   );
 }

@@ -12,21 +12,31 @@ import {
   Pagination,
   message,
 } from "antd";
+import moment from "moment";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import facilityService from "../../services/faciliy.service";
-import { reviewOptions } from "../../shared/options";
+import dataService from "../../services/data.service";
+
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
-
+const reviewOptions = [
+  { value: "3", label: "已核销" },
+  { value: "1", label: "未核销" },
+];
 export default function DataTable() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
+  const [totalData, setTotalData] = useState({
+    travelTouristCount: 0,
+    usedTicketCount: 0,
+  });
   const [total, setTotal] = useState(0);
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -34,16 +44,28 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();
+    async function loadData() {
+      try {
+        const res = await dataService.getOrderStatistics({
+          ClientType: 1,
+          StartTravelTime: moment().format(dateFormat) + " 00:00:00",
+          EndTravelTime: moment().format(dateFormat) + " 23:59:59",
+        });
+        setTotalData(res);
+      } catch (error) {}
+    }
+  }, [JSON.stringify(totalData), counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  useEffect(() => {
+    loadData();
+  }, [JSON.stringify(query)]);
+
+  async function loadData() {
     setLoading(true);
     try {
       const { items, totalCount } = await facilityService.getOrderDetailList(
-        makeQuery(nextQuery)
+        makeQuery(query)
       );
       setLoading(false);
       setDataList(items);
@@ -92,10 +114,10 @@ export default function DataTable() {
         const res = await facilityService.cancelOrder({ id: creds.id });
         mod.close();
         utils.success(`取消成功！`);
-        loadData({ skipCount: "1" });
+        setCounter(counter + 1);
+        setQuery({ ...query, skipCount: "1" });
       } catch (error) {
         mod.close();
-        utils.error(error.error.message || `取消失败！`);
       }
       // mod.close()
     }
@@ -111,10 +133,10 @@ export default function DataTable() {
         const res = await facilityService.checkOrder({ id: creds.id });
         mod.close();
         utils.success(`核销成功！`);
-        loadData({ skipCount: "1" });
+        setCounter(counter + 1);
+        setQuery({ ...query, skipCount: "1" });
       } catch (error) {
         mod.close();
-        utils.error(error.error.message || `核销失败！`);
       }
     }
   }
@@ -140,6 +162,9 @@ export default function DataTable() {
       title: "预约人",
       dataIndex: "name",
       width: 64,
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "预约人电话",
@@ -150,6 +175,9 @@ export default function DataTable() {
       title: "是否代预约",
       dataIndex: "isActivityApply",
       width: 88,
+      render(text) {
+        return text ? "是" : "否";
+      },
     },
     {
       title: "参观人",
@@ -170,38 +198,46 @@ export default function DataTable() {
     {
       title: "身份证",
       dataIndex: "certNumber",
+      width: 200,
       render(text, creds) {
         return creds.orderDetail.certNumber || "无";
       },
     },
     {
       title: "预约时段",
-      dataIndex: "ddd",
+      dataIndex: "timeRangeName",
     },
     {
       title: "参与活动",
       dataIndex: "activityName",
       width: 80,
-    },
-    {
-      title: "抵达方式",
-      dataIndex: "regionCity",
-      width: 80,
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "随行宠物",
-      dataIndex: "online",
+      dataIndex: "petInfo",
       width: 80,
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "人像录入",
       dataIndex: "online",
       width: 80,
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "核销设备（核销方式）",
       dataIndex: "online",
       width: 158,
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "操作",
@@ -224,8 +260,8 @@ export default function DataTable() {
             <Button
               disabled={creds.status !== 1}
               size="small"
-              onClick={e => {
-                showDeleteModal(creds.orderDetail)
+              onClick={(e) => {
+                showDeleteModal(creds.orderDetail);
               }}
             >
               取消
@@ -249,8 +285,8 @@ export default function DataTable() {
       if (pageSize != query.maxResultCount * 1) {
         nextPageNum = 1;
       }
-
-      loadData({
+      setQuery({
+        ...query,
         skipCount: nextPageNum + "",
         maxResultCount: pageSize + "",
       });
@@ -263,9 +299,13 @@ export default function DataTable() {
         <Col flex="auto">
           <Space>
             <span>今日预约人数:</span>
-            <span className="iconfont1 text-danger">1223</span>
-            <span>今日预约人数:</span>
-            <span className="iconfont1 text-danger">1223</span>
+            <span className="iconfont1 text-danger">
+              {totalData.travelTouristCount}
+            </span>
+            <span>已核销人数:</span>
+            <span className="iconfont1 text-danger">
+              {totalData.usedTicketCount}
+            </span>
           </Space>
         </Col>
         <Col flex="120px" style={{ textAlign: "right" }}>
@@ -281,12 +321,20 @@ export default function DataTable() {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={loadData}
+        onFinish={(values) => {
+          setQuery({
+            ...query,
+            ...values,
+            skipCount: "1",
+          });
+        }}
       >
-        <Form.Item name="a1" style={{ marginBottom: 6, width: 100 }}>
+        <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="核销状态" allowClear>
             {reviewOptions.map((o) => (
-              <Option key={o.value}>{o.label}</Option>
+              <Option key={o.value} value={o.value}>
+                {o.label}
+              </Option>
             ))}
           </Select>
         </Form.Item>
@@ -302,7 +350,9 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) => loadData({ Keyword: value })}
+            onSearch={(value) =>
+              setQuery({ ...query, skipCount: "1", Keyword: value })
+            }
           />
         </Form.Item>
       </Form>

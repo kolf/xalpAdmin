@@ -1,83 +1,131 @@
 import React, { useState, useEffect } from "react";
+import { Row, Col, Progress } from "antd";
 import F2 from "@antv/f2";
+import { Spin } from "antd";
+import moment from "moment";
+import dataService from "../../services/data.service";
+const dateFormat = "YYYY-MM-DD";
+const startDate = moment().startOf("month").format(dateFormat) + " 00:00:00";
+const endDate = moment().endOf("month").format(dateFormat) + " 23:59:59";
 
 export default function TouristChart() {
+  const [ageData, setAgeData] = useState([]);
+  const [areaData, setAreaData] = useState([]);
+
   useEffect(() => {
     renderChart();
-  });
+  }, []);
 
-  function renderChart() {
-    const data = [
-      {
-        name: "儿童(0-12岁)",
-        percent: 23.59,
-        a: "1",
-      },
-      {
-        name: "青少年(13-18岁)",
-        percent: 2.17,
-        a: "1",
-      },
-      {
-        name: "青年(19-44岁)",
-        percent: 14.24,
-        a: "1",
-      },
-      {
-        name: "中年(45-59岁)",
-        percent: 12.17,
-        a: "1",
-      },
-      {
-        name: "老年(60岁以上)",
-        percent: 24.24,
-        a: "1",
-      },
-    ];
+  async function renderChart() {
+    let data = [];
+    let res1 = [];
+    let res2 = [];
 
-    const map = {};
-    data.forEach(function (obj) {
-      map[obj.name] = obj.percent + "%";
-    });
+    try {
+      res1 = await dataService.getOrderAgeList({
+        startDate,
+        endDate,
+      });
 
-    const chart = new F2.Chart({
-      id: "chart1",
-      pixelRatio: window.devicePixelRatio,
-      padding: [0, "auto"],
-    });
-    chart.source(data, {
-      percent: {
-        formatter: function formatter(val) {
-          return val + "%";
+      res2 = await dataService.getOrderAreaList({
+        startDate,
+        endDate,
+      });
+
+      setAreaData(
+        res2.items
+          .filter((item, index) => index < 3)
+          .map((item) => ({
+            ...item,
+            value: item.ticketCount,
+            name: item.sourceProvince || "无",
+          }))
+      );
+
+      data = res1.filter((item, index) => index < 5).map((item) => ({
+        name: item.ageRange,
+        percent: item.rate * 100,
+        a: "1",
+      }));
+
+      const map = {};
+      data.forEach(function (obj) {
+        map[obj.name] = obj.percent + "%";
+      });
+
+      const chart = new F2.Chart({
+        id: "chart2",
+        pixelRatio: window.devicePixelRatio,
+        padding: [0, "auto"],
+      });
+      chart.source(data, {
+        percent: {
+          formatter: function formatter(val) {
+            return val + "%";
+          },
         },
-      },
-    });
-    chart.tooltip(false);
-    chart.legend({
-      position: "right",
-      itemFormatter: function itemFormatter(val) {
-        return val + "    " + map[val];
-      },
-    });
-    chart.coord("polar", {
-      transposed: true,
-      innerRadius: 0.7,
-      radius: 0.85,
-    });
-    chart.axis(false);
-    chart
-      .interval()
-      .position("a*percent")
-      .color("name", ["#FE5D4D", "#3BA4FF", "#737DDE"])
-      .adjust("stack");
+      });
+      chart.tooltip(false);
+      chart.legend({
+        position: "right",
+        itemFormatter: function itemFormatter(val) {
+          return val + "    " + map[val];
+        },
+      });
+      chart.coord("polar", {
+        transposed: true,
+        innerRadius: 0.7,
+        radius: 0.85,
+      });
+      chart.axis(false);
+      chart
+        .interval()
+        .position("a*percent")
+        .color("name", [
+          "#1890FF",
+          "#13C2C2",
+          "#2FC25B",
+          "#FACC14",
+          "#F04864",
+        ])
+        .adjust("stack");
 
-    chart.guide().html({
-      position: ["50%", "45%"],
-      html: `<div style="width:120px;height: 40px;text-align: center;padding-top: 14px">
-           年龄分布
-          </div>`,
-    });
-    chart.render();
+      chart.guide().html({
+        position: ["50%", "45%"],
+        html: `<div style="width:120px;height: 40px;text-align: center;padding-top: 14px">
+         年龄分布
+        </div>`,
+      });
+      chart.render();
+    } catch (error) {}
   }
-  return <canvas id="chart1" width="352" height="138"></canvas>;
+  return (
+    <>
+      <canvas id="chart2" width="352" height="138"></canvas>
+      <div style={{ height: 82, overflow: "hidden" }}>
+        {areaData.map((item, index) => {
+          return (
+            <Row style={{ padding: "4px 0" }}>
+              <Col span={4}>
+                <span
+                  className="iconfont1"
+                  style={{ fontSize: 18, lineHeight: 1.2 }}
+                >
+                  TOP{index + 1}
+                </span>
+              </Col>
+              <Col span={3}>{item.name}</Col>
+              <Col span={16}>
+                <Progress
+                  percent={item.rate}
+                  strokeLinecap="square"
+                  format={() => item.value}
+                />
+              </Col>
+            </Row>
+          );
+        })}
+      </div>
+    </>
+  );
 }

@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { Table, Button, DatePicker, Form, Input, Row, Col, Space,Pagination } from "antd";
+import {
+  Table,
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Row,
+  Col,
+  Space,
+  Pagination,
+} from "antd";
 import UpdateDataForm from "./UpdateData1Form";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import userService from "../../services/user.service";
+import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
@@ -16,6 +27,7 @@ export default function DataTable() {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -23,16 +35,14 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();
+  }, [JSON.stringify(query),counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  async function loadData() {
     setLoading(true);
     try {
       const { items, totalCount } = await userService.getUserList(
-        makeQuery(nextQuery)
+        makeQuery(query)
       );
       setLoading(false);
       setDataList(items);
@@ -77,25 +87,47 @@ export default function DataTable() {
 
     function onOk() {
       mod.close();
-      loadData({
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
         skipCount: "1",
       });
     }
   }
-  function openFile() {}
+  
+  async function openFile() {
+    try {
+      const res = await dataService.exportProductList(
+        makeQuery(query)
+      );
+      window.open(res)
+      console.log(res, "res");
+    } catch (error) {
+      utils.error(`下载失败！`);
+    }
+  }
 
   const columns = [
     {
       title: "工号",
       dataIndex: "jobNumber",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "姓名",
       dataIndex: "userName",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "角色名称",
       dataIndex: "roleNames",
+      render(text) {
+        return text.length > 0 ? text.join('，') : "无";
+      },
     },
     {
       title: "操作",
@@ -126,7 +158,8 @@ export default function DataTable() {
         nextPageNum = 1;
       }
 
-      loadData({
+      setQuery({
+        ...query,
         skipCount: nextPageNum + "",
         maxResultCount: pageSize + "",
       });
@@ -150,7 +183,7 @@ export default function DataTable() {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={loadData}
+        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
         <Form.Item name="date">
           <RangePicker size="small" />
@@ -164,7 +197,9 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) => loadData({ Keyword: value })}
+            onSearch={(value) =>
+              setQuery({ ...query, skipCount: "1", Keyword: value })
+            }
           />
         </Form.Item>
       </Form>

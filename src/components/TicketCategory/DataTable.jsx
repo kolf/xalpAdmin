@@ -14,6 +14,7 @@ export default function DataTable() {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -21,16 +22,14 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();
+  }, [JSON.stringify(query), counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  async function loadData() {
     setLoading(true);
     try {
       const { items, totalCount } = await ticketCategoryService.getProductList(
-        makeQuery(nextQuery)
+        makeQuery(query)
       );
       setLoading(false);
       setDataList(items);
@@ -45,7 +44,7 @@ export default function DataTable() {
       return [];
     }
     return data.map((item, index) => {
-      return { ...item.product,index: index + 1 };
+      return { ...item.product, index: index + 1 };
     });
   }
 
@@ -77,7 +76,7 @@ export default function DataTable() {
         const res = await ticketCategoryService.deleteProduct(creds);
         mod.close();
         utils.success(`删除成功！`);
-
+        setCounter(counter + 1);
         loadData({
           skipCount: "1",
         });
@@ -95,7 +94,9 @@ export default function DataTable() {
     });
     function onOk() {
       mod.close();
-      loadData({
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
         skipCount: "1",
       });
     }
@@ -104,18 +105,30 @@ export default function DataTable() {
   function showAddModal() {
     const mod = modal({
       title: "新增",
-      content: <UpdateDataForm onOk={onOk}/>,
+      content: <UpdateDataForm onOk={onOk} />,
       footer: null,
     });
     function onOk() {
       mod.close();
-      loadData({
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
         skipCount: "1",
       });
     }
   }
 
-  function openFile() {}
+  async function openFile() {
+    try {
+      const res = await ticketCategoryService.exportProductList(
+        makeQuery(query)
+      );
+      window.open(res)
+      console.log(res, "res");
+    } catch (error) {
+      utils.error(`下载失败！`);
+    }
+  }
 
   const columns = [
     {
@@ -125,9 +138,9 @@ export default function DataTable() {
     {
       title: "是否启用",
       dataIndex: "isActive",
-      render(text, creds){
-        return text ? '是启用' : '未启用'
-      }
+      render(text, creds) {
+        return text ? "已启用" : "未启用";
+      },
     },
     {
       title: "操作",
@@ -167,7 +180,8 @@ export default function DataTable() {
         nextPageNum = 1;
       }
 
-      loadData({
+      setQuery({
+        ...query,
         skipCount: nextPageNum + "",
         maxResultCount: pageSize + "",
       });
@@ -194,13 +208,15 @@ export default function DataTable() {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={loadData}
+        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) => loadData({ Keyword: value })}
+            onSearch={(value) =>
+              setQuery({ ...query, skipCount: "1", Keyword: value })
+            }
           />
         </Form.Item>
       </Form>

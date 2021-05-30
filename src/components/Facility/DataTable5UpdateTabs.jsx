@@ -8,6 +8,8 @@ const { TabPane } = Tabs;
 export default function DataTable5UpdateTabs({ defaultValues = {} }) {
   const [tabKey, setTabKey] = useState("1");
 
+  console.log(defaultValues, "defaultValues")
+
   return (
     <div>
       <Tabs activeKey={tabKey} onChange={setTabKey}>

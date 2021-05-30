@@ -4,6 +4,7 @@ import { createStore, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
 import { ConfigProvider } from "antd";
+
 import zhCN from "antd/lib/locale/zh_CN";
 import "moment/locale/zh-cn";
 import App from "./App";

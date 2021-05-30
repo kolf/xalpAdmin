@@ -18,6 +18,7 @@ import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 
 import blanklistService from "../../services/blanklist.service";
+import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
@@ -28,6 +29,8 @@ export default function DataTable() {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
+  const [totalArr, setTotalArr] = useState([0, 0]);
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -35,18 +38,19 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();
+  }, [JSON.stringify(query), counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  async function loadData() {
     setLoading(true);
     try {
       const { items, totalCount } =
-        await blanklistService.getBlockAllowUserList(makeQuery(nextQuery));
+        await blanklistService.getBlockAllowUserList(makeQuery(query));
+      const { totalBlockingCount, totalCount: AllTotalCount } =
+        await blanklistService.getBlockAllowUserList();
       setLoading(false);
       setDataList(items);
+      setTotalArr([AllTotalCount, totalBlockingCount]);
       setTotal(totalCount);
     } catch (error) {
       setLoading(false);
@@ -93,8 +97,9 @@ export default function DataTable() {
 
     function onOk() {
       mod.close();
-      utils.success("添加成功！");
-      loadData({
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
         skipCount: "1",
       });
     }
@@ -109,7 +114,9 @@ export default function DataTable() {
 
     function onOk() {
       mod.close();
-      loadData({
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
         skipCount: "1",
       });
     }
@@ -140,16 +147,26 @@ export default function DataTable() {
         });
         mod.close();
         utils.success(`删除成功！`);
-        loadData({ skipCount: "1" });
+        setCounter(counter + 1);
+        setQuery({ ...query, skipCount: "1" });
       } catch (error) {
         mod.close();
-        utils.error(error.error.message || `删除失败！`);
       }
-      // mod.close()
     }
   }
 
-  function openFile() {}
+  async function openFile() {
+    try {
+      const res = await dataService.exportBlockAllowRecord(
+        makeQuery(query)
+      );
+      window.open(res)
+      console.log(res, "res");
+    } catch (error) {
+
+    }
+  }
+
 
   const columns = [
     {
@@ -175,6 +192,9 @@ export default function DataTable() {
     {
       title: "不文明行为发生时间",
       dataIndex: "startTime",
+      render(text){
+        return text ? moment(text).format(secFormat) : "无";
+      }
     },
     {
       title: "距离处理到期天数",
@@ -220,7 +240,8 @@ export default function DataTable() {
         nextPageNum = 1;
       }
 
-      loadData({
+      setQuery({
+        ...query,
         skipCount: nextPageNum + "",
         maxResultCount: pageSize + "",
       });
@@ -233,9 +254,9 @@ export default function DataTable() {
         <Col flex="auto">
           <Space>
             <span>黑名单人数:</span>
-            <span className="iconfont1 text-danger">1223</span>
+            <span className="iconfont1 text-danger">{totalArr[0]}</span>
             <span>当前限制人数:</span>
-            <span className="iconfont1 text-danger">1223</span>
+            <span className="iconfont1 text-danger">{totalArr[1]}</span>
           </Space>
         </Col>
         <Col flex="120px" style={{ textAlign: "right" }}>
@@ -257,7 +278,7 @@ export default function DataTable() {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={loadData}
+        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
         <Form.Item name="date">
           <RangePicker size="small" />
@@ -271,7 +292,9 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) => loadData({ Keyword: value })}
+            onSearch={(value) =>
+              setQuery({ ...query, skipCount: "1", Keyword: value })
+            }
           />
         </Form.Item>
       </Form>

@@ -3,16 +3,12 @@ import moment from "moment";
 import { Calendar, Space, Spin, message } from "antd";
 import modal from "../../shared/modal";
 import UpdateDataForm from "./DataTable5UpdateTabs";
+import DataTable5CalendarDetails from "./DataTable5CalendarDetails";
 import faciliyService from "../../services/faciliy.service";
 const dateFormat = "YYYY-MM-DD";
 
 function makeDate(date) {
   const currentDate = date.date(1);
-  console.log(
-    date,
-    currentDate.format(dateFormat),
-    "currentDate"
-  );
   const startTime = currentDate.date(-currentDate.date(1).day() + 1);
 
   return [
@@ -23,8 +19,8 @@ function makeDate(date) {
 
 export default function DataTable5ListCalendar() {
   const [loading, setLoading] = useState(true);
+  const [selectedDate, setSelectedDate] = useState("");
   const [dataList, setDataList] = useState([]);
-  let dayList = [];
 
   useEffect(() => {
     const [StartTime, EndTime] = makeDate(moment());
@@ -47,8 +43,7 @@ export default function DataTable5ListCalendar() {
   }
 
   function handleChange(value) {
-    console.log(value.format(dateFormat), "value");
-    const [StartTime, EndTime] = makeDate(value.add(1,'M'));
+    const [StartTime, EndTime] = makeDate(value.add(1, "M"));
     loadData({ StartTime, EndTime });
   }
 
@@ -68,29 +63,38 @@ export default function DataTable5ListCalendar() {
     }
   }
 
+  function getDayData(date) {
+    return dataList.find((item) => item.reserveDatePlain === date);
+  }
+
   function dateFullCellRender(e) {
     let current = null;
+    const currentDate = e.format(dateFormat);
     if (dataList.length > 0) {
-      current = dataList.find(
-        (item) => item.reserveDatePlain === e.format(dateFormat)
-      );
+      current = getDayData(currentDate);
     }
 
     const date = e.date();
     return (
       <div
         className="calendar-cell"
-        onClick={showEditModal.bind(this, current)}
+        onClick={() => setSelectedDate(currentDate)}
       >
         <div className="calendar-cell-title">{date}日</div>
         <div className="calendar-cell-notice">
           {current &&
             (current.timeRanges || []).map((time) => (
-              <div key={time.id}>
-                <Space size="small">
+              <div
+                key={time.id}
+                style={{ height: 18, overflow: "hidden", whiteSpace: "nowrap" }}
+                title={`${time.startTimeRange}-${time.endTimeRange} ${time.remainTouristsQuantity}/${time.maxTouristsQuantity}`}
+              >
+                <span style={{ paddingRight: 4 }}>
                   {time.startTimeRange}-{time.endTimeRange}
-                  <span className="text-danger">{time.touristsCount}</span>
-                </Space>
+                </span>
+                <span>
+                  {time.remainTouristsQuantity}/{time.maxTouristsQuantity}
+                </span>
               </div>
             ))}
         </div>
@@ -107,6 +111,15 @@ export default function DataTable5ListCalendar() {
         <div className="calendar-cell-title">{e.month() + 1}月</div>
         <div className="calendar-cell-year-value">1000</div>
       </div>
+    );
+  }
+
+  if (selectedDate) {
+    return (
+      <DataTable5CalendarDetails
+        id={selectedDate}
+        dataSource={getDayData(selectedDate)}
+      ></DataTable5CalendarDetails>
     );
   }
 

@@ -31,7 +31,7 @@ class SessionService {
 
   getToken = async (ossAccessToken) => {
     try {
-      const res = await axios.post("/api/LbyTokenAuth", {
+      const res = await axios.post("api/LbyTokenAuth", {
         ossAccessToken,
       });
       const token = res.data.access_token;
@@ -56,6 +56,10 @@ class SessionService {
   isAuthenticated = () => {
     return !!sessionStorage.getItem("@Auth:token");
   };
+
+  getUserToken = () => {
+    return sessionStorage.getItem("@Auth:token");
+  }
 }
 
 export default new SessionService();

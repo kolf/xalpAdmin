@@ -31,6 +31,7 @@ export default function DataTable() {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
+  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -38,16 +39,14 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData({});
-  }, []);
+    loadData();
+  }, [JSON.stringify(query),counter]);
 
-  async function loadData(newQuery) {
-    const nextQuery = { ...query, ...newQuery };
-    setQuery(nextQuery);
+  async function loadData() {
     setLoading(true);
     try {
       const { items, totalCount } = await faciliyService.getStaffList(
-        makeQuery(nextQuery)
+        makeQuery(query)
       );
       setLoading(false);
       setDataList(items);
@@ -88,13 +87,14 @@ export default function DataTable() {
       content: `此操作将删除此员工, 是否继续?`,
       onOk,
     });
-    async function onOk(done) {
+    async function onOk() {
       try {
         const res = await faciliyService.deleteStaff(creds);
         mod.close();
         utils.success(`删除成功！`);
-
-        loadData({
+        setCounter(counter + 1);
+        setQuery({
+          ...query,
           skipCount: "1",
         });
       } catch (error) {
@@ -111,9 +111,11 @@ export default function DataTable() {
       ),
       footer: null,
     });
-    function onOk(done) {
+    function onOk() {
       mod.close();
-      loadData({
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
         skipCount: "1",
       });
     }
@@ -122,12 +124,14 @@ export default function DataTable() {
   function showAddModal() {
     const mod = modal({
       title: "新增",
-      content: <UpdateDataForm onOk={onOk}></UpdateDataForm>,
+      content: <UpdateDataForm onOk={onOk}/>,
       footer: null,
     });
-    function onOk(done) {
+    function onOk() {
       mod.close();
-      loadData({
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
         skipCount: "1",
       });
     }
@@ -136,11 +140,14 @@ export default function DataTable() {
   function showExportModal(creds) {
     const mod = modal({
       title: "添加",
-      content: <UpdateDataForm onOk={onOk}></UpdateDataForm>,
+      content: <UpdateDataForm onOk={onOk}/>,
     });
-    function onOk(done) {
+    function onOk() {
       mod.close();
-      loadData();
+      setQuery({
+        ...query,
+        skipCount: "1",
+      });
     }
   }
 
@@ -235,7 +242,8 @@ export default function DataTable() {
         nextPageNum = 1;
       }
 
-      loadData({
+      setQuery({
+        ...query,
         skipCount: nextPageNum + "",
         maxResultCount: pageSize + "",
       });
@@ -262,9 +270,9 @@ export default function DataTable() {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={loadData}
+        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item name="a1" style={{ marginBottom: 6, width: 100 }}>
+        <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="核销状态" allowClear>
             {reviewOptions.map((o) => (
               <Option key={o.value}>{o.label}</Option>
@@ -283,7 +291,9 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) => loadData({ Keyword: value })}
+            onSearch={(value) =>
+              setQuery({ ...query, keyword: value, skipCount: "1" })
+            }
           />
         </Form.Item>
       </Form>

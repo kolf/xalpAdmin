@@ -14,12 +14,13 @@ import {
   Space,
   message,
 } from "antd";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import utils from "../../shared/utils";
 import UploadImage from "../UI/UploadImage";
 import { datePickerOptions } from "../../shared/options";
 import commonService from "../../services/common.service";
 import faciliyService from "../../services/faciliy.service";
+import FormList from "./FormList";
 const dateFormat = "YYYY-MM-DD";
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -36,9 +37,8 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   const [form] = Form.useForm();
   const [datePickerOptions, setDatePickerOptions] = useState([]);
   useEffect(() => {
-    console.log(defaultValues, "defaultValues");
     loadData();
-  }, []);
+  }, [JSON.stringify(datePickerOptions)]);
 
   async function loadData() {
     try {
@@ -63,25 +63,32 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     };
     let res = null;
     if (defaultValues.id) {
-      params.id = defaultValues.id;
-      res = await faciliyService.updateReservationTimeSetting(params);
-      utils.success(`更新成功！`);
+      try {
+        params.id = defaultValues.id;
+        res = await faciliyService.updateReservationTimeSetting(params);
+        utils.success(`更新成功！`);
+      } catch (error) {}
     } else {
-      res = await faciliyService.addReservationTimeSetting(params);
-      utils.success(`添加成功！`);
+      try {
+        res = await faciliyService.addReservationTimeSetting(params);
+        utils.success(`添加成功！`);
+      } catch (error) {}
     }
 
     onOk && onOk(res);
   }
 
-  async function checkDateList() {
-    const { items } = await form.getFieldsValue();
-    if (
-      items &&
-      items.filter(
-        (item) => item && item.timeItemId && !isNaN(item.maxTouristsQuantity)
-      ).length > 0
-    ) {
+  async function checkDateList1() {
+    const { _items1 } = await form.getFieldsValue();
+    if (Object.values(_items1).every((item) => item)) {
+      return Promise.resolve();
+    }
+    return Promise.reject(new Error("请完善时间段票数信息"));
+  }
+
+  async function checkDateList2() {
+    const { _items2 } = await form.getFieldsValue();
+    if (Object.values(_items2).every((item) => item)) {
       return Promise.resolve();
     }
     return Promise.reject(new Error("请完善时间段票数信息"));
@@ -93,11 +100,11 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       startReserveDate,
       endReserveDate,
       timeItems,
-      id
+      id,
     } = defaultValues;
 
-    if(!id){
-      return {}
+    if (!id) {
+      return {};
     }
     return {
       maxTouristsQuantity,
@@ -126,58 +133,22 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           <RangePicker />
         </Form.Item>
         <Form.Item
-          label="时间段票数"
-          style={{ marginBottom: 0 }}
-          name="_timeItems"
-          rules={[{ validator: checkDateList }]}
+          label="个人时间段票数"
+          style={{ marginBottom: 12 }}
+          name="_items1"
+          className="form-item-list"
+          rules={[{ validator: checkDateList1 }]}
         >
-          <Form.List name="items">
-            {(fields, { add, remove }) => (
-              <>
-                {fields.map(({ key, name, fieldKey, ...restField }) => (
-                  <Space
-                    key={key}
-                    style={{ display: "flex", marginBottom: 0 }}
-                    align="baseline"
-                  >
-                    <Form.Item
-                      {...restField}
-                      name={[name, "timeItemId"]}
-                      fieldKey={[fieldKey, "timeItemId"]}
-                    >
-                      <Select style={{ width: 160 }} placeholder="请选择时间段">
-                        {datePickerOptions.map((o) => (
-                          <Option key={o.value} value={o.value}>
-                            {o.label}
-                          </Option>
-                        ))}
-                      </Select>
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, "maxTouristsQuantity"]}
-                      fieldKey={[fieldKey, "maxTouristsQuantity"]}
-                    >
-                      <InputNumber placeholder="0" min="0" />
-                    </Form.Item>
-                    <MinusCircleOutlined onClick={() => remove(name)} />
-                  </Space>
-                ))}
-                {fields.length < 3 && (
-                  <Form.Item>
-                    <Button
-                      onClick={() => add()}
-                      style={{ width: 258 }}
-                      block
-                      icon={<PlusOutlined />}
-                    >
-                      添加
-                    </Button>
-                  </Form.Item>
-                )}
-              </>
-            )}
-          </Form.List>
+          <FormList name="items1" pickerOptions={datePickerOptions} />
+        </Form.Item>
+        <Form.Item
+          label="团体时间段票数"
+          style={{ marginBottom: 12 }}
+          name="_items2"
+          className="form-item-list"
+          rules={[{ validator: checkDateList2 }]}
+        >
+          <FormList name="items2" pickerOptions={datePickerOptions} />
         </Form.Item>
         <Form.Item label="库存提示">
           <Space>

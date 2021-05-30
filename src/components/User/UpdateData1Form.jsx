@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Input, Button, Radio, Select } from "antd";
 import utils from "../../shared/utils";
 import userService from "../../services/user.service";
+
+const { Option } = Select;
 
 const layout = {
   labelCol: { span: 6 },
@@ -12,6 +14,27 @@ const tailLayout = {
 };
 
 export default function UpdateDataForm({ onOk, defaultValues = {} }) {
+  const [roleOptions, setRoleOptions] = useState([]);
+
+  useEffect(() => {
+    if (roleOptions.length === 0) {
+      loadData();
+    }
+
+    async function loadData() {
+      try {
+        const { items } = await userService.getAllRole();
+        setRoleOptions(
+          items.map((item) => ({
+            label: item.name,
+            value: item.id,
+            concurrencyStamp: item.concurrencyStamp,
+          }))
+        );
+      } catch (error) {}
+    }
+  }, [JSON.stringify(roleOptions)]);
+
   async function onFinish(values) {
     let res = null;
     if (defaultValues.id) {
@@ -19,17 +42,19 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         res = await userService.updateUser({
           ...makeParams(values),
           id: defaultValues.id,
+          concurrencyStamp: defaultValues.concurrencyStamp,
+          userName: defaultValues.userName,
         });
         utils.success(`更新成功！`);
       } catch (error) {
-        utils.error((error.error || {}).message || "请求失败！");
+
       }
     } else {
       try {
         res = await userService.addUser(makeParams(values));
         utils.success(`添加成功！`);
       } catch (error) {
-        utils.error((error.error || {}).message || "请求失败！");
+
       }
     }
 
@@ -47,13 +72,11 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
   }
 
   function makeDefaultValues() {
-    return Object.keys(defaultValues).reduce((result, key) => {
-      const value = defaultValues[key];
-      if (value !== undefined && value !== "-1") {
-        result[key] = value;
-      }
-      return result;
-    }, {});
+    const { id, roleNames } = defaultValues;
+    if (!id) {
+      return {};
+    }
+    return { roleNames };
   }
   return (
     <>
@@ -63,9 +86,13 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         onFinish={onFinish}
         initialValues={makeDefaultValues(defaultValues)}
       >
-        <Form.Item label="选择角色">
-          <Select placeholder="请选择">
-            <Select.Option value="demo">Demo</Select.Option>
+        <Form.Item label="选择角色" name="roleNames">
+          <Select placeholder="请选择" mode="multiple" allowClear>
+            {roleOptions.map((o) => (
+              <Option value={o.label} key={o.value}>
+                {o.label}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item {...tailLayout}>

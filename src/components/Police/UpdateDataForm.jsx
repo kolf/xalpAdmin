@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { Form, Input, Radio, Select, Button } from "antd";
-import { deviceActiveOptions, deviceOptions } from "../../shared/options";
+import {
+  deviceActiveOptions,
+  deviceOptions,
+  enterOptions,
+} from "../../shared/options";
 import utils from "../../shared/utils";
 import policeService from "../../services/police.service";
 const { Option } = Select;
@@ -31,21 +35,30 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
   }
 
   function makeParams(values) {
-    return Object.keys(values).reduce((result, key) => {
-      const value = values[key];
-      if (key === "isActive" && value) {
-        result.isActive = value === "1";
-      } else if (value !== undefined && value !== "-1") {
-        result[key] = value;
+    return Object.keys(values).reduce(
+      (result, key) => {
+        const value = values[key];
+        if (key === "isActive" && value) {
+          result.isActive = value === "1";
+        } else if (key === "isDirectionEnter" && value) {
+          result.isDirectionEnter = value === "1";
+        } else if (value !== undefined && value !== "-1") {
+          result[key] = value;
+        }
+        return result;
+      },
+      {
+        deviceType: 1,
       }
-      return result;
-    }, {});
+    );
   }
 
   function makeDefaultValues() {
     return Object.keys(defaultValues).reduce((result, key) => {
       const value = defaultValues[key];
       if (key === "isActive" && value) {
+        result.isActive = value ? "1" : "0";
+      } else if (key === "isDirectionEnter" && value) {
         result.isActive = value ? "1" : "0";
       } else if (/^(checkDeviceType)$/.test(key)) {
         result[key] = value + "";
@@ -80,13 +93,13 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item label="录入人员姓名" name="s1">
+        <Form.Item label="录入人员姓名" name="creatorName">
           <Input readOnly />
         </Form.Item>
-        <Form.Item label="录入人工号" name="s2">
+        <Form.Item label="录入人工号" name="creatorJobNumber">
           <Input readOnly />
         </Form.Item>
-        <Form.Item label="录入人员电话" name="s3">
+        <Form.Item label="录入人员电话" name="creatorPhone">
           <Input readOnly />
         </Form.Item>
         <Form.Item label="管理人姓名" name="handlerName">
@@ -98,6 +111,15 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         <Form.Item label="设备状态" name="isActive">
           <Radio.Group>
             {deviceActiveOptions.map((o) => (
+              <Radio key={o.value} value={o.value}>
+                {o.label}
+              </Radio>
+            ))}
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item label="出入口状态" name="isDirectionEnter">
+          <Radio.Group>
+            {enterOptions.map((o) => (
               <Radio key={o.value} value={o.value}>
                 {o.label}
               </Radio>

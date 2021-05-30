@@ -27,7 +27,7 @@ class BlacklistService {
   // 黑名单详情
   getBlockAllowUser = async (creds) => {
     try {
-      const res = await api.get(`/api/BlockAllowUser/${creds.id}`);
+      const res = await api.get(`api/BlockAllowUser/${creds.id}`);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -36,7 +36,7 @@ class BlacklistService {
   // 黑名单新增
   addBlockAllowUser = async (creds) => {
     try {
-      const res = await api.post(`/api/BlockAllowRecord`, creds);
+      const res = await api.post(`api/BlockAllowRecord`, creds);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -45,7 +45,7 @@ class BlacklistService {
   // 黑名单更新
   updateBlockAllowUser = async (creds) => {
     try {
-      const res = await api.put(`/api​/BlockAllowUser​/${creds.id}`, creds);
+      const res = await api.put(`api/BlockAllowUser/${creds.id}`, creds);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -55,7 +55,7 @@ class BlacklistService {
   deleteBlockAllowUser = async (creds) => {
     try {
       const res = await api.delete(
-        `/api/BlockAllowUser?${queryString.stringify(creds)}`
+        `api/BlockAllowUser?${queryString.stringify(creds)}`
       );
       return res.data;
     } catch (error) {
@@ -97,15 +97,6 @@ class BlacklistService {
   addBlockBehavior = async (creds) => {
     try {
       const res = await api.post(`api/BlockBehavior`, creds);
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
-  // 行为规范导出
-  exportBlockBehavior = async (creds) => {
-    try {
-      const res = await api.post(`api/BlockBehavior/${creds.id}`);
       return res.data;
     } catch (error) {
       return Promise.reject(error);

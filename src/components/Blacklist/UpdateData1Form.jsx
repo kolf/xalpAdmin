@@ -58,14 +58,14 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         });
         utils.success(`更新成功！`);
       } catch (error) {
-        utils.error((error.error || {}).message || "请求失败！");
+
       }
     } else {
       try {
         res = await blanklistService.addBlockAllowUser(makeParams(values));
         utils.success(`添加成功！`);
       } catch (error) {
-        utils.error((error.error || {}).message || "请求失败！");
+   
       }
     }
 

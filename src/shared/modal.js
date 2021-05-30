@@ -72,7 +72,6 @@ class Mod extends React.Component {
             </Draggable>
           )}
           wrapClassName={wrapClassName}
-          mask={false}
           bodyStyle={{
             ...otherProps.bodyStyle,
             maxHeight: this.bodyMaxHeight,

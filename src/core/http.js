@@ -1,3 +1,4 @@
+import { message } from "antd";
 import axios from "axios";
 import config from "../config";
 import sessionService from "../services/session.service";
@@ -10,6 +11,7 @@ axios.defaults.baseURL = config.api.baseUrl;
 axios.defaults.headers.common["Content-Type"] =
   "application/x-www-form-urlencoded";
 axios.defaults.headers.common["Tenant-Id"] = 10100;
+axios.defaults.headers.common["Accept-language"] = 'zh-Hans';
 axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
 /**
  * Request Interceptor
@@ -44,11 +46,13 @@ axios.interceptors.response.use(
     return res;
   },
   (error) => {
-    console.log(error, 'error');
     if (error.response && error.response.status === 401) {
       sessionService.logout();
       return;
-      //place your reentry code
+    }
+    if (error.response && (error.response.data || {}).error) {
+      message.error(error.response.data.error.message,1)
+      throw error.response.data;
     }
     // Pass the response from the API, rather than a status code
     if (error && error.response && error.response.data) {

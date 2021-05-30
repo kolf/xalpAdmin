@@ -4,9 +4,7 @@ import api from "../core/http";
 class UserService {
   getAllRole = async (creds) => {
     try {
-      const res = await api.get(
-        `api/identity/roles/all?${queryString.stringify(creds)}`
-      );
+      const res = await api.get(`api/identity/roles/all`);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -24,7 +22,19 @@ class UserService {
   };
   updateRole = async (creds) => {
     try {
-      const res = await api.put(`api/Role/${creds.id}`, creds);
+      const res = await api.put(`api/identity/roles/${creds.id}`, {
+        ...creds,
+        providerKey: undefined,
+      });
+      const res1 = await api.put(
+        `api/permission-management/permissions?providerName=R`,
+        {
+          permissions: creds.providerKey.map((item) => ({
+            name: item,
+            isGranted: true,
+          })),
+        }
+      );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -33,7 +43,18 @@ class UserService {
 
   addRole = async (creds) => {
     try {
-      const res = await api.post(`api/Role`, creds);
+      const res = await api.post(`api/identity/roles​`, {
+        name: creds.name,
+      });
+      const res1 = await api.put(
+        `api/permission-management/permissions?providerName=R`,
+        {
+          permissions: creds.providerKey.map((item) => ({
+            name: item,
+            isGranted: true,
+          })),
+        }
+      );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -42,7 +63,7 @@ class UserService {
 
   deleteRole = async (creds) => {
     try {
-      const res = await api.delete(`api/Role?${queryString.stringify(creds)}`);
+      const res = await api.delete(`api/identity/roles/${creds.id}`);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -58,9 +79,19 @@ class UserService {
       return Promise.reject(error);
     }
   };
+  getAllPermissions = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/permission-management/permissions?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
   updateUser = async (creds) => {
     try {
-      const res = await api.put(`api/identity/users​/${creds.id}`, creds);
+      const res = await api.put(`api/identity/users/${creds.id}`, creds);
       return res.data;
     } catch (error) {
       return Promise.reject(error);

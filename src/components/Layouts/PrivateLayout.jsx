@@ -1,15 +1,15 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-
+import { Map, APILoader } from "@uiw/react-amap";
 import AppHeader from "./AppHeader";
 import Sidebar from "../Sidebar/Sidebar";
 import Menu from "../Sidebar/Menu";
-import "./PrivateLayout.css";
-import imgUrl from "../../assets/img/cad-01.bb6c9874.png";
+import "./PrivateLayout.less";
 import SessionService from "../../services/session.service";
 
 import { Layout } from "antd";
 import AppFooter from "./AppFooter";
+import AliMap from "../UI/AliMap";
 const { Content, Sider } = Layout;
 
 export default class PrivateLayout extends React.Component {
@@ -20,16 +20,18 @@ export default class PrivateLayout extends React.Component {
         {...rest}
         render={(props) =>
           SessionService.isAuthenticated() ? (
-            <Layout
-              style={{ height: "100%", background: `url(${imgUrl}) center` }}
-            >
+            <Layout style={{ height: "100%", _backgroundColor: "transparent" }}>
               <AppHeader />
               <Layout
                 style={{ backgroundColor: "transparent", padding: "8px 8px 0" }}
               >
                 <Sider
                   width={400}
-                  style={{ backgroundColor: "transparent", padding: "12px" }}
+                  style={{
+                    backgroundColor: "transparent",
+                    padding: "12px",
+                    zIndex: 10,
+                  }}
                 >
                   <Sidebar />
                 </Sider>
@@ -38,12 +40,16 @@ export default class PrivateLayout extends React.Component {
                 </Content>
                 <Sider
                   width={140}
-                  style={{ backgroundColor: "transparent", padding: "12px" }}
+                  style={{
+                    backgroundColor: "transparent",
+                    padding: "12px",
+                  }}
                 >
                   <Menu />
                 </Sider>
-                <AppFooter></AppFooter>
+                <AppFooter />
               </Layout>
+              <AliMap />
             </Layout>
           ) : (
             <Redirect

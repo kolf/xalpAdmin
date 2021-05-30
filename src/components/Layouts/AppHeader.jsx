@@ -24,10 +24,11 @@ class AppHeader extends React.Component {
       <Header
         style={{
           paddingLeft: 0,
-          paddingRight:12,
+          paddingRight: 12,
           display: "flex",
           backgroundColor: "rgba(6, 26, 53, 0.8)",
           height: "66px",
+          zIndex: 10,
         }}
       >
         <div className="brand">雄安郊野公园</div>
@@ -41,13 +42,15 @@ class AppHeader extends React.Component {
             flex: 1,
           }}
         >
-          <Menu.Item key="3"><Link to="/">入园管理系统</Link></Menu.Item>
+          <Menu.Item key="3">
+            <Link to="/">入园管理系统</Link>
+          </Menu.Item>
         </Menu>
         <div style={{ padding: "0 12px" }}>
-          <Link to="/login">退出</Link>
+          <a href="/login">退出</a>
         </div>
         <div style={{ display: "flex" }}>
-          <DateWidget/>
+          <DateWidget />
         </div>
       </Header>
     );
