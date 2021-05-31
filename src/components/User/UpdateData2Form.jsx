@@ -22,6 +22,14 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
   async function loadData() {
     try {
       const res = await userService.getAllPermissions({ providerName: "R" });
+      if (defaultValues.name) {
+        const res1 = await userService.getAllPermissions({
+          providerName: "R",
+          providerKey: defaultValues.name,
+        });
+        console.log(res1, 'res1')
+      }
+
       const options = res.groups
         .find((item) => item.name === "SmartTicketing")
         .permissions.map((item) => ({

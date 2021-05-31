@@ -67,18 +67,20 @@ export default function DataTable() {
     if (!data) {
       return [];
     }
-    return data.reduce((result, item, i) => {
-      const { timeItems } = item;
-      return [
-        ...result,
-        ...timeItems.map((t, j) => ({
-          ...item,
-          ...t,
-          index: j === 0 ? i + j + 1 : -1,
-          size: timeItems.length,
-        })),
-      ];
-    }, []);
+    return data
+      .filter((item) => item.timeItems.length > 0)
+      .reduce((result, item, i) => {
+        const { timeItems } = item;
+        return [
+          ...result,
+          ...timeItems.map((t, j) => ({
+            ...item,
+            ...t,
+            index: j === 0 ? i + 1 : -1,
+            size: timeItems.length,
+          })),
+        ];
+      }, []);
   }
 
   function makeQuery(query) {
@@ -145,10 +147,11 @@ export default function DataTable() {
     {
       title: "起始日期",
       dataIndex: "startReserveDate",
-      render(text, creds) {
-        return `${moment(creds.startReserveDate).format(dateFormat)}至${moment(
-          creds.endReserveDate
-        ).format(dateFormat)}`;
+      render(text, creds, index) {
+        const value = `${moment(creds.startReserveDate).format(
+          dateFormat
+        )}至${moment(creds.endReserveDate).format(dateFormat)}`;
+        return expandedRowRender(value, creds, index);
       },
     },
     {
@@ -228,10 +231,15 @@ export default function DataTable() {
     total,
     position: ["", "bottomCenter"],
     size: "small",
-    onChange(value) {
+    onChange(pageNum, pageSize) {
+      let nextPageNum = pageNum;
+      if (pageSize != query.maxResultCount * 1) {
+        nextPageNum = 1;
+      }
       setQuery({
         ...query,
-        skipCount: value + "",
+        skipCount: nextPageNum + "",
+        maxResultCount: pageSize + "",
       });
     },
   };
@@ -243,7 +251,9 @@ export default function DataTable() {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
+        onFinish={(values) => {
+          setQuery({ ...query, ...values, skipCount: "1" });
+        }}
       >
         <Form.Item name="date">
           <RangePicker size="small" />
@@ -257,9 +267,9 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
-            onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", Keyword: value })
-            }
+            onSearch={(value) => {
+              setQuery({ ...query, skipCount: "1", Keyword: value });
+            }}
           />
         </Form.Item>
       </Form>

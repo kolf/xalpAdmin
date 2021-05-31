@@ -157,16 +157,11 @@ export default function DataTable() {
 
   async function openFile() {
     try {
-      const res = await dataService.exportBlockAllowRecord(
-        makeQuery(query)
-      );
-      window.open(res)
+      const res = await dataService.exportBlockAllowRecord(makeQuery(query));
+      window.open(res);
       console.log(res, "res");
-    } catch (error) {
-
-    }
+    } catch (error) {}
   }
-
 
   const columns = [
     {
@@ -192,9 +187,9 @@ export default function DataTable() {
     {
       title: "不文明行为发生时间",
       dataIndex: "startTime",
-      render(text){
+      render(text) {
         return text ? moment(text).format(secFormat) : "无";
-      }
+      },
     },
     {
       title: "距离处理到期天数",
