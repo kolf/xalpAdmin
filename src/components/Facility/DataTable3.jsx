@@ -40,7 +40,7 @@ export default function DataTable() {
 
   useEffect(() => {
     loadData();
-  }, [JSON.stringify(query),counter]);
+  }, [JSON.stringify(query), counter]);
 
   async function loadData() {
     setLoading(true);
@@ -61,7 +61,12 @@ export default function DataTable() {
       return [];
     }
     return data.map((item, index) => {
-      return { ...item.staff, webUrl: item.webUrl, index: index + 1 };
+      return {
+        ...item.staff,
+        webUrl: item.webUrl,
+        tempFaceFileName: item.faceRelativePath,
+        index: index + 1,
+      };
     });
   }
 
@@ -124,7 +129,7 @@ export default function DataTable() {
   function showAddModal() {
     const mod = modal({
       title: "新增",
-      content: <UpdateDataForm onOk={onOk}/>,
+      content: <UpdateDataForm onOk={onOk} />,
       footer: null,
     });
     function onOk() {
@@ -140,7 +145,7 @@ export default function DataTable() {
   function showExportModal(creds) {
     const mod = modal({
       title: "添加",
-      content: <UpdateDataForm onOk={onOk}/>,
+      content: <UpdateDataForm onOk={onOk} />,
     });
     function onOk() {
       mod.close();

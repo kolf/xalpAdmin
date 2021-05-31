@@ -81,8 +81,6 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     onOk && onOk(res);
   }
 
-  console.log(defaultValues, "defaultValues");
-
   return (
     <>
       <Form

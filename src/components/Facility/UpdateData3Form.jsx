@@ -38,16 +38,12 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           id: defaultValues.id,
         });
         utils.success(`更新成功！`);
-      } catch (error) {
-        
-      }
+      } catch (error) {}
     } else {
       try {
         res = await faciliyService.addStaff(makeParams(values));
         utils.success(`添加成功！`);
-      } catch (error) {
-        
-      }
+      } catch (error) {}
     }
 
     onOk && onOk(res);
@@ -72,13 +68,32 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     );
   }
 
+  function makeDefaultValues(values) {
+    if (!defaultValues.id) {
+      return {};
+    }
+    return Object.keys(values).reduce(
+      (result, key) => {
+        const value = values[key];
+        if (key === "date" && value) {
+        } else {
+          result[key] = value;
+        }
+        return result;
+      },
+      {
+        staffType: 1,
+      }
+    );
+  }
+
   return (
     <>
       <Form
         {...layout}
         size="small"
         onFinish={onFinish}
-        initialValues={defaultValues}
+        initialValues={makeDefaultValues(defaultValues)}
       >
         <Form.Item label="工号" name="jobNumber">
           <Input placeholder="请输入" />

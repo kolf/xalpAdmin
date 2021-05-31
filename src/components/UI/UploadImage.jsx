@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Upload, message } from "antd";
 import utils from "../../shared/utils";
 
-export default function UploadImage({ onChange }) {
-  const [value, setValue] = useState("");
+export default function UploadImage({ onChange, value: propsValue }) {
+  const [value, setValue] = useState(
+    `api/UploadFile/GetTempFileItem?fileName=${propsValue}`
+  );
   const [loading, setLoading] = useState(false);
 
   function handleChange(e) {
