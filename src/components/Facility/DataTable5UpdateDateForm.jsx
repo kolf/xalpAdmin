@@ -91,19 +91,32 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   }
 
   function makeParams(values) {
-    const { date, _items1, _items2 } = values;
+    const { date, warningLeftQuantity, _items1, _items2 } = values;
     const [start, end] = date;
     let items = [];
 
-    if(_items1){
-      // items = 
+    if (_items1) {
+      items = Object.values(_items1).map((item) => ({
+        clientType: 1,
+        timeItemId: item[0],
+        maxTouristsQuantity: item[1],
+        warningLeftQuantity,
+      }));
     }
-
-    console.log(_items1, '_items1')
+    if (_items2) {
+      items = [
+        ...items,
+        ...Object.values(_items2).map((item) => ({
+          clientType: 2,
+          timeItemId: item[0],
+          maxTouristsQuantity: item[1],
+          warningLeftQuantity,
+        })),
+      ];
+    }
 
     return {
       isSpecial: true,
-      ...values,
       startReserveDate: start.format(dateFormat),
       endReserveDate: end.format(dateFormat),
       items,
@@ -171,7 +184,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         <Form.Item label="库存提示">
           <Space>
             <span>数量低于</span>
-            <Form.Item name="maxTouristsQuantity" style={{ marginBottom: 0 }}>
+            <Form.Item name="warningLeftQuantity" style={{ marginBottom: 0 }}>
               <InputNumber placeholder="0" min="0" />
             </Form.Item>
             <span>提示“余票过少”</span>

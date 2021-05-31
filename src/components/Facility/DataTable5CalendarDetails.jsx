@@ -48,7 +48,7 @@ export default function DataTable({ id, dataSource }) {
     },
     {
       title: "库存提示",
-      dataIndex: "msg",
+      dataIndex: "warningLeftQuantity",
       render(text, creds) {
         return text || "无";
       },

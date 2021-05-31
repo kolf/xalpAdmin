@@ -24,7 +24,7 @@ export default function DataTable() {
 
   function showAddModal() {
     const mod = modal({
-      content: <UpdateDataForm onOk={onOk}/>,
+      content: <UpdateDataForm onOk={onOk} />,
       footer: null,
     });
     function onOk() {
