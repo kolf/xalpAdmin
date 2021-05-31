@@ -25,8 +25,11 @@ export default function FormList({ pickerOptions = [], name, onChange }) {
     const propValues = allField.reduce((result, item) => {
       const { name: names, value } = item;
       const [uid, index] = names[0].split("_");
-      result[uid] = [];
-      result[uid][index] = value;
+      if (result[uid]) {
+        result[uid][index] = value;
+      } else {
+        result[uid] = [value];
+      }
       return result;
     }, {});
     onChange(propValues);

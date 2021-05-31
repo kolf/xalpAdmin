@@ -53,24 +53,20 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   }
 
   async function onFinish(values) {
-    const { date } = values;
-    const [start, end] = date;
-
-    let params = {
-      ...values,
-      startReserveDate: start.format(dateFormat),
-      endReserveDate: end.format(dateFormat),
-    };
     let res = null;
     if (defaultValues.id) {
       try {
-        params.id = defaultValues.id;
-        res = await faciliyService.updateReservationTimeSetting(params);
+        res = await faciliyService.updateReservationTimeSetting({
+          ...makeParams(values),
+          id: defaultValues.id,
+        });
         utils.success(`更新成功！`);
       } catch (error) {}
     } else {
       try {
-        res = await faciliyService.addReservationTimeSetting(params);
+        res = await faciliyService.addReservationTimeSetting(
+          makeParams(values)
+        );
         utils.success(`添加成功！`);
       } catch (error) {}
     }
@@ -94,6 +90,29 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     return Promise.reject(new Error("请完善时间段票数信息"));
   }
 
+  function makeParams(values) {
+    const { date, _items1, _items2 } = values;
+    const [start, end] = date;
+    let items = [];
+
+    if(_items1){
+      // items = 
+    }
+
+    console.log(_items1, '_items1')
+
+    return {
+      isSpecial: true,
+      ...values,
+      startReserveDate: start.format(dateFormat),
+      endReserveDate: end.format(dateFormat),
+      items,
+      date: undefined,
+      _items1: undefined,
+      _items2: undefined,
+    };
+  }
+
   function makeDefaultValues() {
     const {
       maxTouristsQuantity,
@@ -108,7 +127,6 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     }
     return {
       maxTouristsQuantity,
-      items: timeItems,
       date: [
         moment(startReserveDate, dateFormat),
         moment(endReserveDate, dateFormat),
