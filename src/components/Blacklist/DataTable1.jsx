@@ -122,7 +122,7 @@ export default function DataTable() {
     }
   }
 
-  function showExportModal(creds) {
+  function showImportModal(creds) {
     const mod = modal({
       title: "批量导入",
       width: 720,
@@ -191,10 +191,10 @@ export default function DataTable() {
         return text ? moment(text).format(secFormat) : "无";
       },
     },
-    {
-      title: "距离处理到期天数",
-      dataIndex: "daysOfEndBlock",
-    },
+    // {
+    //   title: "距离处理到期天数",
+    //   dataIndex: "daysOfEndBlock",
+    // },
     {
       title: "处罚",
       dataIndex: "behaviorDescription",
@@ -259,7 +259,7 @@ export default function DataTable() {
             <Button size="small" type="primary" onClick={showAddModal}>
               新增
             </Button>
-            <Button size="small" type="primary" onClick={showExportModal}>
+            <Button size="small" type="primary" onClick={showImportModal}>
               批量导入
             </Button>
             <Button size="small" type="primary" onClick={openFile}>

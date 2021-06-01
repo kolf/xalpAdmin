@@ -3,7 +3,6 @@ import { Table, Button, DatePicker, Form, Space, Upload } from "antd";
 import dataService from "../../services/data.service";
 import sessionService from "../../services/session.service";
 import utils from "../../shared/utils";
-import { behaviorTypeEnum } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const dateFormat = "YYYY-MM-DD";
 
@@ -21,12 +20,12 @@ export default function DataTable({ id, onOk }) {
   }
 
   function openTemplateFile() {
-    window.open(`${dataService.getTemplateFileUrl(1)}`);
+    window.open(`${dataService.getTemplateFileUrl(2)}`);
   }
 
   async function onFinish() {
     try {
-      const res = await dataService.importBlockBehavior({ fileName });
+      const res = await dataService.importMerchantList({ fileName });
       utils.success(`导入成功！`);
     } catch (error) {}
     console.log("onFinish");
@@ -35,30 +34,37 @@ export default function DataTable({ id, onOk }) {
 
   const columns = [
     {
-      title: "序号",
-      dataIndex: "index",
-    },
-    {
-      title: "程度",
-      dataIndex: "behaviorType",
-      render(text){
-        return behaviorTypeEnum[text] || '无'
-      }
-    },
-    {
-      title: "行为",
+      title: "供应商名称",
       dataIndex: "name",
     },
     {
-      title: "惩罚措施",
-      dataIndex: "note",
+      title: "姓名",
+      dataIndex: "handlerName",
+    },
+    {
+      title: "联系电话",
+      dataIndex: "handlerPhone",
+    },
+    {
+      title: "类型",
+      dataIndex: "merchantTypeName",
+      render(text) {
+        return text || "无";
+      },
+    },
+    {
+      title: "预约时间",
+      dataIndex: "openingHours",
+      render(text) {
+        return text || "无";
+      },
     },
   ];
 
   const uploadProps = {
     name: "file",
     showUploadList: false,
-    action: "api/BlockBehavior/Check",
+    action: "api/Merchant/Check",
     headers: {
       authorization: "Bearer " + uersToken,
     },
@@ -68,7 +74,7 @@ export default function DataTable({ id, onOk }) {
       }
       if (info.file.status === "done") {
         try {
-          setDataList(info.file.response.blockBehaviors);
+          setDataList(info.file.response.merchants);
           setFileName(info.file.response.tempExcelFileName);
         } catch (error) {
           utils.error(`文件格式有误！`);

@@ -45,21 +45,7 @@ export default function DataTable() {
 
   useEffect(() => {
     loadData();
-    async function loadData() {
-      try {
-        const res = await dataService.getOrderStatistics({
-          ClientType: 1,
-          StartTravelTime: moment().format(dateFormat) + " 00:00:00",
-          EndTravelTime: moment().format(dateFormat) + " 23:59:59",
-        });
-        setTotalData(res);
-      } catch (error) {}
-    }
-  }, [JSON.stringify(totalData), counter]);
-
-  useEffect(() => {
-    loadData();
-  }, [JSON.stringify(query)]);
+  }, [JSON.stringify(query), counter]);
 
   async function loadData() {
     setLoading(true);
@@ -67,8 +53,14 @@ export default function DataTable() {
       const { items, totalCount } = await facilityService.getOrderDetailList(
         makeQuery(query)
       );
+      const res = await dataService.getOrderStatistics({
+        ClientType: 1,
+        StartTravelTime: moment().format(dateFormat) + " 00:00:00",
+        EndTravelTime: moment().format(dateFormat) + " 23:59:59",
+      });
       setLoading(false);
       setDataList(items);
+      setTotalData(res);
       setTotal(totalCount);
     } catch (error) {
       setLoading(false);

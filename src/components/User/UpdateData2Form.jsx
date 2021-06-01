@@ -13,6 +13,7 @@ const tailLayout = {
 
 export default function UpdateDataForm({ onOk, defaultValues = {} }) {
   const [providerOptions, setProviderOptions] = useState([]);
+  let permissionsValue = [];
   useEffect(() => {
     if (providerOptions.length === 0) {
       loadData();
@@ -21,21 +22,32 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
 
   async function loadData() {
     try {
-      const res = await userService.getAllPermissions({ providerName: "R" });
+      let res = null;
       if (defaultValues.name) {
-        const res1 = await userService.getAllPermissions({
+        res = await userService.getAllPermissions({
           providerName: "R",
           providerKey: defaultValues.name,
         });
-        console.log(res1, 'res1')
+        console.log(res, "res1");
+      } else {
+        res = await userService.getAllPermissions({ providerName: "R" });
       }
-
       const options = res.groups
         .find((item) => item.name === "SmartTicketing")
-        .permissions.map((item) => ({
-          label: item.displayName,
-          value: item.name,
-        }));
+        .permissions.map((item) => {
+          if (
+            defaultValues.name &&
+            item.grantedProviders.find(
+              (g) => g.providerKey === defaultValues.name
+            )
+          ) {
+            permissionsValue.push(item.name);
+          }
+          return {
+            label: item.displayName,
+            value: item.name,
+          };
+        });
 
       setProviderOptions(options);
     } catch (error) {}
@@ -48,6 +60,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         res = await userService.updateRole({
           ...makeParams(values),
           id: defaultValues.id,
+          providerKey: defaultValues.name,
           concurrencyStamp: defaultValues.concurrencyStamp,
         });
         utils.success(`更新成功！`);
@@ -79,14 +92,20 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
   }
 
   function makeDefaultValues() {
-    return Object.keys(defaultValues).reduce((result, key) => {
-      const value = defaultValues[key];
-      if (value !== undefined && value !== "-1") {
-        result[key] = value;
+    return Object.keys(defaultValues).reduce(
+      (result, key) => {
+        const value = defaultValues[key];
+        if (value !== undefined && value !== "-1") {
+          result[key] = value;
+        }
+        return result;
+      },
+      {
+        permissions: permissionsValue,
       }
-      return result;
-    }, {});
+    );
   }
+
   return (
     <>
       <Form
@@ -98,7 +117,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         <Form.Item label="角色名称" name="name">
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="权限设置" name="providerKey">
+        <Form.Item label="权限设置" name="permissions">
           <Checkbox.Group options={providerOptions} />
         </Form.Item>
         <Form.Item {...tailLayout}>

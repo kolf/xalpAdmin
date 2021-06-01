@@ -5,17 +5,11 @@ import moment from "moment";
 let _timer = null;
 class Utils {
   success = (msg, duration = 1) => {
-    clearTimeout(_timer);
-    _timer = setTimeout(() => {
-      message.success(msg, duration);
-    }, 30);
+    message.success(msg, duration);
   };
 
   error = (msg, duration = 1) => {
-    clearTimeout(_timer);
-    _timer = setTimeout(() => {
-      message.error(msg, duration);
-    }, 30);
+    message.error(msg, duration);
   };
 
   dateTimeFormater = (datetime, formatString) => {

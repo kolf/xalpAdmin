@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { Calendar, Space, Spin, message } from "antd";
-import modal from "../../shared/modal";
+import { Calendar, Space, Spin, Row, Col, Button } from "antd";
 import DataTable5CalendarDetails from "./DataTable5CalendarDetails";
+import UpdateDataForm from "./DataTable5UpdateTabs";
+import modal from "../../shared/modal";
 import faciliyService from "../../services/faciliy.service";
 const dateFormat = "YYYY-MM-DD";
 
@@ -16,7 +17,7 @@ function makeDate(date) {
   ];
 }
 
-export default function DataTable5ListCalendar() {
+export default function DataTable5ListCalendar({ renderHeader }) {
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState("");
   const [dataList, setDataList] = useState([]);
@@ -44,6 +45,16 @@ export default function DataTable5ListCalendar() {
   function handleChange(value) {
     const [StartTime, EndTime] = makeDate(value.add(1, "M"));
     loadData({ StartTime, EndTime });
+  }
+
+  function showAddModal() {
+    const mod = modal({
+      content: <UpdateDataForm onOk={onOk} />,
+      footer: null,
+    });
+    function onOk() {
+      mod.close();
+    }
   }
 
   function getDayData(date) {
@@ -108,6 +119,16 @@ export default function DataTable5ListCalendar() {
 
   return (
     <div className="calendar-root">
+      <Row style={{ paddingBottom: 12 }}>
+        <Col flex="auto">{renderHeader}</Col>
+        <Col flex="120px" style={{ textAlign: "right" }}>
+          <Space>
+            <Button size="small" type="primary" onClick={showAddModal}>
+              批量上票
+            </Button>
+          </Space>
+        </Col>
+      </Row>
       <Spin tip="加载中..." spinning={loading}>
         <Calendar
           style={{ backgroundColor: "transparent" }}

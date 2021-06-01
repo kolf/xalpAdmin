@@ -3,6 +3,7 @@ import { Map, APILoader, Marker } from "@uiw/react-amap";
 import imgUrl from "../../assets/img/cad-01.bb6c9874.png";
 import icon1Url from "../../assets/img/icon1.png";
 export default function AliMap() {
+    console.log('render')
   return (
     <div className="alimap-root">
       <APILoader akay="c54dd5d1143cb8ea800f1d5e8d48502a">

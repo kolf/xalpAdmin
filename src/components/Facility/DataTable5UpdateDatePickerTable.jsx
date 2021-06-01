@@ -99,7 +99,7 @@ export default function DataTable() {
     if (!data) {
       return [];
     }
-    return data.filter((item, index) => index < 3);
+    return data.filter((item, index) => index < 100);
   }
 
   function makeQuery(query) {
@@ -123,6 +123,7 @@ export default function DataTable() {
   }
 
   async function onSave(key) {
+    console.log(key, "key");
     try {
       const row = await form.validateFields();
       const [startTime, endTime] = [
@@ -132,16 +133,20 @@ export default function DataTable() {
 
       const displayText = startTime + "-" + endTime;
       let res = null;
-      if (/^\d+$/) {
+      if (/^\d+$/.test(key)) {
         res = await create({ key, startTime, endTime, displayText });
       } else {
         res = await update({ key, startTime, endTime, displayText });
       }
 
+      console.log(res, "res");
+
       const nextDataList = dataList.map((item) => {
         if (item.key === key) {
           return {
             ...item,
+            key: res.id,
+            id: res.id,
             startTime,
             endTime,
             displayText,
@@ -274,7 +279,12 @@ export default function DataTable() {
   return (
     <>
       <div style={{ paddingBottom: 12 }}>
-        <Button type="primary" size="small" onClick={onAdd}>
+        <Button
+          type="primary"
+          size="small"
+          onClick={onAdd}
+          disabled={dataList.length >= 3}
+        >
           添加时段
         </Button>
       </div>

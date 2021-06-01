@@ -184,6 +184,25 @@ class FaciliyService {
       return Promise.reject(error);
     }
   };
+  // 团体预约
+  getOrderList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Order/OrderList?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  checkAllOrder = async (creds) => {
+    try {
+      const res = await api.post(`api/Order/CheckAll/${creds.id}`);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
   checkOrder = async (creds) => {
     try {
       const res = await api.post(`api/Order/Check/${creds.id}`);

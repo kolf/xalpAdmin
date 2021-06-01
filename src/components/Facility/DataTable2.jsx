@@ -45,30 +45,22 @@ export default function DataTable() {
 
   useEffect(() => {
     loadData();
-    async function loadData() {
-      try {
-        const res = await dataService.getOrderStatistics({
-          ClientType: 1,
-          StartTravelTime: moment().format(dateFormat) + " 00:00:00",
-          EndTravelTime: moment().format(dateFormat) + " 23:59:59",
-        });
-        setTotalData(res);
-      } catch (error) {}
-    }
-  }, [JSON.stringify(totalData),counter]);
-
-  useEffect(() => {
-    loadData();
-  }, [JSON.stringify(query)]);
+  }, [JSON.stringify(query), counter]);
 
   async function loadData() {
     setLoading(true);
     try {
-      const { items, totalCount } = await facilityService.getOrderDetailList(
+      const { items, totalCount } = await facilityService.getOrderList(
         makeQuery(query)
       );
+      const res = await dataService.getOrderStatistics({
+        ClientType: 2,
+        StartTravelTime: moment().format(dateFormat) + " 00:00:00",
+        EndTravelTime: moment().format(dateFormat) + " 23:59:59",
+      });
       setLoading(false);
       setDataList(items);
+      setTotalData(res);
       setTotal(totalCount);
     } catch (error) {
       setLoading(false);
@@ -82,6 +74,7 @@ export default function DataTable() {
     return data.map((item, index) => {
       return {
         ...item,
+        ...item.order,
         index: index + 1,
       };
     });
@@ -120,7 +113,6 @@ export default function DataTable() {
         setQuery({ ...query, skipCount: "1" });
       } catch (error) {
         mod.close();
-
       }
       // mod.close()
     }
@@ -140,7 +132,6 @@ export default function DataTable() {
         setQuery({ ...query, skipCount: "1" });
       } catch (error) {
         mod.close();
-
       }
     }
   }
@@ -148,59 +139,59 @@ export default function DataTable() {
   function openFile() {}
 
   function getRowClassName(creds, index) {
-    if (creds.status !== 1) {
-      return "ant-table-row-disabled";
-    }
+    // if (creds.status !== 1) {
+    //   return "ant-table-row-disabled";
+    // }
   }
 
   const columns = [
     {
       title: "订单号",
-      dataIndex: "name",
+      dataIndex: "orderNO",
     },
     {
       title: "预约人员姓名",
-      dataIndex: "age",
+      dataIndex: "name",
     },
     {
       title: "联系电话",
-      dataIndex: "address",
+      dataIndex: "phone",
     },
     {
       title: "预约时间段",
-      dataIndex: "user",
+      dataIndex: "timeRangeName",
     },
     {
       title: "抵达方式",
-      dataIndex: "num",
+      dataIndex: "regionProvince",
     },
     {
       title: "核销设备(核销方式)",
-      dataIndex: "phone",
+      dataIndex: "phon1e",
     },
     {
       title: "操作",
       dataIndex: "options",
       fixed: "right",
       width: 176,
-      render() {
+      render(text, creds) {
         return (
           <div className="text-center">
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showDetailsModal}
+              onClick={e => showDetailsModal(creds)}
             >
               查看
             </Button>
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showReviewModal}
+              onClick={e => showReviewModal(creds)}
             >
               核销
             </Button>
-            <Button size="small" onClick={showDeleteModal}>
+            <Button size="small" onClick={e => showDeleteModal(creds)}>
               取消
             </Button>
           </div>
@@ -269,7 +260,9 @@ export default function DataTable() {
         <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="核销状态" allowClear>
             {reviewOptions.map((o) => (
-              <Option key={o.value}>{o.label}</Option>
+              <Option key={o.value} value={o.value}>
+                {o.label}
+              </Option>
             ))}
           </Select>
         </Form.Item>
@@ -301,7 +294,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        // scroll={{ x: 1400 }}
+        scroll={{ x: 1200 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

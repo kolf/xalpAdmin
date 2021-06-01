@@ -4,7 +4,7 @@ import utils from "../../shared/utils";
 
 export default function UploadImage({ onChange, value: propsValue }) {
   const [value, setValue] = useState(
-    `api/UploadFile/GetTempFileItem?fileName=${propsValue}`
+    propsValue ? `api/UploadFile/GetTempFileItem?fileName=${propsValue}` : ""
   );
   const [loading, setLoading] = useState(false);
 

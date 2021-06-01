@@ -16,7 +16,9 @@ import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import UpdateDataForm from "./UpdateData4Form";
+import ImportDataTable from "./ImportData4Table";
 import faciliyService from "../../services/faciliy.service";
+import dataService from "../../services/data.service";
 import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -37,7 +39,7 @@ export default function DataTable() {
 
   useEffect(() => {
     loadData();
-  }, [JSON.stringify(query),counter]);
+  }, [JSON.stringify(query), counter]);
 
   async function loadData() {
     setLoading(true);
@@ -87,7 +89,7 @@ export default function DataTable() {
     async function onOk() {
       try {
         const res = await faciliyService.deleteMerchant(creds);
-        mod.close()
+        mod.close();
         utils.success(`删除成功！`);
         setCounter(counter + 1);
         setQuery({
@@ -95,7 +97,7 @@ export default function DataTable() {
           skipCount: "1",
         });
       } catch (error) {
-        mod.close()
+        mod.close();
       }
     }
   }
@@ -121,7 +123,7 @@ export default function DataTable() {
   function showAddModal() {
     const mod = modal({
       title: "新增",
-      content: <UpdateDataForm onOk={onOk}/>,
+      content: <UpdateDataForm onOk={onOk} />,
       footer: null,
     });
     function onOk() {
@@ -134,13 +136,16 @@ export default function DataTable() {
     }
   }
 
-  function showExportModal(creds) {
+  function showImportModal(creds) {
     const mod = modal({
       title: "导出",
-      content: <UpdateDataForm onOk={onOk}/>,
+      width: 720,
+      content: <ImportDataTable onOk={onOk} />,
+      footer: null,
     });
     function onOk() {
       mod.close();
+      setCounter(counter + 1);
       setQuery({
         ...query,
         skipCount: "1",
@@ -148,7 +153,13 @@ export default function DataTable() {
     }
   }
 
-  function openFile() {}
+  async function openFile() {
+    try {
+      const res = await dataService.exportMerchantList(makeQuery(query));
+      window.open(res);
+      console.log(res, "res");
+    } catch (error) {}
+  }
 
   const columns = [
     {
@@ -246,7 +257,7 @@ export default function DataTable() {
             <Button size="small" type="primary" onClick={showAddModal}>
               新增
             </Button>
-            <Button size="small" type="primary" onClick={showExportModal}>
+            <Button size="small" type="primary" onClick={showImportModal}>
               批量导入
             </Button>
             <Button size="small" type="primary" onClick={openFile}>

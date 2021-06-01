@@ -27,9 +27,9 @@ class UserService {
         providerKey: undefined,
       });
       const res1 = await api.put(
-        `api/permission-management/permissions?providerName=R`,
+        `api/permission-management/permissions?providerName=R&providerKey=${creds.providerKey}`,
         {
-          permissions: creds.providerKey.map((item) => ({
+          permissions: creds.permissions.map((item) => ({
             name: item,
             isGranted: true,
           })),
@@ -37,6 +37,7 @@ class UserService {
       );
       return res.data;
     } catch (error) {
+      console.log(error, "error")
       return Promise.reject(error);
     }
   };

@@ -1,16 +1,49 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, DatePicker, Form, Input, Select } from "antd";
+import UpdateDataForm from "./DataTable5UpdateTabs";
+import modal from "../../shared/modal";
+import confirm from "../../shared/confirm";
+import utils from "../../shared/utils";
+import faciliyService from "../../services/faciliy.service";
 const dateFormat = "YYYY-MM-DD";
 
 export default function DataTable({ id, dataSource }) {
   function makeData(data) {
-    if(!data){
-      return []
+    if (!data) {
+      return [];
     }
     console.log(data, "data");
     return data.timeRanges.map((item, index) => {
       return { ...item, index: index + 1 };
     });
+  }
+
+  function showDeleteModal(creds) {
+    const mod = confirm({
+      content: `此操作将删除这条数据, 是否继续?`,
+      onOk,
+    });
+    async function onOk() {
+      try {
+        const res = await faciliyService.deleteReservationTimeSetting(creds);
+        mod.close();
+        utils.success(`删除成功！`);
+      } catch (error) {
+        mod.close();
+      }
+    }
+  }
+
+  function showEditModal(creds) {
+    const mod = modal({
+      content: (
+        <UpdateDataForm defaultValues={creds} onOk={onOk}></UpdateDataForm>
+      ),
+      footer: null,
+    });
+    function onOk() {
+      mod.close();
+    }
   }
 
   const columns = [
@@ -53,6 +86,36 @@ export default function DataTable({ id, dataSource }) {
         return text || "无";
       },
     },
+    // {
+    //   title: "操作",
+    //   dataIndex: "options",
+    //   render(text, creds, index) {
+    //     const obj = {
+    //       children: (
+    //         <div className="text-center">
+    //           <Button
+    //             size="small"
+    //             style={{ marginRight: 4 }}
+    //             onClick={showEditModal.bind(this, creds)}
+    //           >
+    //             编辑
+    //           </Button>
+    //           <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+    //             删除
+    //           </Button>
+    //         </div>
+    //       ),
+    //       props: {},
+    //     };
+    //     if (index === 0) {
+    //       obj.props.rowSpan = makeData(dataSource).length;
+    //     } else {
+    //       obj.props.rowSpan = 0;
+    //     }
+
+    //     return obj;
+    //   },
+    // },
   ];
 
   return (

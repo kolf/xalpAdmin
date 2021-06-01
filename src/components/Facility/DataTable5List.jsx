@@ -7,12 +7,14 @@ import {
   Form,
   Input,
   Pagination,
-  message,
+  Row,
+  Col,
+  Space,
 } from "antd";
+import UpdateDataForm from "./DataTable5UpdateTabs";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
-import UpdateDataForm from "./DataTable5UpdateTabs";
 import faciliyService from "../../services/faciliy.service";
 
 const { RangePicker } = DatePicker;
@@ -34,7 +36,7 @@ const expandedRowRender = (value, row, index) => {
   return obj;
 };
 
-export default function DataTable() {
+export default function DataTable({ renderHeader }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
@@ -51,6 +53,7 @@ export default function DataTable() {
   }, [JSON.stringify(query), counter]);
 
   async function loadData() {
+    setDataList([]);
     setLoading(true);
     try {
       const { items, totalCount } =
@@ -137,6 +140,23 @@ export default function DataTable() {
       });
     }
   }
+
+  function showAddModal() {
+    const mod = modal({
+      content: <UpdateDataForm onOk={onOk} />,
+      footer: null,
+    });
+    function onOk() {
+      mod.close();
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
+        skipCount: "1",
+      });
+    }
+  }
+
+  function openFile() {}
 
   const columns = [
     {
@@ -246,6 +266,19 @@ export default function DataTable() {
 
   return (
     <>
+      <Row style={{ paddingBottom: 12 }}>
+        <Col flex="auto">{renderHeader}</Col>
+        <Col flex="120px" style={{ textAlign: "right" }}>
+          <Space>
+            <Button size="small" type="primary" onClick={showAddModal}>
+              新增
+            </Button>
+            <Button size="small" type="primary" onClick={openFile}>
+              下载数据
+            </Button>
+          </Space>
+        </Col>
+      </Row>
       <Form
         form={form}
         name="form"

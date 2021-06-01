@@ -142,7 +142,7 @@ export default function DataTable() {
     }
   }
 
-  function showExportModal(creds) {
+  function showImportModal(creds) {
     const mod = modal({
       title: "添加",
       content: <UpdateDataForm onOk={onOk} />,

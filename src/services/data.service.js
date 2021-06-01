@@ -97,10 +97,22 @@ class DataService {
       return Promise.reject(error);
     }
   };
+  exportMerchantList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Merchant/Export?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
   // 行为规范导入
   importBlockBehavior = async (creds) => {
     try {
-      const res = await api.post(`api/BlockBehavior/Import?${queryString.stringify(creds)}`);
+      const res = await api.post(
+        `api/BlockBehavior/Import?${queryString.stringify(creds)}`
+      );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -109,7 +121,20 @@ class DataService {
   // 行为规范导入
   importBlockAllowRecord = async (creds) => {
     try {
-      const res = await api.post(`api/BlockAllowRecord/Import?${queryString.stringify(creds)}`);
+      const res = await api.post(
+        `api/BlockAllowRecord/Import?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  // 行为规范导入
+  importMerchantList = async (creds) => {
+    try {
+      const res = await api.post(
+        `api/Merchant/Import?${queryString.stringify(creds)}`
+      );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
