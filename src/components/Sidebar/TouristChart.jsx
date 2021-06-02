@@ -44,7 +44,7 @@ export default function TouristChart() {
 
       data = res1.filter((item, index) => index < 5).map((item) => ({
         name: item.ageRange,
-        percent: item.rate * 100,
+        percent: (item.rate * 100).toFixed(2),
         a: "1",
       }));
 

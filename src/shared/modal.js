@@ -15,6 +15,12 @@ class Mod extends React.Component {
     bounds: { left: 0, top: 0, bottom: 0, right: 0 },
   };
 
+  innerHeight = 600;
+
+  componentDidMount() {
+    this.innerHeight = window.innerHeight - 300;
+  }
+
   draggleRef = React.createRef();
 
   onStart = (e, uiData) => {
@@ -71,10 +77,10 @@ class Mod extends React.Component {
               <div ref={this.draggleRef}>{modal}</div>
             </Draggable>
           )}
-          wrapClassName={wrapClassName}
+          wrapClassName={wrapClassName + " my-modal"}
           bodyStyle={{
             ...otherProps.bodyStyle,
-            maxHeight: this.bodyMaxHeight,
+            maxHeight: this.innerHeight,
             overflowY: "auto",
           }}
           cancelText="取消"

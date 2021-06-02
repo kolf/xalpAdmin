@@ -13,6 +13,7 @@ import {
   message,
 } from "antd";
 import UploadImage from "../UI/UploadImage";
+import moment from "moment";
 import utils from "../../shared/utils";
 import { merchantOptions } from "../../shared/options";
 import commonService from "../../services/common.service";
@@ -22,10 +23,10 @@ const dateFormat = "YYYY-MM-DD";
 
 const layout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  wrapperCol: { span: 14 },
 };
 const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
+  wrapperCol: { offset: 8, span: 14 },
 };
 
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
@@ -57,6 +58,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           const [start, end] = value;
           result.startPermissionDate = start.format(dateFormat);
           result.endPermissionDate = end.format(dateFormat);
+        } else if (key === "tempFaceFileName" && /^http/.test(value)) {
         } else if (value !== undefined && value !== "-1") {
           result[key] = value;
         }
@@ -69,22 +71,34 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   }
 
   function makeDefaultValues(values) {
-    if (!defaultValues.id) {
+    if (!values.id) {
       return {};
     }
-    return Object.keys(values).reduce(
-      (result, key) => {
-        const value = values[key];
-        if (key === "date" && value) {
-        } else {
-          result[key] = value;
-        }
-        return result;
-      },
-      {
-        staffType: 1,
-      }
-    );
+    const {
+      jobNumber,
+      name,
+      organizationUnit,
+      phone,
+      certNumber,
+      tempFaceFileName,
+      webUrl,
+      startCardTime,
+      endCardTime,
+    } = values;
+
+    return {
+      jobNumber,
+      name,
+      organizationUnit,
+      phone,
+      certNumber,
+      tempFaceFileName,
+      tempFaceFileName: webUrl,
+      date: [
+        moment(startCardTime, dateFormat),
+        moment(endCardTime, dateFormat),
+      ],
+    };
   }
 
   return (

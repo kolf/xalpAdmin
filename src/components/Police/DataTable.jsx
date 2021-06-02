@@ -15,7 +15,7 @@ import UpdateDataForm from "./UpdateDataForm";
 import policeService from "../../services/police.service";
 import modal from "../../shared/modal";
 
-import { deviceOptions, onlineOptions } from "../../shared/options";
+import { deviceOptions, checkDeviceTypeEnum,onlineOptions } from "../../shared/options";
 const { Option } = Select;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
@@ -140,6 +140,9 @@ export default function DataTable() {
     {
       title: "设备类型",
       dataIndex: "checkDeviceType",
+      render(text) {
+        return checkDeviceTypeEnum[text] || '未知'
+      }
     },
     {
       title: "录入人姓名",

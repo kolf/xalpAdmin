@@ -63,9 +63,10 @@ export default function DataTable() {
     return data.map((item, index) => {
       return {
         ...item.staff,
-        webUrl: item.webUrl,
+        ...item,
         tempFaceFileName: item.faceRelativePath,
         index: index + 1,
+        staff: undefined,
       };
     });
   }
@@ -111,9 +112,7 @@ export default function DataTable() {
   function showEditModal(creds) {
     const mod = modal({
       title: "编辑",
-      content: (
-        <UpdateDataForm defaultValues={creds} onOk={onOk}></UpdateDataForm>
-      ),
+      content: <UpdateDataForm defaultValues={creds} onOk={onOk} />,
       footer: null,
     });
     function onOk() {
@@ -135,20 +134,6 @@ export default function DataTable() {
     function onOk() {
       mod.close();
       setCounter(counter + 1);
-      setQuery({
-        ...query,
-        skipCount: "1",
-      });
-    }
-  }
-
-  function showImportModal(creds) {
-    const mod = modal({
-      title: "添加",
-      content: <UpdateDataForm onOk={onOk} />,
-    });
-    function onOk() {
-      mod.close();
       setQuery({
         ...query,
         skipCount: "1",
@@ -311,7 +296,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="creatorId"
-        // scroll={{ x: 1200 }}
+        scroll={{ x: 1200 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

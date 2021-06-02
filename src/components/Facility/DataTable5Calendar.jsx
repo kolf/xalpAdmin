@@ -77,20 +77,26 @@ export default function DataTable5ListCalendar({ renderHeader }) {
         <div className="calendar-cell-title">{date}日</div>
         <div className="calendar-cell-notice">
           {current &&
-            (current.timeRanges || []).map((time) => (
-              <div
-                key={time.id}
-                style={{ height: 18, overflow: "hidden", whiteSpace: "nowrap" }}
-                title={`${time.startTimeRange}-${time.endTimeRange} ${time.remainTouristsQuantity}/${time.maxTouristsQuantity}`}
-              >
-                <span style={{ paddingRight: 4 }}>
-                  {time.startTimeRange}-{time.endTimeRange}
-                </span>
-                <span>
-                  {time.remainTouristsQuantity}/{time.maxTouristsQuantity}
-                </span>
-              </div>
-            ))}
+            (current.timeRanges || [])
+              .filter((item, index) => index < 3)
+              .map((time) => (
+                <div
+                  key={time.id}
+                  style={{
+                    height: 18,
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                  }}
+                  title={`${time.startTimeRange}-${time.endTimeRange} ${time.remainTouristsQuantity}/${time.maxTouristsQuantity}`}
+                >
+                  <span style={{ paddingRight: 4 }}>
+                    {time.startTimeRange}-{time.endTimeRange}
+                  </span>
+                  <span>
+                    {time.remainTouristsQuantity}/{time.maxTouristsQuantity}
+                  </span>
+                </div>
+              ))}
         </div>
         <div className="calendar-cell-value">
           {current ? current.timeRanges[0].maxTouristsQuantity : "0"}
@@ -108,15 +114,6 @@ export default function DataTable5ListCalendar({ renderHeader }) {
     );
   }
 
-  if (selectedDate) {
-    return (
-      <DataTable5CalendarDetails
-        id={selectedDate}
-        dataSource={getDayData(selectedDate)}
-      ></DataTable5CalendarDetails>
-    );
-  }
-
   return (
     <div className="calendar-root">
       <Row style={{ paddingBottom: 12 }}>
@@ -129,14 +126,21 @@ export default function DataTable5ListCalendar({ renderHeader }) {
           </Space>
         </Col>
       </Row>
-      <Spin tip="加载中..." spinning={loading}>
-        <Calendar
-          style={{ backgroundColor: "transparent" }}
-          dateFullCellRender={dateFullCellRender}
-          monthFullCellRender={monthFullCellRender}
-          onPanelChange={handleChange}
+      {selectedDate ? (
+        <DataTable5CalendarDetails
+          id={selectedDate}
+          dataSource={getDayData(selectedDate)}
         />
-      </Spin>
+      ) : (
+        <Spin tip="加载中..." spinning={loading}>
+          <Calendar
+            style={{ backgroundColor: "transparent" }}
+            dateFullCellRender={dateFullCellRender}
+            monthFullCellRender={monthFullCellRender}
+            onPanelChange={handleChange}
+          />
+        </Spin>
+      )}
     </div>
   );
 }

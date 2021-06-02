@@ -37,7 +37,7 @@ export default function DataTable({ id, dataSource }) {
   function showEditModal(creds) {
     const mod = modal({
       content: (
-        <UpdateDataForm defaultValues={creds} onOk={onOk}></UpdateDataForm>
+        <UpdateDataForm defaultValues={creds} onOk={onOk}/>
       ),
       footer: null,
     });

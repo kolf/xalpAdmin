@@ -127,7 +127,7 @@ export default function DataTable({ renderHeader }) {
   function showEditModal(creds) {
     const mod = modal({
       content: (
-        <UpdateDataForm defaultValues={creds} onOk={onOk}></UpdateDataForm>
+        <UpdateDataForm defaultValues={creds} onOk={onOk}/>
       ),
       footer: null,
     });
@@ -162,6 +162,7 @@ export default function DataTable({ renderHeader }) {
     {
       title: "序号",
       dataIndex: "index",
+      width:54,
       render: expandedRowRender,
     },
     {
@@ -177,6 +178,7 @@ export default function DataTable({ renderHeader }) {
     {
       title: "单日时段",
       dataIndex: "TimeRange",
+      width:110,
       render(text, creds) {
         return creds.startTimeRange + "-" + creds.endTimeRange;
       },
@@ -315,7 +317,7 @@ export default function DataTable({ renderHeader }) {
         bordered
         loading={loading}
         rowKey="id"
-        // scroll={{ x: 1200 }}
+        scroll={{ x: 900 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

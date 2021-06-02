@@ -138,9 +138,6 @@ export default function DataTable() {
       } else {
         res = await update({ key, startTime, endTime, displayText });
       }
-
-      console.log(res, "res");
-
       const nextDataList = dataList.map((item) => {
         if (item.key === key) {
           return {

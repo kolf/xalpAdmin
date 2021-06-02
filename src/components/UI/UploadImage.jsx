@@ -3,9 +3,7 @@ import { Upload, message } from "antd";
 import utils from "../../shared/utils";
 
 export default function UploadImage({ onChange, value: propsValue }) {
-  const [value, setValue] = useState(
-    propsValue ? `api/UploadFile/GetTempFileItem?fileName=${propsValue}` : ""
-  );
+  const [value, setValue] = useState(propsValue || "");
   const [loading, setLoading] = useState(false);
 
   function handleChange(e) {

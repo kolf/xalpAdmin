@@ -106,7 +106,7 @@ export default function DataTable() {
     const mod = modal({
       title: "编辑",
       content: (
-        <UpdateDataForm defaultValues={creds} onOk={onOk}></UpdateDataForm>
+        <UpdateDataForm defaultValues={creds} onOk={onOk}/>
       ),
       footer: null,
     });

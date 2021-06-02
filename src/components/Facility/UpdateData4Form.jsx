@@ -12,6 +12,7 @@ import {
   Switch,
   message,
 } from "antd";
+import moment from "moment";
 import utils from "../../shared/utils";
 import { merchantOptions } from "../../shared/options";
 import commonService from "../../services/common.service";
@@ -21,17 +22,19 @@ const dateFormat = "YYYY-MM-DD";
 
 const layout = {
   labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
+  wrapperCol: { span: 14 },
 };
 const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
+  wrapperCol: { offset: 8, span: 14 },
 };
 
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   const [merchantOptions, setMerchantOptions] = useState([]);
   useEffect(() => {
-    loadData();
-  }, []);
+    if (merchantOptions.length === 0) {
+      loadData();
+    }
+  }, [JSON.stringify(merchantOptions)]);
 
   async function loadData() {
     try {
@@ -45,7 +48,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       return [];
     }
     return data.map((item, index) => {
-      return { value: item.id + "", label: item.displayText };
+      return { value: item.id, label: item.displayText };
     });
   }
 
@@ -66,19 +69,48 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   async function onFinish(values) {
     let res = null;
     if (defaultValues.id) {
-      res = await faciliyService.updateMerchant(
-        makeParams({
-          ...values,
-          id: defaultValues.id,
-        })
-      );
-      utils.success(`更新成功！`);
+      try {
+        res = await faciliyService.updateMerchant(
+          makeParams({
+            ...values,
+            id: defaultValues.id,
+          })
+        );
+        utils.success(`更新成功！`);
+      } catch (error) {}
     } else {
-      res = await faciliyService.addMerchant(makeParams(values));
-      utils.success(`添加成功！`);
+      try {
+        res = await faciliyService.addMerchant(makeParams(values));
+        utils.success(`添加成功！`);
+      } catch (error) {}
     }
 
     onOk && onOk(res);
+  }
+
+  function makeDefaultValues(values) {
+    if (!values.id) {
+      return {};
+    }
+    const {
+      name,
+      handlerName,
+      handlerPhone,
+      merchantTypeId,
+      startPermissionDate,
+      endPermissionDate,
+    } = values;
+
+    return {
+      name,
+      handlerName,
+      handlerPhone,
+      merchantTypeId,
+      date: [
+        moment(startPermissionDate, dateFormat),
+        moment(endPermissionDate, dateFormat),
+      ],
+    };
   }
 
   return (
@@ -87,7 +119,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         {...layout}
         size="small"
         onFinish={onFinish}
-        initialValues={defaultValues}
+        initialValues={makeDefaultValues(defaultValues)}
       >
         <Form.Item label="供应商名称" name="name">
           <Input placeholder="请输入供应商名称" />
@@ -98,6 +130,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         <Form.Item label="申请人电话" name="handlerPhone">
           <Input placeholder="请输入申请人电话" />
         </Form.Item>
+
         <Form.Item label="供应商类型" name="merchantTypeId">
           <Select placeholder="请选择">
             {makeData(merchantOptions).map((o) => (
@@ -107,6 +140,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
             ))}
           </Select>
         </Form.Item>
+
         <Form.Item label="有效入园时间段" name="date">
           <RangePicker />
         </Form.Item>

@@ -12,7 +12,7 @@ import {
   Pagination,
   message,
 } from "antd";
-import DetailsDataTable from "./DetailsDataTable";
+import DataTableDetailas from "./DataTable2Detailas";
 import moment from "moment";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
@@ -97,7 +97,15 @@ export default function DataTable() {
     }, {});
   }
 
-  function showDetailsModal() {}
+  function showDetailsModal() {
+    const mod = modal({
+      title: "团体详情",
+      width:720,
+      content: <DataTableDetailas onOk={onOk} />,
+      footer: null,
+    });
+    function onOk() {}
+  }
 
   function showDeleteModal(creds) {
     const mod = confirm({
@@ -106,7 +114,7 @@ export default function DataTable() {
     });
     async function onOk() {
       try {
-        const res = await facilityService.cancelOrder({ id: creds.id });
+        const res = await facilityService.cancelOrderList({ id: creds.id });
         mod.close();
         utils.success(`取消成功！`);
         setCounter(counter + 1);
@@ -125,7 +133,7 @@ export default function DataTable() {
     });
     async function onOk() {
       try {
-        const res = await facilityService.checkOrder({ id: creds.id });
+        const res = await facilityService.checkOrderList({ id: creds.id });
         mod.close();
         utils.success(`核销成功！`);
         setCounter(counter + 1);
@@ -148,6 +156,7 @@ export default function DataTable() {
     {
       title: "订单号",
       dataIndex: "orderNO",
+      width: 160,
     },
     {
       title: "预约人员姓名",
@@ -156,10 +165,12 @@ export default function DataTable() {
     {
       title: "联系电话",
       dataIndex: "phone",
+      width: 116
     },
     {
       title: "预约时间段",
       dataIndex: "timeRangeName",
+      width:110
     },
     {
       title: "抵达方式",
@@ -180,18 +191,18 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={e => showDetailsModal(creds)}
+              onClick={(e) => showDetailsModal(creds)}
             >
               查看
             </Button>
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={e => showReviewModal(creds)}
+              onClick={(e) => showReviewModal(creds)}
             >
               核销
             </Button>
-            <Button size="small" onClick={e => showDeleteModal(creds)}>
+            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
               取消
             </Button>
           </div>

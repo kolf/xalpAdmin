@@ -208,6 +208,14 @@ export default function DataTable() {
       },
     },
     {
+      title: "抵达方式",
+      dataIndex: "regionProvince",
+      width: 80,
+      render(text) {
+        return text || "无";
+      },
+    },
+    {
       title: "随行宠物",
       dataIndex: "petInfo",
       width: 80,
@@ -217,10 +225,10 @@ export default function DataTable() {
     },
     {
       title: "人像录入",
-      dataIndex: "online",
+      dataIndex: "isFaceRegistered",
       width: 80,
       render(text) {
-        return text || "无";
+        return text ? "是" : "否";
       },
     },
     {
@@ -358,7 +366,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        scroll={{ x: 1400 }}
+        scroll={{ x: 1600 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

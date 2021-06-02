@@ -32,7 +32,7 @@ const merchantEnum = {
   4: "其它",
 };
 
-const checkDeviceTypeEnum = {
+export const checkDeviceTypeEnum = {
   1: "闸机",
   2: "手持机",
 };

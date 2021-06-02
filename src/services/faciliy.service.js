@@ -195,7 +195,7 @@ class FaciliyService {
       return Promise.reject(error);
     }
   };
-  checkAllOrder = async (creds) => {
+  checkOrderList = async (creds) => {
     try {
       const res = await api.post(`api/Order/CheckAll/${creds.id}`);
       return res.data;
@@ -214,6 +214,14 @@ class FaciliyService {
   cancelOrder = async (creds) => {
     try {
       const res = await api.post(`api/Order/Cancel/${creds.id}`);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  cancelOrderList = async (creds) => {
+    try {
+      const res = await api.post(`api/Order/CancelAll/${creds.id}`);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
