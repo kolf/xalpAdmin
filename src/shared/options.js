@@ -49,6 +49,11 @@ export const enterEnum = {
   2: "入口",
 };
 
+export const activityEnum = {
+  1: "有",
+  0: "无",
+};
+
 export const colors = [
   "#1890FF",
   "#13C2C2",
@@ -57,6 +62,11 @@ export const colors = [
   "#F04864",
   "#8543E0",
 ];
+
+export const activityOptions = Object.keys(activityEnum).map((key) => ({
+  value: key + "",
+  label: activityEnum[key],
+}));
 
 export const enterOptions = Object.keys(enterEnum).map((key) => ({
   value: key + "",

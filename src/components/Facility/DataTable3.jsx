@@ -167,7 +167,7 @@ export default function DataTable() {
     {
       title: "照片",
       dataIndex: "webUrl",
-      width: 70,
+      width: 76,
       render(text) {
         return text ? <Image width={60} src={text} /> : "无";
       },

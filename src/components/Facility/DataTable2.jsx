@@ -15,6 +15,7 @@ import {
 import DataTableDetailas from "./DataTable2Detailas";
 import moment from "moment";
 import modal from "../../shared/modal";
+import { activityOptions } from "../../shared/options";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import facilityService from "../../services/faciliy.service";
@@ -97,51 +98,16 @@ export default function DataTable() {
     }, {});
   }
 
-  function showDetailsModal() {
+  function showDetailsModal(creds, type) {
     const mod = modal({
       title: "团体详情",
-      width:720,
-      content: <DataTableDetailas onOk={onOk} />,
+      width: 720,
+      content: (
+        <DataTableDetailas onOk={onOk} showType={type} dataSource={creds} />
+      ),
       footer: null,
     });
     function onOk() {}
-  }
-
-  function showDeleteModal(creds) {
-    const mod = confirm({
-      content: `此操作将取消该票, 是否继续?`,
-      onOk,
-    });
-    async function onOk() {
-      try {
-        const res = await facilityService.cancelOrderList({ id: creds.id });
-        mod.close();
-        utils.success(`取消成功！`);
-        setCounter(counter + 1);
-        setQuery({ ...query, skipCount: "1" });
-      } catch (error) {
-        mod.close();
-      }
-      // mod.close()
-    }
-  }
-
-  function showReviewModal(creds) {
-    const mod = confirm({
-      content: `此操作将核销该票, 是否继续?`,
-      onOk,
-    });
-    async function onOk() {
-      try {
-        const res = await facilityService.checkOrderList({ id: creds.id });
-        mod.close();
-        utils.success(`核销成功！`);
-        setCounter(counter + 1);
-        setQuery({ ...query, skipCount: "1" });
-      } catch (error) {
-        mod.close();
-      }
-    }
   }
 
   function openFile() {}
@@ -165,12 +131,12 @@ export default function DataTable() {
     {
       title: "联系电话",
       dataIndex: "phone",
-      width: 116
+      width: 116,
     },
     {
       title: "预约时间段",
       dataIndex: "timeRangeName",
-      width:110
+      width: 110,
     },
     {
       title: "抵达方式",
@@ -191,18 +157,21 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={(e) => showDetailsModal(creds)}
+              onClick={(e) => showDetailsModal(creds, "VIEW")}
             >
               查看
             </Button>
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={(e) => showReviewModal(creds)}
+              onClick={(e) => showDetailsModal(creds, "REVIEW")}
             >
               核销
             </Button>
-            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
+            <Button
+              size="small"
+              onClick={(e) => showDetailsModal(creds, "CANCEL")}
+            >
               取消
             </Button>
           </div>
@@ -271,6 +240,18 @@ export default function DataTable() {
         <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="核销状态" allowClear>
             {reviewOptions.map((o) => (
+              <Option key={o.value} value={o.value}>
+                {o.label}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="isActivityApply"
+          style={{ marginBottom: 6, width: 80 }}
+        >
+          <Select size="small" placeholder="活动" allowClear>
+            {activityOptions.map((o) => (
               <Option key={o.value} value={o.value}>
                 {o.label}
               </Option>

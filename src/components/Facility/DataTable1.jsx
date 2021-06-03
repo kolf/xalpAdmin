@@ -14,6 +14,7 @@ import {
 } from "antd";
 import moment from "moment";
 import modal from "../../shared/modal";
+import { activityOptions } from "../../shared/options";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import facilityService from "../../services/faciliy.service";
@@ -86,6 +87,8 @@ export default function DataTable() {
         const [start, end] = value;
         result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
         result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
+      } else if (key === "isActivityApply" && value) {
+        result.isActivityApply = value === "1";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
@@ -332,6 +335,18 @@ export default function DataTable() {
         <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="核销状态" allowClear>
             {reviewOptions.map((o) => (
+              <Option key={o.value} value={o.value}>
+                {o.label}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="isActivityApply"
+          style={{ marginBottom: 6, width: 80 }}
+        >
+          <Select size="small" placeholder="活动" allowClear>
+            {activityOptions.map((o) => (
               <Option key={o.value} value={o.value}>
                 {o.label}
               </Option>

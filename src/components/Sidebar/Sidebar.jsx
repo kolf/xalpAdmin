@@ -5,6 +5,7 @@ import DeviceTotal from "./DeviceTotal";
 import AdmissionChart from "./AdmissionChart";
 import TouristChart from "./TouristChart";
 import dataService from "../../services/data.service";
+import utils from "../../shared/utils";
 import "./Sidebar.less";
 import headerImageUrl from "../../assets/img/header1.png";
 
@@ -34,7 +35,16 @@ export default function Sidebar() {
         <span style={{ backgroundImage: "url(" + headerImageUrl + ")" }}>
           入园管理
         </span>
-        <div style={{flex: 1,paddingLeft:12,marginTop:-4,textAlign: "center"}}><DeviceTotal /></div>
+        <div
+          style={{
+            flex: 1,
+            paddingLeft: 12,
+            marginTop: -4,
+            textAlign: "center",
+          }}
+        >
+          <DeviceTotal />
+        </div>
       </div>
       <div className="panel-heading">入园概览</div>
       <div className="panel-body">
@@ -42,26 +52,31 @@ export default function Sidebar() {
           dataSource={[
             {
               key: "todayTicketCount",
-              value: orderRealTimeData.todayTicketCount,
-              prefix: "人",
+              value: utils.numberFixed(orderRealTimeData.todayTicketCount),
+              prefix: orderRealTimeData.todayTicketCount > 9999 ? "万人" : "人",
               title: [<div>今日预约</div>, <div>人数</div>],
             },
             {
               key: "todayUsedTicketCount",
-              value: orderRealTimeData.todayUsedTicketCount,
-              prefix: "人",
+              value: utils.numberFixed(orderRealTimeData.todayUsedTicketCount),
+              prefix:
+                orderRealTimeData.todayUsedTicketCount > 9999 ? "万人" : "人",
               title: [<div>今日已核销</div>, <div>人数</div>],
             },
             {
               key: "quarterTicketCount",
-              value: orderRealTimeData.quarterTicketCount,
-              prefix: "人",
+              value: utils.numberFixed(orderRealTimeData.quarterTicketCount),
+              prefix:
+                orderRealTimeData.quarterTicketCount > 9999 ? "万人" : "人",
               title: [<div>当季预约</div>, <div>人数</div>],
             },
             {
               key: "quarterUsedTicketCount",
-              value: orderRealTimeData.quarterUsedTicketCount,
-              prefix: "人",
+              value: utils.numberFixed(
+                orderRealTimeData.quarterUsedTicketCount
+              ),
+              prefix:
+                orderRealTimeData.quarterUsedTicketCount > 9999 ? "万人" : "人",
               title: [<div>当季已核销</div>, <div>人数</div>],
             },
           ]}

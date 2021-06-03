@@ -68,7 +68,21 @@ export default function HorizontalLoginForm({ onChange }) {
             <Select
               size="small"
               placeholder="时间类型"
-              onChange={setTimeRangeType}
+              onChange={(value) => {
+                setTimeRangeType(value);
+                let nextFieldsValue = {};
+                if (value === "2") {
+                  nextFieldsValue["date-1"] = undefined;
+                  nextFieldsValue["date-2"] = undefined;
+                }
+                if (value === "4") {
+                  nextFieldsValue["month-1"] = undefined;
+                  nextFieldsValue["month-2"] = undefined;
+                  nextFieldsValue["date-1"] = undefined;
+                  nextFieldsValue["date-2"] = undefined;
+                }
+                form.setFieldsValue(nextFieldsValue);
+              }}
             >
               <Option value="4">年</Option>
               <Option value="2">月</Option>

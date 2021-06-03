@@ -16,7 +16,7 @@ class Utils {
     return moment(datetime).format(formatString);
   };
 
-  numberFixed = (number, size) => {
+  numberFixed = (number, size = 4) => {
     if (size === 4) {
       if (number < 10000) {
         return number;
