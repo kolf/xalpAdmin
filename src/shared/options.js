@@ -54,6 +54,12 @@ export const activityEnum = {
   0: "无",
 };
 
+export const orderChannelEnum = {
+  5: "小程序",
+  6: "官网",
+  10: "小程序",
+};
+
 export const colors = [
   "#1890FF",
   "#13C2C2",

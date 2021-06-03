@@ -10,14 +10,11 @@ import {
   Space,
   Select,
   Pagination,
-  message,
 } from "antd";
 import DataTableDetailas from "./DataTable2Detailas";
 import moment from "moment";
 import modal from "../../shared/modal";
 import { activityOptions } from "../../shared/options";
-import confirm from "../../shared/confirm";
-import utils from "../../shared/utils";
 import facilityService from "../../services/faciliy.service";
 import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
@@ -88,6 +85,8 @@ export default function DataTable() {
         const [start, end] = value;
         result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
         result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
+      } else if (key === "isActivityApply" && value) {
+        result.isActivityApplySuccess = value === "1";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
@@ -143,6 +142,9 @@ export default function DataTable() {
       title: "预约时间段",
       dataIndex: "timeRangeName",
       width: 110,
+      render(text, creds) {
+        return moment(creds.travelDate).format(dateFormat) + " " + text;
+      },
     },
     {
       title: "抵达方式",
@@ -277,7 +279,8 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, skipCount: "1", Keyword: value })
             }

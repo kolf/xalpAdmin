@@ -10,11 +10,10 @@ import {
   Space,
   Select,
   Pagination,
-  message,
 } from "antd";
 import moment from "moment";
 import modal from "../../shared/modal";
-import { activityOptions } from "../../shared/options";
+import { activityOptions, orderChannelEnum } from "../../shared/options";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import facilityService from "../../services/faciliy.service";
@@ -88,7 +87,7 @@ export default function DataTable() {
         result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
         result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
       } else if (key === "isActivityApply" && value) {
-        result.isActivityApply = value === "1";
+        result.isActivityApplySuccess = value === "1";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
@@ -148,7 +147,7 @@ export default function DataTable() {
     {
       title: "订单号",
       dataIndex: "orderNO",
-      width: 160,
+      width: 140,
       render(text, creds) {
         return creds.orderDetail.orderNO || "无";
       },
@@ -164,7 +163,7 @@ export default function DataTable() {
     {
       title: "预约人电话",
       dataIndex: "phone",
-      width: 116,
+      width: 100,
     },
     {
       title: "是否代预约",
@@ -185,7 +184,7 @@ export default function DataTable() {
     {
       title: "参观人电话",
       dataIndex: "phone1",
-      width: 116,
+      width: 100,
       render(text, creds) {
         return creds.orderDetail.phone || "无";
       },
@@ -193,7 +192,7 @@ export default function DataTable() {
     {
       title: "身份证",
       dataIndex: "certNumber",
-      width: 200,
+      width: 170,
       render(text, creds) {
         return creds.orderDetail.certNumber || "无";
       },
@@ -201,6 +200,11 @@ export default function DataTable() {
     {
       title: "预约时段",
       dataIndex: "timeRangeName",
+      render(text, creds) {
+        return (
+          moment(creds.orderDetail.startDate).format(dateFormat) + " " + text
+        );
+      },
     },
     {
       title: "参与活动",
@@ -227,16 +231,43 @@ export default function DataTable() {
       },
     },
     {
+      title: "照片信息",
+      dataIndex: "faceWebUrl",
+      width: 76,
+      render(text) {
+        return text ? <img width="60" src={text} /> : "无";
+      },
+    },
+    {
+      title: "预约来源",
+      dataIndex: "orderChannel",
+      render(text) {
+        return text ? orderChannelEnum[text] : "未知";
+      },
+    },
+    {
+      title: "车牌号",
+      dataIndex: "licensePlateNumber",
+    },
+    {
+      title: "闸机位置",
+      dataIndex: "checkDeviceName",
+    },
+    {
+      title: "核销设备ID",
+      dataIndex: "checkDeviceCode",
+    },
+    {
       title: "人像录入",
       dataIndex: "isFaceRegistered",
-      width: 80,
+      width: 64,
       render(text) {
         return text ? "是" : "否";
       },
     },
     {
       title: "核销设备（核销方式）",
-      dataIndex: "online",
+      dataIndex: "checkDeviceName",
       width: 158,
       render(text) {
         return text || "无";
@@ -365,7 +396,8 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, skipCount: "1", Keyword: value })
             }
@@ -382,7 +414,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        scroll={{ x: 1600 }}
+        scroll={{ x: 2000 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

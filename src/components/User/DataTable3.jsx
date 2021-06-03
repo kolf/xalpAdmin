@@ -12,11 +12,12 @@ import {
   Pagination,
   message,
 } from "antd";
+import UpdateDataForm from "./UpdateData3Form";
+import ImportDataTable from "./ImportData3Table";
+import moment from "moment";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
-import UpdateDataForm from "./UpdateData3Form";
-import ImportDataTable from "./ImportData3Table";
 import faciliyService from "../../services/faciliy.service";
 import dataService from "../../services/data.service";
 import { reviewOptions } from "../../shared/options";
@@ -24,6 +25,7 @@ const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
+const secFormat = "YYYY-MM-DD hh:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -183,7 +185,7 @@ export default function DataTable() {
       title: "最后修改时间",
       dataIndex: "lastModificationTime",
       render(text) {
-        return text || "无";
+        return text ? moment(text).format(secFormat) : "无";
       },
     },
     {
@@ -289,7 +291,8 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, keyword: value, skipCount: "1" })
             }
