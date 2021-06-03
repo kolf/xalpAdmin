@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Select, DatePicker } from "antd";
+import { Form, Input, Button, Select, DatePicker, Skeleton } from "antd";
 import UploadImage from "../UI/UploadImage";
 import moment from "moment";
 import utils from "../../shared/utils";
@@ -17,11 +17,12 @@ const tailLayout = {
 
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   const [merchantOptions, setMerchantOptions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // if (setMerchantOptions.length === 0) {
+    if (merchantOptions.length === 0) {
       loadData();
-    // }
+    }
   }, [JSON.stringify(setMerchantOptions)]);
 
   async function loadData() {
@@ -31,13 +32,17 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         maxResultCount: "1000",
       });
       const { items } = res;
+
       setMerchantOptions(
         items.map((item) => ({
           label: item.name,
           value: item.id,
         }))
       );
-    } catch (error) {}
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   }
 
   async function onFinish(values) {
@@ -94,9 +99,14 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       webUrl,
       startCardTime,
       endCardTime,
+      merchantName,
     } = values;
 
+    console.log(merchantName, merchantOptions, "merchantName");
+
     return {
+      merchantId: (merchantOptions.find((o) => o.label === merchantName) || {})
+        .value,
       jobNumber,
       name,
       organizationUnit,
@@ -109,6 +119,10 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         moment(endCardTime, dateFormat),
       ],
     };
+  }
+
+  if (loading) {
+    return <Skeleton />;
   }
 
   return (

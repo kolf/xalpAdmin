@@ -191,6 +191,13 @@ export default function DataTable() {
         return text ? moment(text).format(secFormat) : "无";
       },
     },
+    {
+      title: "历史不文明行为",
+      dataIndex: "historyBehaviorName",
+      render(text) {
+        return text || '无'
+      }
+    },
     // {
     //   title: "距离处理到期天数",
     //   dataIndex: "daysOfEndBlock",

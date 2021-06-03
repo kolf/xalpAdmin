@@ -11,7 +11,7 @@ import {
   Select,
   Pagination,
   Image,
-  message,
+  Avatar,
 } from "antd";
 import moment from "moment";
 import modal from "../../shared/modal";
@@ -174,7 +174,7 @@ export default function DataTable() {
       dataIndex: "webUrl",
       width: 76,
       render(text) {
-        return text ? <Image width={60} src={text} /> : "无";
+        return text ? <Image src={text} width={60}/> : "无";
       },
     },
     {
@@ -285,7 +285,8 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, keyword: value, skipCount: "1" })
             }

@@ -115,10 +115,16 @@ export default function DataTable({ dataSource, showType }) {
       {
         title: "参观人姓名",
         dataIndex: "name",
+        render(text) {
+          return text || "未知";
+        },
       },
       {
         title: "电话",
         dataIndex: "phone",
+        render(text) {
+          return text || "未知";
+        },
       },
       {
         title: "身份证",
@@ -201,7 +207,8 @@ export default function DataTable({ dataSource, showType }) {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, skipCount: "1", Keyword: value })
             }

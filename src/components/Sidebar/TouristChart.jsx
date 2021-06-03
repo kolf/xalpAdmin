@@ -42,15 +42,17 @@ export default function TouristChart() {
           }))
       );
 
-      data = res1.filter((item, index) => index < 5).map((item) => ({
-        name: item.ageRange,
-        percent: (item.rate * 100).toFixed(2),
-        a: "1",
-      }));
+      data = res1
+        .filter((item, index) => index < 5)
+        .map((item) => ({
+          name: item.ageRange,
+          percent: item.rate,
+          a: "1",
+        }));
 
       const map = {};
       data.forEach(function (obj) {
-        map[obj.name] = obj.percent + "%";
+        map[obj.name] = (obj.percent*100).toFixed(2) + "%";
       });
 
       const chart = new F2.Chart({
@@ -81,13 +83,7 @@ export default function TouristChart() {
       chart
         .interval()
         .position("a*percent")
-        .color("name", [
-          "#1890FF",
-          "#13C2C2",
-          "#2FC25B",
-          "#FACC14",
-          "#F04864",
-        ])
+        .color("name", ["#1890FF", "#13C2C2", "#2FC25B", "#FACC14", "#F04864"])
         .adjust("stack");
 
       chart.guide().html({
@@ -97,10 +93,12 @@ export default function TouristChart() {
         </div>`,
       });
       chart.render();
-    } catch (error) {}
+    } catch (error) {
+      console.log(error, "error");
+    }
   }
   return (
-    <>
+    <div>
       <canvas id="chart2" width="352" height="138"></canvas>
       <div style={{ height: 82, overflow: "hidden" }}>
         {areaData.map((item, index) => {
@@ -126,6 +124,6 @@ export default function TouristChart() {
           );
         })}
       </div>
-    </>
+    </div>
   );
 }

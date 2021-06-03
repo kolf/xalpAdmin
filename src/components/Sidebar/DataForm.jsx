@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, Row, Col, Input, Button, Select } from "antd";
+import moment from "moment";
 import Spacer from "../UI/Spacer";
 import {
   areaOptions,
@@ -14,6 +15,11 @@ const { Option } = Select;
 export default function HorizontalLoginForm({ onChange }) {
   const [form] = Form.useForm();
   const [timeRangeType, setTimeRangeType] = useState("");
+
+  useEffect(() => {
+    console.log("55");
+    onChange(makeInitialValues())
+  }, []);
 
   const checkValues = async (values) => {
     let error = "";
@@ -49,10 +55,22 @@ export default function HorizontalLoginForm({ onChange }) {
     }
   };
 
-  console.log(form.getFieldValue("TimeRangeType"));
+  const makeInitialValues = () => {
+    const m1 = moment();
+    const m2 = moment().set({ month: m1.month() });
+
+    return {
+      CheckDeviceType: "2",
+      TimeRangeType: "2",
+      "year-1": m1.year(),
+      "month-1": m1.month() + 1 + "",
+      "year-2": m2.year(),
+      "month-2": m2.month() + "",
+    };
+  };
 
   return (
-    <Form form={form} onFinish={onFinish}>
+    <Form form={form} onFinish={onFinish} initialValues={makeInitialValues()}>
       <Row gutter={8}>
         <Col span={12}>
           <Form.Item name="CheckDeviceType" style={{ marginBottom: 6 }}>

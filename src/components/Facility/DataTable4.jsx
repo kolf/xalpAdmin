@@ -62,8 +62,8 @@ export default function DataTable() {
     }
     return data.map((item, index) => {
       return {
-        ...item.staff,
         ...item,
+        ...item.staff,
         tempFaceFileName: item.faceRelativePath,
         index: index + 1,
         staff: undefined,
@@ -149,6 +149,10 @@ export default function DataTable() {
   function openFile() {}
 
   const columns = [
+    {
+      title: "供应商名称",
+      dataIndex: "merchantName",
+    },
     {
       title: "工号",
       dataIndex: "jobNumber",

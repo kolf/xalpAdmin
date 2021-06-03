@@ -44,7 +44,7 @@ class UserService {
 
   addRole = async (creds) => {
     try {
-      const res = await api.post(`api/identity/roles​`, {
+      const res = await api.post(`api/identity/roles`, {
         name: creds.name,
       });
       const res1 = await api.put(

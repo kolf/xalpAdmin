@@ -13,7 +13,11 @@ import {
 } from "antd";
 import moment from "moment";
 import modal from "../../shared/modal";
-import { activityOptions, orderChannelEnum } from "../../shared/options";
+import {
+  activityOptions,
+  orderChannelEnum,
+  checkModeEnum,
+} from "../../shared/options";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import facilityService from "../../services/faciliy.service";
@@ -147,7 +151,7 @@ export default function DataTable() {
     {
       title: "订单号",
       dataIndex: "orderNO",
-      width: 140,
+      width: 156,
       render(text, creds) {
         return creds.orderDetail.orderNO || "无";
       },
@@ -163,7 +167,7 @@ export default function DataTable() {
     {
       title: "预约人电话",
       dataIndex: "phone",
-      width: 100,
+      width: 114,
     },
     {
       title: "是否代预约",
@@ -184,7 +188,7 @@ export default function DataTable() {
     {
       title: "参观人电话",
       dataIndex: "phone1",
-      width: 100,
+      width: 114,
       render(text, creds) {
         return creds.orderDetail.phone || "无";
       },
@@ -192,7 +196,7 @@ export default function DataTable() {
     {
       title: "身份证",
       dataIndex: "certNumber",
-      width: 170,
+      width: 174,
       render(text, creds) {
         return creds.orderDetail.certNumber || "无";
       },
@@ -200,6 +204,7 @@ export default function DataTable() {
     {
       title: "预约时段",
       dataIndex: "timeRangeName",
+      width: 196,
       render(text, creds) {
         return (
           moment(creds.orderDetail.startDate).format(dateFormat) + " " + text
@@ -248,29 +253,38 @@ export default function DataTable() {
     {
       title: "车牌号",
       dataIndex: "licensePlateNumber",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "闸机位置",
       dataIndex: "checkDeviceName",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "核销设备ID",
       dataIndex: "checkDeviceCode",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "人像录入",
       dataIndex: "isFaceRegistered",
-      width: 64,
+      width: 80,
       render(text) {
         return text ? "是" : "否";
       },
     },
     {
       title: "核销设备（核销方式）",
-      dataIndex: "checkDeviceName",
+      dataIndex: "checkMode",
       width: 158,
       render(text) {
-        return text || "无";
+        return checkModeEnum[text] || "无";
       },
     },
     {

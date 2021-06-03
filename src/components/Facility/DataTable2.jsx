@@ -10,11 +10,12 @@ import {
   Space,
   Select,
   Pagination,
+  Avatar,
 } from "antd";
 import DataTableDetailas from "./DataTable2Detailas";
 import moment from "moment";
 import modal from "../../shared/modal";
-import { activityOptions } from "../../shared/options";
+import { activityOptions, checkModeEnum } from "../../shared/options";
 import facilityService from "../../services/faciliy.service";
 import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
@@ -118,7 +119,7 @@ export default function DataTable() {
   function openFile() {}
 
   function getRowClassName(creds, index) {
-    if (creds.status !== 1) {
+    if (creds.orderStatus !== 1) {
       return "ant-table-row-disabled";
     }
   }
@@ -136,12 +137,12 @@ export default function DataTable() {
     {
       title: "联系电话",
       dataIndex: "phone",
-      width: 116,
+      // width: 116,
     },
     {
       title: "预约时间段",
       dataIndex: "timeRangeName",
-      width: 110,
+      width: 196,
       render(text, creds) {
         return moment(creds.travelDate).format(dateFormat) + " " + text;
       },
@@ -149,10 +150,18 @@ export default function DataTable() {
     {
       title: "抵达方式",
       dataIndex: "regionProvince",
+      width: 80,
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "核销设备(核销方式)",
-      dataIndex: "phon1e",
+      dataIndex: "checkMode",
+      width: 158,
+      render(text) {
+        return checkModeEnum[text] || "无";
+      },
     },
     {
       title: "操作",
@@ -172,14 +181,14 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              disabled={creds.status !== 1}
+              disabled={creds.orderStatus !== 1}
               onClick={(e) => showDetailsModal(creds, "REVIEW")}
             >
               核销
             </Button>
             <Button
               size="small"
-              disabled={creds.status !== 1}
+              disabled={creds.orderStatus !== 1}
               onClick={(e) => showDetailsModal(creds, "CANCEL")}
             >
               取消
@@ -297,7 +306,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        scroll={{ x: 1200 }}
+        scroll={{ x: 1100 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />
