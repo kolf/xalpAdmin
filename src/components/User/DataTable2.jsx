@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, DatePicker, Form, Input, Pagination } from "antd";
+import {
+  Table,
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  Pagination,
+  Space,
+  Row,
+  Col,
+} from "antd";
 import UpdateDataForm from "./UpdateData2Form";
 import moment from "moment";
 import modal from "../../shared/modal";
@@ -71,6 +81,23 @@ export default function DataTable() {
     const mod = modal({
       title: "编辑",
       content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
+      footer: null,
+    });
+
+    function onOk() {
+      mod.close();
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
+        skipCount: "1",
+      });
+    }
+  }
+
+  function showAddModal() {
+    const mod = modal({
+      title: "新增",
+      content: <UpdateDataForm onOk={onOk} />,
       footer: null,
     });
 
@@ -166,6 +193,16 @@ export default function DataTable() {
 
   return (
     <div>
+      <Row style={{ paddingBottom: 12 }}>
+        <Col flex="auto"></Col>
+        <Col flex="120px" style={{ textAlign: "right" }}>
+          <Space>
+            <Button size="small" type="primary" onClick={showAddModal}>
+              新增
+            </Button>
+          </Space>
+        </Col>
+      </Row>
       <Form
         form={form}
         name="form"
@@ -185,6 +222,7 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, skipCount: "1", Keyword: value })
             }

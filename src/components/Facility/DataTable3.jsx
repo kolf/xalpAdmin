@@ -72,20 +72,25 @@ export default function DataTable() {
   }
 
   function makeQuery(query) {
-    return Object.keys(query).reduce((result, key) => {
-      const value = query[key];
-      if (key === "date" && value) {
-        const [start, end] = value;
-        result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
-        result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
-      } else if (value !== undefined && value !== "-1") {
-        result[key] = value;
+    return Object.keys(query).reduce(
+      (result, key) => {
+        const value = query[key];
+        if (key === "date" && value) {
+          const [start, end] = value;
+          result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
+          result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
+        } else if (value !== undefined && value !== "-1") {
+          result[key] = value;
+        }
+        if (query.skipCount) {
+          result.skipCount = (query.skipCount - 1) * query.maxResultCount;
+        }
+        return result;
+      },
+      {
+        StaffType: 1,
       }
-      if (query.skipCount) {
-        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
-      }
-      return result;
-    }, {});
+    );
   }
 
   function showDeleteModal(creds) {
@@ -280,7 +285,7 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"
+            placeholder="模糊搜索"  allowClear
             onSearch={(value) =>
               setQuery({ ...query, keyword: value, skipCount: "1" })
             }

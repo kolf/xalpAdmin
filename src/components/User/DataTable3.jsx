@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import moment from "moment";
 import {
   Table,
   Button,
@@ -9,28 +8,28 @@ import {
   Row,
   Col,
   Space,
+  Select,
   Pagination,
+  message,
 } from "antd";
-import UpdateDataForm from "./UpdateData2Form";
-import ExportDataTable from "./ExportData2Table";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
-
-import blanklistService from "../../services/blanklist.service";
+import UpdateDataForm from "./UpdateData3Form";
+import ImportDataTable from "./ImportData3Table";
+import faciliyService from "../../services/faciliy.service";
 import dataService from "../../services/data.service";
-import { behaviorTypeEnum } from "../../shared/options";
+import { reviewOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
+const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD hh:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
-  const [totalArr, setTotalArr] = useState([0, 0]);
   const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
@@ -45,14 +44,11 @@ export default function DataTable() {
   async function loadData() {
     setLoading(true);
     try {
-      const { items, totalCount } = await blanklistService.getBlockBehaviorList(
+      const { items, totalCount } = await faciliyService.getMerchantList(
         makeQuery(query)
       );
-      const { totalBlockingCount, totalCount: AllTotalCount } =
-        await blanklistService.getBlockAllowUserList();
       setLoading(false);
       setDataList(items);
-      setTotalArr([AllTotalCount, totalBlockingCount]);
       setTotal(totalCount);
     } catch (error) {
       setLoading(false);
@@ -73,8 +69,8 @@ export default function DataTable() {
       const value = query[key];
       if (key === "date" && value) {
         const [start, end] = value;
-        result.StartCreationTime = start.format(dateFormat) + " 00:00:00";
-        result.EndCreationTime = end.format(dateFormat) + " 23:59:59";
+        result.startPermissionDate = start.format(dateFormat) + " 00:00:00";
+        result.endPermissionDate = end.format(dateFormat) + " 23:59:59";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
@@ -85,13 +81,33 @@ export default function DataTable() {
     }, {});
   }
 
-  function showAddModal() {
+  function showDeleteModal(creds) {
+    const mod = confirm({
+      content: `此操作将删除此供应商, 是否继续?`,
+      onOk,
+    });
+    async function onOk() {
+      try {
+        const res = await faciliyService.deleteMerchant(creds);
+        mod.close();
+        utils.success(`删除成功！`);
+        setCounter(counter + 1);
+        setQuery({
+          ...query,
+          skipCount: "1",
+        });
+      } catch (error) {
+        mod.close();
+      }
+    }
+  }
+
+  function showEditModal(creds) {
     const mod = modal({
-      title: "新增",
-      content: <UpdateDataForm onOk={onOk} />,
+      title: "编辑",
+      content: <UpdateDataForm defaultValues={creds} onOk={onOk} />,
       footer: null,
     });
-
     function onOk() {
       mod.close();
       setCounter(counter + 1);
@@ -102,13 +118,12 @@ export default function DataTable() {
     }
   }
 
-  function showEditModal(creds) {
+  function showAddModal() {
     const mod = modal({
-      title: "编辑",
-      content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
+      title: "新增",
+      content: <UpdateDataForm onOk={onOk} />,
       footer: null,
     });
-
     function onOk() {
       mod.close();
       setCounter(counter + 1);
@@ -121,12 +136,11 @@ export default function DataTable() {
 
   function showImportModal(creds) {
     const mod = modal({
-      title: "批量导入",
+      title: "导出",
       width: 720,
-      content: <ExportDataTable onOk={onOk} />,
+      content: <ImportDataTable onOk={onOk} />,
       footer: null,
     });
-
     function onOk() {
       mod.close();
       setCounter(counter + 1);
@@ -137,29 +151,9 @@ export default function DataTable() {
     }
   }
 
-  function showDeleteModal(creds) {
-    const mod = confirm({
-      content: `确认删除此条内容, 是否继续?`,
-      onOk,
-    });
-    async function onOk() {
-      try {
-        const res = await blanklistService.deleteBlockBehavior({
-          id: creds.id,
-        });
-        mod.close();
-        utils.success(`删除成功！`);
-        setCounter(counter + 1);
-        setQuery({ ...query, skipCount: "1" });
-      } catch (error) {
-        mod.close();
-      }
-    }
-  }
-
   async function openFile() {
     try {
-      const res = await dataService.exportBlockBehavior(makeQuery(query));
+      const res = await dataService.exportMerchantList(makeQuery(query));
       window.open(res);
       console.log(res, "res");
     } catch (error) {}
@@ -167,34 +161,50 @@ export default function DataTable() {
 
   const columns = [
     {
-      title: "序号",
-      dataIndex: "index",
-    },
-    {
-      title: "程度",
-      dataIndex: "behaviorType",
-      render(text) {
-        return behaviorTypeEnum[text] || "无";
-      },
-    },
-    {
-      title: "行为",
+      title: "供应商名称",
       dataIndex: "name",
     },
     {
-      title: "惩罚措施",
-      dataIndex: "note",
+      title: "姓名",
+      dataIndex: "handlerName",
     },
     {
-      title: "创建时间",
-      dataIndex: "creationTime",
+      title: "联系电话",
+      dataIndex: "handlerPhone",
+    },
+    {
+      title: "类型",
+      dataIndex: "merchantTypeName",
       render(text) {
-        return text ? moment(text).format(secFormat) : "无";
+        return text || "无";
+      },
+    },
+    {
+      title: "最后修改时间",
+      dataIndex: "lastModificationTime",
+      render(text) {
+        return text || "无";
+      },
+    },
+    {
+      title: "预约时间",
+      dataIndex: "openingHours",
+      render(text) {
+        return text || "无";
+      },
+    },
+    {
+      title: "状态",
+      dataIndex: "status",
+      render(text, creds) {
+        return "正常";
       },
     },
     {
       title: "操作",
       dataIndex: "options",
+      fixed: "right",
+      width: 120,
       render(text, creds) {
         return (
           <div className="text-center">
@@ -239,14 +249,7 @@ export default function DataTable() {
   return (
     <div>
       <Row style={{ paddingBottom: 12 }}>
-        <Col flex="auto">
-          <Space>
-            <span>黑名单人数:</span>
-            <span className="iconfont1 text-danger">{totalArr[0]}</span>
-            <span>当前限制人数:</span>
-            <span className="iconfont1 text-danger">{totalArr[1]}</span>
-          </Space>
-        </Col>
+        <Col flex="auto"></Col>
         <Col flex="120px" style={{ textAlign: "right" }}>
           <Space>
             <Button size="small" type="primary" onClick={showAddModal}>
@@ -268,6 +271,13 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
+        <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
+          <Select size="small" placeholder="核销状态" allowClear>
+            {reviewOptions.map((o) => (
+              <Option key={o.value}>{o.label}</Option>
+            ))}
+          </Select>
+        </Form.Item>
         <Form.Item name="date">
           <RangePicker size="small" />
         </Form.Item>
@@ -281,20 +291,21 @@ export default function DataTable() {
             size="small"
             placeholder="模糊搜索"  allowClear
             onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", Keyword: value })
+              setQuery({ ...query, keyword: value, skipCount: "1" })
             }
           />
         </Form.Item>
       </Form>
 
       <Table
-        rowKey="id"
         dataSource={makeData(dataList)}
         columns={columns}
         pagination={false}
         size="small"
         bordered
         loading={loading}
+        rowKey="creatorId"
+        // scroll={{ x: 1200 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

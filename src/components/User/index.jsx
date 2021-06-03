@@ -3,6 +3,7 @@ import { Tabs } from "antd";
 import Main from "../Layouts/AppMain";
 import DataTable1 from "./DataTable1";
 import DataTable2 from "./DataTable2";
+import DataTable3 from "./DataTable3";
 import "./style.less";
 const { TabPane } = Tabs;
 
@@ -22,11 +23,13 @@ export default function Home() {
         <Tabs activeKey={tabKey} onChange={setTabKey}>
           <TabPane tab="用户管理" key="1" />
           <TabPane tab="角色管理" key="2" />
+          <TabPane tab="供应商管理" key="3" />
         </Tabs>
       }
     >
       {tabKey === "1" && <DataTable1 />}
       {tabKey === "2" && <DataTable2 />}
+      {tabKey === "3" && <DataTable3 />}
     </Main>
   );
 }

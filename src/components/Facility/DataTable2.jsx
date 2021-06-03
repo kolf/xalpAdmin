@@ -99,8 +99,14 @@ export default function DataTable() {
   }
 
   function showDetailsModal(creds, type) {
+    let title = "查看";
+    if (type === "REVIEW") {
+      title = "核销";
+    } else if (type === "CANCEL") {
+      title = "取消";
+    }
     const mod = modal({
-      title: "团体详情",
+      title,
       width: 720,
       content: (
         <DataTableDetailas onOk={onOk} showType={type} dataSource={creds} />
@@ -113,9 +119,9 @@ export default function DataTable() {
   function openFile() {}
 
   function getRowClassName(creds, index) {
-    // if (creds.status !== 1) {
-    //   return "ant-table-row-disabled";
-    // }
+    if (creds.status !== 1) {
+      return "ant-table-row-disabled";
+    }
   }
 
   const columns = [
@@ -164,12 +170,14 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
+              disabled={creds.status !== 1}
               onClick={(e) => showDetailsModal(creds, "REVIEW")}
             >
               核销
             </Button>
             <Button
               size="small"
+              disabled={creds.status !== 1}
               onClick={(e) => showDetailsModal(creds, "CANCEL")}
             >
               取消
@@ -269,7 +277,7 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"
+            placeholder="模糊搜索"  allowClear
             onSearch={(value) =>
               setQuery({ ...query, skipCount: "1", Keyword: value })
             }

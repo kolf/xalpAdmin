@@ -28,7 +28,6 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
           providerName: "R",
           providerKey: defaultValues.name,
         });
-        console.log(res, "res1");
       } else {
         res = await userService.getAllPermissions({ providerName: "R" });
       }
@@ -91,10 +90,13 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
     );
   }
 
-  function makeDefaultValues() {
-    return Object.keys(defaultValues).reduce(
+  function makeDefaultValues(values) {
+    if (!values.name) {
+      return {};
+    }
+    return Object.keys(values).reduce(
       (result, key) => {
-        const value = defaultValues[key];
+        const value = values[key];
         if (value !== undefined && value !== "-1") {
           result[key] = value;
         }

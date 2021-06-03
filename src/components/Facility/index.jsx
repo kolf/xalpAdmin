@@ -26,7 +26,7 @@ export default function Home() {
           <TabPane tab="个人参观" key="1" />
           <TabPane tab="团体参观" key="2" />
           <TabPane tab="工作人员" key="3" />
-          <TabPane tab="供应商" key="4" />
+          <TabPane tab="供应商人员" key="4" />
           <TabPane tab="预约量管理" key="5" />
         </Tabs>
       }

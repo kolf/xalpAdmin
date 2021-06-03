@@ -139,7 +139,7 @@ export default function DataTable() {
   function openFile() {}
 
   function getRowClassName(creds, index) {
-    if (creds.status !== 1) {
+    if (creds.orderDetail.status !== 1) {
       return "ant-table-row-disabled";
     }
   }
@@ -248,23 +248,24 @@ export default function DataTable() {
       fixed: "right",
       width: 120,
       render(text, creds) {
+        const { orderDetail } = creds;
         return (
           <div className="text-center">
             <Button
-              disabled={creds.status !== 1}
+              disabled={orderDetail.status !== 1}
               size="small"
               style={{ marginRight: 4 }}
               onClick={(e) => {
-                showReviewModal(creds.orderDetail);
+                showReviewModal(orderDetail);
               }}
             >
               核销
             </Button>
             <Button
-              disabled={creds.status !== 1}
+              disabled={orderDetail.status !== 1}
               size="small"
               onClick={(e) => {
-                showDeleteModal(creds.orderDetail);
+                showDeleteModal(orderDetail);
               }}
             >
               取消
@@ -364,7 +365,7 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"
+            placeholder="模糊搜索"  allowClear
             onSearch={(value) =>
               setQuery({ ...query, skipCount: "1", Keyword: value })
             }

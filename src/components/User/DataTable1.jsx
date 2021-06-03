@@ -13,7 +13,6 @@ import {
 } from "antd";
 import UpdateDataForm from "./UpdateData1Form";
 import modal from "../../shared/modal";
-import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import userService from "../../services/user.service";
 import dataService from "../../services/data.service";
@@ -36,7 +35,7 @@ export default function DataTable() {
 
   useEffect(() => {
     loadData();
-  }, [JSON.stringify(query),counter]);
+  }, [JSON.stringify(query), counter]);
 
   async function loadData() {
     setLoading(true);
@@ -94,14 +93,11 @@ export default function DataTable() {
       });
     }
   }
-  
+
   async function openFile() {
     try {
-      const res = await dataService.exportProductList(
-        makeQuery(query)
-      );
-      window.open(res)
-      console.log(res, "res");
+      const res = await dataService.exportProductList(makeQuery(query));
+      window.open(res);
     } catch (error) {
       utils.error(`下载失败！`);
     }
@@ -126,7 +122,7 @@ export default function DataTable() {
       title: "角色名称",
       dataIndex: "roleNames",
       render(text) {
-        return text.length > 0 ? text.join('，') : "无";
+        return text.length > 0 ? text.join("，") : "无";
       },
     },
     {
@@ -197,6 +193,7 @@ export default function DataTable() {
           <Search
             size="small"
             placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, skipCount: "1", Keyword: value })
             }
