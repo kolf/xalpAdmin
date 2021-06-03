@@ -18,6 +18,7 @@ export default function Menu() {
       <Option value="blacklist">黑名单管理</Option>
       <Option value="user">权限管理</Option>
       <Option value="ticket-category">票种管理</Option>
+      <Option value="activity">活动管理</Option>
     </Select>
   );
 }

@@ -8,7 +8,7 @@ export default function ProgressArc({ dataSource }) {
       <Row justify="space-around" align="middle">
         {dataSource.map((item) => (
           <Col
-            key={item.title + "_" + item.value}
+            key={item.key}
             style={{ textAlign: "center" }}
           >
             <div className="progress-cover">

@@ -11,7 +11,6 @@ const colors = ["#32E9FF", "#1FFE9A"];
 function makeDate(type, y, m, d) {
   let startDate = "";
   let endDate = "";
-  console.log(y, m, d, "y, m, d");
   if (type === "4") {
     startDate = moment(y).startOf("year").format(dateFormat) + " 00:00:00";
     endDate = moment(y).endOf("year").format(dateFormat) + " 23:59:59";
