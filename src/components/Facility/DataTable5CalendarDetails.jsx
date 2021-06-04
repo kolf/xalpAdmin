@@ -7,12 +7,11 @@ import utils from "../../shared/utils";
 import faciliyService from "../../services/faciliy.service";
 const dateFormat = "YYYY-MM-DD";
 
-export default function DataTable({ id, dataSource }) {
+export default function DataTable({ id, dataSource, onClose }) {
   function makeData(data) {
     if (!data) {
       return [];
     }
-    console.log(data, "data");
     return data.timeRanges.map((item, index) => {
       return { ...item, index: index + 1 };
     });
@@ -27,6 +26,7 @@ export default function DataTable({ id, dataSource }) {
       try {
         const res = await faciliyService.deleteReservationTimeSetting(creds);
         mod.close();
+        onClose();
         utils.success(`删除成功！`);
       } catch (error) {
         mod.close();
@@ -37,12 +37,16 @@ export default function DataTable({ id, dataSource }) {
   function showEditModal(creds) {
     const mod = modal({
       content: (
-        <UpdateDataForm defaultValues={creds} onOk={onOk}/>
+        <UpdateDataForm
+          defaultValues={{ ...creds, isSpecial: true, dateTitle: id }}
+          onOk={onOk}
+        />
       ),
       footer: null,
     });
     function onOk() {
       mod.close();
+      onClose();
     }
   }
 
@@ -86,36 +90,36 @@ export default function DataTable({ id, dataSource }) {
         return text || "无";
       },
     },
-    // {
-    //   title: "操作",
-    //   dataIndex: "options",
-    //   render(text, creds, index) {
-    //     const obj = {
-    //       children: (
-    //         <div className="text-center">
-    //           <Button
-    //             size="small"
-    //             style={{ marginRight: 4 }}
-    //             onClick={showEditModal.bind(this, creds)}
-    //           >
-    //             编辑
-    //           </Button>
-    //           <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
-    //             删除
-    //           </Button>
-    //         </div>
-    //       ),
-    //       props: {},
-    //     };
-    //     if (index === 0) {
-    //       obj.props.rowSpan = makeData(dataSource).length;
-    //     } else {
-    //       obj.props.rowSpan = 0;
-    //     }
+    {
+      title: "操作",
+      dataIndex: "options",
+      render(text, creds, index) {
+        const obj = {
+          children: (
+            <div className="text-center">
+              <Button
+                size="small"
+                style={{ marginRight: 4 }}
+                onClick={showEditModal.bind(this, creds)}
+              >
+                编辑
+              </Button>
+              <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+                删除
+              </Button>
+            </div>
+          ),
+          props: {},
+        };
+        if (index === 0) {
+          obj.props.rowSpan = makeData(dataSource).length;
+        } else {
+          obj.props.rowSpan = 0;
+        }
 
-    //     return obj;
-    //   },
-    // },
+        return obj;
+      },
+    },
   ];
 
   return (

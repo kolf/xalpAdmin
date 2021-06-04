@@ -130,6 +130,7 @@ export default function DataTable5ListCalendar({ renderHeader }) {
         <DataTable5CalendarDetails
           id={selectedDate}
           dataSource={getDayData(selectedDate)}
+          onClose={(e) => setSelectedDate("")}
         />
       ) : (
         <Spin tip="加载中..." spinning={loading}>

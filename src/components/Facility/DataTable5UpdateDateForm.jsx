@@ -92,7 +92,17 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
 
   function makeParams(values) {
     const { date, warningLeftQuantity, _items1, _items2 } = values;
-    const [start, end] = date;
+    let startReserveDate = "";
+    let endReserveDate = "";
+    if (defaultValues.isSpecial) {
+      startReserveDate = defaultValues.dateTitle;
+      endReserveDate = defaultValues.dateTitle;
+    } else {
+      const [start, end] = date;
+      startReserveDate = start.format(dateFormat);
+      endReserveDate = end.format(dateFormat);
+    }
+
     let items = [];
 
     if (_items1) {
@@ -117,8 +127,8 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
 
     return {
       isSpecial: true,
-      startReserveDate: start.format(dateFormat),
-      endReserveDate: end.format(dateFormat),
+      startReserveDate,
+      endReserveDate,
       items,
       date: undefined,
       _items1: undefined,
@@ -126,14 +136,14 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     };
   }
 
-  function makeDefaultValues() {
+  function makeDefaultValues(values) {
     const {
       maxTouristsQuantity,
       startReserveDate,
       endReserveDate,
       timeItems,
       id,
-    } = defaultValues;
+    } = values;
 
     if (!id) {
       return {};
@@ -154,15 +164,17 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         {...layout}
         size="small"
         onFinish={onFinish}
-        initialValues={makeDefaultValues()}
+        initialValues={makeDefaultValues(defaultValues)}
       >
-        <Form.Item
-          label="开始/截至日期"
-          name="date"
-          rules={[{ required: true, message: "请选择日期" }]}
-        >
-          <RangePicker />
-        </Form.Item>
+        {!defaultValues.isSpecial && (
+          <Form.Item
+            label="开始/截至日期"
+            name="date"
+            rules={[{ required: true, message: "请选择日期" }]}
+          >
+            <RangePicker />
+          </Form.Item>
+        )}
         <Form.Item
           label="个人时间段票数"
           style={{ marginBottom: 12 }}

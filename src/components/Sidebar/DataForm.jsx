@@ -18,7 +18,7 @@ export default function HorizontalLoginForm({ onChange }) {
 
   useEffect(() => {
     console.log("55");
-    onChange(makeInitialValues())
+    onChange(makeInitialValues());
   }, []);
 
   const checkValues = async (values) => {
@@ -92,8 +92,7 @@ export default function HorizontalLoginForm({ onChange }) {
                 if (value === "2") {
                   nextFieldsValue["date-1"] = undefined;
                   nextFieldsValue["date-2"] = undefined;
-                }
-                if (value === "4") {
+                } else if (value === "4" || value === "1") {
                   nextFieldsValue["month-1"] = undefined;
                   nextFieldsValue["month-2"] = undefined;
                   nextFieldsValue["date-1"] = undefined;

@@ -131,10 +131,6 @@ export default function AdmissionChart() {
         })),
       ];
 
-      if (data.length === 0) {
-        return;
-      }
-
       const chart = new F2.Chart({
         id: "chart1",
         pixelRatio: window.devicePixelRatio,
