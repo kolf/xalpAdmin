@@ -9,8 +9,7 @@ import {
   Cascader,
   DatePicker,
   InputNumber,
-  TreeSelect,
-  Switch,
+  Skeleton,
   Space,
   message,
 } from "antd";
@@ -35,10 +34,13 @@ const tailLayout = {
 
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
   const [datePickerOptions, setDatePickerOptions] = useState([]);
   useEffect(() => {
-    loadData();
-  }, [JSON.stringify(datePickerOptions)]);
+    if (datePickerOptions.length === 0) {
+      loadData();
+    }
+  }, [defaultValues.id]);
 
   async function loadData() {
     try {
@@ -49,7 +51,10 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       }));
 
       setDatePickerOptions(options);
-    } catch (error) {}
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   }
 
   async function onFinish(values) {
@@ -126,7 +131,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     }
 
     return {
-      isSpecial: true,
+      isSpecial: defaultValues.isSpecial,
       startReserveDate,
       endReserveDate,
       items,
@@ -138,6 +143,8 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
 
   function makeDefaultValues(values) {
     const {
+      isSpecial,
+      dateTitle,
       maxTouristsQuantity,
       startReserveDate,
       endReserveDate,
@@ -145,36 +152,45 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       id,
     } = values;
 
+    console.log("df", timeItems);
+
     if (!id) {
       return {};
     }
     return {
+      _items1: [],
       maxTouristsQuantity,
-      date: [
-        moment(startReserveDate, dateFormat),
-        moment(endReserveDate, dateFormat),
-      ],
+      date: isSpecial
+        ? [moment(dateTitle, dateFormat), moment(dateTitle, dateFormat)]
+        : [
+            moment(startReserveDate, dateFormat),
+            moment(endReserveDate, dateFormat),
+          ],
     };
+  }
+
+  if (loading) {
+    return <Skeleton></Skeleton>;
   }
 
   return (
     <>
       <Form
+        name="update-form"
         form={form}
         {...layout}
         size="small"
         onFinish={onFinish}
         initialValues={makeDefaultValues(defaultValues)}
       >
-        {!defaultValues.isSpecial && (
-          <Form.Item
-            label="开始/截至日期"
-            name="date"
-            rules={[{ required: true, message: "请选择日期" }]}
-          >
-            <RangePicker />
-          </Form.Item>
-        )}
+        <Form.Item
+          label="开始/截至日期"
+          name="date"
+          rules={[{ required: true, message: "请选择日期" }]}
+        >
+          <RangePicker disabled={defaultValues.id} />
+        </Form.Item>
+
         <Form.Item
           label="个人时间段票数"
           style={{ marginBottom: 12 }}

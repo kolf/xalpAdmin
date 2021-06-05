@@ -60,6 +60,11 @@ export const orderChannelEnum = {
   10: "小程序",
 };
 
+export const userStateEnum = {
+  2: "正常",
+  3: "过期",
+};
+
 export const checkModeEnum = {
   1: "纸质二维码",
   2: "电子二维码",
@@ -78,6 +83,11 @@ export const colors = [
   "#F04864",
   "#8543E0",
 ];
+
+export const userStatusOptions = Object.keys(userStateEnum).map((key) => ({
+  value: key + "",
+  label: userStateEnum[key],
+}));
 
 export const activityOptions = Object.keys(activityEnum).map((key) => ({
   value: key + "",

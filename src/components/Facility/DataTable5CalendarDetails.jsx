@@ -24,7 +24,10 @@ export default function DataTable({ id, dataSource, onClose }) {
     });
     async function onOk() {
       try {
-        const res = await faciliyService.deleteReservationTimeSetting(creds);
+        const res = await faciliyService.deleteReservationTimeSetting({
+          isSpecial: true,
+          id: creds.id,
+        });
         mod.close();
         onClose();
         utils.success(`删除成功！`);
@@ -100,11 +103,11 @@ export default function DataTable({ id, dataSource, onClose }) {
               <Button
                 size="small"
                 style={{ marginRight: 4 }}
-                onClick={showEditModal.bind(this, creds)}
+                onClick={(e) => showEditModal(creds)}
               >
                 编辑
               </Button>
-              <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+              <Button size="small" onClick={(e) => showDeleteModal(creds)}>
                 删除
               </Button>
             </div>

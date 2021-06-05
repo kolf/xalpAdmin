@@ -10,6 +10,7 @@ import {
   Space,
   Pagination,
 } from "antd";
+import moment from "moment";
 import modal from "../../shared/modal";
 import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
@@ -25,7 +26,8 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "100",
-    Keyword: "",
+    keyword: "",
+    date: [moment().startOf("month"), moment()],
   });
 
   useEffect(() => {
@@ -80,6 +82,9 @@ export default function DataTable() {
     {
       title: "占比",
       dataIndex: "rate",
+      render(text) {
+        return text ? (text * 100).toFixed(2) + "%" : "0%";
+      },
     },
     {
       title: "人数",
@@ -129,6 +134,7 @@ export default function DataTable() {
         layout="inline"
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
+        initialValues={query}
       >
         <Form.Item name="date">
           <RangePicker size="small" />
@@ -138,7 +144,6 @@ export default function DataTable() {
             查询数据
           </Button>
         </Form.Item>
-       
       </Form>
 
       <Table

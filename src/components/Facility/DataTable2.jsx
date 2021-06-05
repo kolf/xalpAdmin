@@ -12,10 +12,14 @@ import {
   Pagination,
   Avatar,
 } from "antd";
-import DataTableDetailas from "./DataTable2Detailas";
+import DataTableDetailas from "./DataTable2Details";
 import moment from "moment";
 import modal from "../../shared/modal";
-import { activityOptions, checkModeEnum } from "../../shared/options";
+import {
+  activityOptions,
+  checkModeEnum,
+  orderChannelEnum,
+} from "../../shared/options";
 import facilityService from "../../services/faciliy.service";
 import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
@@ -39,7 +43,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
-    Keyword: "",
+    keyword: "",
   });
 
   useEffect(() => {
@@ -107,7 +111,7 @@ export default function DataTable() {
     }
     const mod = modal({
       title,
-      width: 720,
+      width: 900,
       content: (
         <DataTableDetailas onOk={onOk} showType={type} dataSource={creds} />
       ),
@@ -137,15 +141,29 @@ export default function DataTable() {
     {
       title: "联系电话",
       dataIndex: "phone",
-      // width: 116,
     },
     {
-      title: "预约时间段",
+      title: "团队名称",
+      dataIndex: "groupName",
+    },
+    {
+      title: "团体类型",
+      dataIndex: "groupTypeName",
+      render(text){
+        return text || '无'
+      }
+    },
+    {
+      title: "预约时段",
       dataIndex: "timeRangeName",
       width: 196,
       render(text, creds) {
         return moment(creds.travelDate).format(dateFormat) + " " + text;
       },
+    },
+    {
+      title: "车牌号",
+      dataIndex: "phone",
     },
     {
       title: "抵达方式",
@@ -156,11 +174,34 @@ export default function DataTable() {
       },
     },
     {
-      title: "核销设备(核销方式)",
-      dataIndex: "checkMode",
-      width: 158,
+      title: "预约来源",
+      dataIndex: "orderChannel",
       render(text) {
-        return checkModeEnum[text] || "无";
+        return text ? orderChannelEnum[text] : "未知";
+      },
+    },
+    {
+      title: "随行设备",
+      dataIndex: "equipmentInfo",
+      render(text){
+        return text || '无'
+      }
+    },
+    {
+      title: "参与活动",
+      dataIndex: "activityName",
+      render(text) {
+        return text || "无";
+      },
+    },
+    {
+      title: "已核销/总人数",
+      dataIndex: "orderTicketCount",
+      width: 110,
+      render(text, creds) {
+        return `${creds.sedTicketCount || "0"}/${
+          creds.orderTicketCount || "0"
+        }`;
       },
     },
     {
@@ -291,7 +332,7 @@ export default function DataTable() {
             placeholder="模糊搜索"
             allowClear
             onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", Keyword: value })
+              setQuery({ ...query, skipCount: "1", keyword: value })
             }
           />
         </Form.Item>
@@ -306,7 +347,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        scroll={{ x: 1100 }}
+        scroll={{ x: 1700 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

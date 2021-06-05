@@ -15,7 +15,11 @@ import UpdateDataForm from "./UpdateDataForm";
 import policeService from "../../services/police.service";
 import modal from "../../shared/modal";
 
-import { deviceOptions, checkDeviceTypeEnum,onlineOptions } from "../../shared/options";
+import {
+  deviceOptions,
+  checkDeviceTypeEnum,
+  onlineOptions,
+} from "../../shared/options";
 const { Option } = Select;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
@@ -29,7 +33,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
-    Keyword: "",
+    keyword: "",
   });
 
   useEffect(() => {
@@ -141,8 +145,8 @@ export default function DataTable() {
       title: "设备类型",
       dataIndex: "checkDeviceType",
       render(text) {
-        return checkDeviceTypeEnum[text] || '未知'
-      }
+        return checkDeviceTypeEnum[text] || "未知";
+      },
     },
     {
       title: "录入人姓名",
@@ -188,11 +192,11 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showLogModal.bind(this, creds)}
+              onClick={(e) => showLogModal(creds)}
             >
               查看系统日志
             </Button>
-            <Button size="small" onClick={showEditModal.bind(this, creds)}>
+            <Button size="small" onClick={(e) => showEditModal(creds)}>
               编辑
             </Button>
           </div>
@@ -267,9 +271,10 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", Keyword: value })
+              setQuery({ ...query, skipCount: "1", keyword: value })
             }
           />
         </Form.Item>

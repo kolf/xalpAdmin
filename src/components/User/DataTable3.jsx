@@ -36,7 +36,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
-    Keyword: "",
+    keyword: "",
   });
 
   useEffect(() => {
@@ -213,11 +213,11 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showEditModal.bind(this, creds)}
+              onClick={e => showEditModal(creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+            <Button size="small" onClick={e => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -307,7 +307,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        rowKey="creatorId"
+        rowKey="id"
         // scroll={{ x: 1200 }}
       />
       <div className="page-container">

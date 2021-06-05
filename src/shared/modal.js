@@ -106,7 +106,9 @@ function modal(config) {
     currentConfig = {
       ...currentConfig,
       visible: false,
-      afterClose: destroy.bind(this, ...args),
+      afterClose: () => {
+        destroy(...args);
+      },
     };
     if (IS_REACT_16) {
       render(currentConfig);
@@ -128,8 +130,8 @@ function modal(config) {
   }
   function destroy(...args) {
     const unmountResult = ReactDOM.unmountComponentAtNode(div);
-    if (unmountResult && div.parentNode) {
-      div.parentNode.removeChild(div);
+    if (unmountResult) {
+      document.body.removeChild(div);
     }
     const triggerCancel =
       args && args.length && args.some((arg) => arg && arg.triggerCancel);

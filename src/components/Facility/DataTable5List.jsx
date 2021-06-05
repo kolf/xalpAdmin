@@ -45,7 +45,7 @@ export default function DataTable({ renderHeader }) {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
-    Keyword: "",
+    keyword: "",
   });
 
   useEffect(() => {
@@ -79,6 +79,7 @@ export default function DataTable({ renderHeader }) {
           ...timeItems.map((t, j) => ({
             ...item,
             ...t,
+            rowKey: item.id + "" + t.timeItemId,
             index: j === 0 ? i + 1 : -1,
             size: timeItems.length,
           })),
@@ -110,7 +111,10 @@ export default function DataTable({ renderHeader }) {
     });
     async function onOk() {
       try {
-        const res = await faciliyService.deleteReservationTimeSetting(creds);
+        const res = await faciliyService.deleteReservationTimeSetting({
+          isSpecial: false,
+          id: creds.id,
+        });
         mod.close();
         utils.success(`删除成功！`);
         setCounter(counter + 1);
@@ -126,9 +130,7 @@ export default function DataTable({ renderHeader }) {
 
   function showEditModal(creds) {
     const mod = modal({
-      content: (
-        <UpdateDataForm defaultValues={creds} onOk={onOk}/>
-      ),
+      content: <UpdateDataForm defaultValues={creds} onOk={onOk} />,
       footer: null,
     });
     function onOk() {
@@ -156,13 +158,11 @@ export default function DataTable({ renderHeader }) {
     }
   }
 
-  function openFile() {}
-
   const columns = [
     {
       title: "序号",
       dataIndex: "index",
-      width:54,
+      width: 50,
       render: expandedRowRender,
     },
     {
@@ -178,47 +178,31 @@ export default function DataTable({ renderHeader }) {
     {
       title: "单日时段",
       dataIndex: "TimeRange",
-      width:110,
+      width: 110,
       render(text, creds) {
         return creds.startTimeRange + "-" + creds.endTimeRange;
       },
     },
     {
-      title: "门票数量/剩余数量",
+      title: "门票数量",
       dataIndex: "maxTouristsQuantity",
+      width: 100,
       render(text, creds) {
         const maxNum =
           creds.maxTouristsQuantity + creds.groupMaxTouristsQuantity;
-        const currentNum =
-          creds.individualWarningLeftQuantity + creds.groupWarningLeftQuantity;
-        return maxNum + "/" + currentNum;
+
+        return maxNum;
       },
     },
     {
-      title: "个人时段票数量/剩余数量",
+      title: "个人时段票数量",
       dataIndex: "individualMaxTouristsQuantity",
-      render(text, creds) {
-        if (!text && text !== 0) {
-          return "无";
-        }
-        return (
-          creds.individualMaxTouristsQuantity +
-          "/" +
-          creds.individualWarningLeftQuantity
-        );
-      },
+      width: 120,
     },
     {
-      title: "团体时段票数量/剩余数量",
+      title: "团体时段票数量",
       dataIndex: "groupMaxTouristsQuantity",
-      render(text, creds) {
-        if (!text && text !== 0) {
-          return "无";
-        }
-        return (
-          creds.groupMaxTouristsQuantity + "/" + creds.groupWarningLeftQuantity
-        );
-      },
+      width: 120,
     },
     {
       title: "操作",
@@ -231,11 +215,11 @@ export default function DataTable({ renderHeader }) {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showEditModal.bind(this, creds)}
+              onClick={(e) => showEditModal(creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -275,9 +259,6 @@ export default function DataTable({ renderHeader }) {
             <Button size="small" type="primary" onClick={showAddModal}>
               新增
             </Button>
-            <Button size="small" type="primary" onClick={openFile}>
-              下载数据
-            </Button>
           </Space>
         </Col>
       </Row>
@@ -301,9 +282,10 @@ export default function DataTable({ renderHeader }) {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) => {
-              setQuery({ ...query, skipCount: "1", Keyword: value });
+              setQuery({ ...query, skipCount: "1", keyword: value });
             }}
           />
         </Form.Item>
@@ -316,7 +298,7 @@ export default function DataTable({ renderHeader }) {
         size="small"
         bordered
         loading={loading}
-        rowKey="id"
+        rowKey="rowKey"
         scroll={{ x: 900 }}
       />
       <div className="page-container">

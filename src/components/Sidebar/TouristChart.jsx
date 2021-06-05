@@ -52,7 +52,7 @@ export default function TouristChart() {
 
       const map = {};
       data.forEach(function (obj) {
-        map[obj.name] = (obj.percent*100).toFixed(2) + "%";
+        map[obj.name] = (obj.percent * 100).toFixed(2) + "%";
       });
 
       const chart = new F2.Chart({
@@ -98,12 +98,12 @@ export default function TouristChart() {
     }
   }
   return (
-    <div>
+    <>
       <canvas id="chart2" width="352" height="138"></canvas>
       <div style={{ height: 82, overflow: "hidden" }}>
         {areaData.map((item, index) => {
           return (
-            <Row style={{ padding: "4px 0" }}>
+            <Row style={{ padding: "4px 0" }} key={"char2-" + index}>
               <Col span={4}>
                 <span
                   className="iconfont1"
@@ -124,6 +124,6 @@ export default function TouristChart() {
           );
         })}
       </div>
-    </div>
+    </>
   );
 }

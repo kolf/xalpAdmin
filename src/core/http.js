@@ -1,6 +1,6 @@
-import { message } from "antd";
 import axios from "axios";
 import config from "../config";
+import utils from "../shared/utils"
 import sessionService from "../services/session.service";
 /**
  * Axios defaults
@@ -38,7 +38,8 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (res) => {
     // Status code isn't a success code - throw error
-    if (!`${res.status}`.startsWith("2")) {
+    if (!`${res.status}`.startsWith("200")) {
+      utils.error(`接口请求出错！`)
       throw res.data;
     }
 
@@ -51,7 +52,7 @@ axios.interceptors.response.use(
       return;
     }
     if (error.response && (error.response.data || {}).error) {
-      message.error(error.response.data.error.message,1)
+      utils.error(error.response.data.error.message,1)
       throw error.response.data;
     }
     // Pass the response from the API, rather than a status code

@@ -102,8 +102,6 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       merchantName,
     } = values;
 
-    console.log(merchantName, merchantOptions, "merchantName");
-
     return {
       merchantId: (merchantOptions.find((o) => o.label === merchantName) || {})
         .value,

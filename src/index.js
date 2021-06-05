@@ -17,7 +17,7 @@ const store = compose(applyMiddleware(ReduxThunk))(createStore)(
 
 const app = (
   <Provider store={store}>
-    <ConfigProvider locale={zhCN}>
+    <ConfigProvider locale={zhCN} >
       <App />
     </ConfigProvider>
   </Provider>

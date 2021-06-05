@@ -34,7 +34,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
-    Keyword: "",
+    keyword: "",
   });
 
   useEffect(() => {
@@ -195,13 +195,13 @@ export default function DataTable() {
       title: "历史不文明行为",
       dataIndex: "historyBehaviorName",
       render(text) {
-        return text || '无'
-      }
+        return text || "无";
+      },
     },
-    // {
-    //   title: "距离处理到期天数",
-    //   dataIndex: "daysOfEndBlock",
-    // },
+    {
+      title: "距离处理到期天数",
+      dataIndex: "daysOfEndBlock",
+    },
     {
       title: "处罚",
       dataIndex: "behaviorDescription",
@@ -215,11 +215,11 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showEditModal.bind(this, creds)}
+              onClick={(e) => showEditModal(creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -293,9 +293,10 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", Keyword: value })
+              setQuery({ ...query, skipCount: "1", keyword: value })
             }
           />
         </Form.Item>

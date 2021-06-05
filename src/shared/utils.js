@@ -2,7 +2,10 @@ import { message } from "antd";
 
 import moment from "moment";
 
-let _timer = null;
+message.config({
+  duration: 2,
+  maxCount: 1,
+});
 class Utils {
   success = (msg, duration = 1) => {
     message.success(msg, duration);

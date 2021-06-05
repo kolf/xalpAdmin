@@ -54,21 +54,35 @@ export default function Sidebar() {
               key: "todayTicketCount",
               value: utils.numberFixed(orderRealTimeData.todayTicketCount),
               prefix: orderRealTimeData.todayTicketCount > 9999 ? "万人" : "人",
-              title: [<div>今日预约</div>, <div>人数</div>],
+              title: (
+                <>
+                  <div>今日预约</div><div>人数</div>
+                </>
+              ),
             },
             {
               key: "todayUsedTicketCount",
               value: utils.numberFixed(orderRealTimeData.todayUsedTicketCount),
               prefix:
                 orderRealTimeData.todayUsedTicketCount > 9999 ? "万人" : "人",
-              title: [<div>今日已核销</div>, <div>人数</div>],
+              title: (
+                <>
+                  <div>今日已核销</div>
+                  <div>人数</div>
+                </>
+              ),
             },
             {
               key: "quarterTicketCount",
               value: utils.numberFixed(orderRealTimeData.quarterTicketCount),
               prefix:
                 orderRealTimeData.quarterTicketCount > 9999 ? "万人" : "人",
-              title: [<div>当季预约</div>, <div>人数</div>],
+              title: (
+                <>
+                  <div>当季预约</div>
+                  <div>人数</div>
+                </>
+              ),
             },
             {
               key: "quarterUsedTicketCount",
@@ -77,7 +91,12 @@ export default function Sidebar() {
               ),
               prefix:
                 orderRealTimeData.quarterUsedTicketCount > 9999 ? "万人" : "人",
-              title: [<div>当季已核销</div>, <div>人数</div>],
+              title: (
+                <>
+                  <div>当季已核销</div>
+                  <div>人数</div>
+                </>
+              ),
             },
           ]}
         />

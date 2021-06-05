@@ -19,7 +19,7 @@ import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import UpdateDataForm from "./UpdateData3Form";
 import faciliyService from "../../services/faciliy.service";
-import { reviewOptions } from "../../shared/options";
+import { userStatusOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
@@ -35,7 +35,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
-    Keyword: "",
+    keyword: "",
   });
 
   useEffect(() => {
@@ -174,7 +174,7 @@ export default function DataTable() {
       dataIndex: "webUrl",
       width: 76,
       render(text) {
-        return text ? <Image src={text} width={60}/> : "无";
+        return text ? <Image src={text} width={60} /> : "无";
       },
     },
     {
@@ -193,9 +193,9 @@ export default function DataTable() {
       dataIndex: "permissionDate",
       render(text, creds) {
         return (
-          moment(creds.startPermissionDate).format(dateFormat) +
+          moment(creds.startCardTime).format(dateFormat) +
           "至" +
-          moment(creds.endPermissionDate).format(dateFormat)
+          moment(creds.endCardTime).format(dateFormat)
         );
       },
     },
@@ -210,11 +210,11 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showEditModal.bind(this, creds)}
+              onClick={e => showEditModal(creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+            <Button size="small" onClick={e => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -267,9 +267,9 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
-          <Select size="small" placeholder="核销状态" allowClear>
-            {reviewOptions.map((o) => (
+        <Form.Item name="CardStatus" style={{ marginBottom: 6, width: 100 }}>
+          <Select size="small" placeholder="状态" allowClear>
+            {userStatusOptions.map((o) => (
               <Option key={o.value}>{o.label}</Option>
             ))}
           </Select>
