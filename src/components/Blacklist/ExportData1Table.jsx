@@ -32,6 +32,13 @@ export default function DataTable({ id, onOk }) {
     onOk && onOk();
   }
 
+  function getRowClassName(creds, index) {
+    console.log(creds, 'creds')
+    if (creds.exception) {
+      return "ant-table-row-error";
+    }
+  }
+
   const columns = [
     {
       title: "序号",
@@ -52,6 +59,13 @@ export default function DataTable({ id, onOk }) {
     {
       title: "处罚",
       dataIndex: "behaviorDescription",
+    },
+    {
+      title: "错误信息",
+      dataIndex: "exception",
+      render(text) {
+        return text || "无";
+      },
     },
   ];
 
@@ -98,6 +112,7 @@ export default function DataTable({ id, onOk }) {
         rowKey="id"
         dataSource={makeData(dataList)}
         columns={columns}
+        rowClassName={getRowClassName}
         pagination={false}
         size="small"
         bordered

@@ -122,7 +122,7 @@ export default function DataTable() {
   function showImportModal(creds) {
     const mod = modal({
       title: "批量导入",
-      width: 720,
+      width: 800,
       content: <ExportDataTable onOk={onOk} />,
       footer: null,
     });

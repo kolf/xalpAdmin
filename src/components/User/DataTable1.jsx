@@ -96,7 +96,7 @@ export default function DataTable() {
 
   async function openFile() {
     try {
-      const res = await dataService.exportProductList(makeQuery(query));
+      const res = await dataService.exportUserList(makeQuery(query));
       window.open(res);
     } catch (error) {
       utils.error(`下载失败！`);

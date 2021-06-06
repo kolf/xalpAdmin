@@ -59,6 +59,13 @@ export default function DataTable({ id, onOk }) {
         return text || "无";
       },
     },
+    {
+      title: "错误信息",
+      dataIndex: "exception",
+      render(text) {
+        return text || "无";
+      },
+    },
   ];
 
   const uploadProps = {
