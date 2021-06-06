@@ -109,26 +109,54 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         onFinish={onFinish}
         initialValues={makeDefaultValues(defaultValues)}
       >
-        <Form.Item label="工号" name="jobNumber">
+        <Form.Item
+          label="工号"
+          name="jobNumber"
+          rules={[{ required: true, message: "请输入工号!" }]}
+        >
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="姓名" name="name">
+        <Form.Item
+          label="姓名"
+          name="name"
+          rules={[{ required: true, message: "请输入姓名!" }]}
+        >
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="岗位" name="organizationUnit">
+        <Form.Item
+          label="岗位"
+          name="organizationUnit"
+          rules={[{ required: true, message: "请输入岗位!" }]}
+        >
           <Input placeholder="请输入" />
         </Form.Item>
 
-        <Form.Item label="电话" name="phone">
+        <Form.Item
+          label="电话"
+          name="phone"
+          rules={[{ required: true, message: "请输入电话!" }]}
+        >
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="身份证号" name="certNumber">
+        <Form.Item
+          label="身份证号"
+          name="certNumber"
+          rules={[{ required: true, message: "请输入身份证号!" }]}
+        >
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="照片" name="tempFaceFileName">
+        <Form.Item
+          label="照片"
+          name="tempFaceFileName"
+          rules={[{ required: true, message: "请上传照片!" }]}
+        >
           <UploadImage />
         </Form.Item>
-        <Form.Item label="有效入园时间段" name="date">
+        <Form.Item
+          label="有效入园时间段"
+          name="date"
+          rules={[{ required: true, message: "请选择时间段!" }]}
+        >
           <RangePicker />
         </Form.Item>
         <Form.Item {...tailLayout}>

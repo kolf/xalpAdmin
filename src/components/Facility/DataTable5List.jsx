@@ -168,6 +168,7 @@ export default function DataTable({ renderHeader }) {
     {
       title: "起始日期",
       dataIndex: "startReserveDate",
+      width:200,
       render(text, creds, index) {
         const value = `${moment(creds.startReserveDate).format(
           dateFormat
@@ -299,7 +300,7 @@ export default function DataTable({ renderHeader }) {
         bordered
         loading={loading}
         rowKey="rowKey"
-        scroll={{ x: 900 }}
+        scroll={{ x: 760 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

@@ -33,16 +33,12 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           id: defaultValues.id,
         });
         utils.success(`更新成功！`);
-      } catch (error) {
-
-      }
+      } catch (error) {}
     } else {
       try {
         res = await blanklistService.addBlockBehavior(makeParams(values));
         utils.success(`添加成功！`);
-      } catch (error) {
-
-      }
+      } catch (error) {}
     }
 
     onOk && onOk(res);
@@ -78,11 +74,19 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         onFinish={onFinish}
         initialValues={makeDefaultValues(defaultValues)}
       >
-        <Form.Item label="不文明行为名称" name="name">
+        <Form.Item
+          label="不文明行为名称"
+          name="name"
+          rules={[{ required: true, message: "请输入不文明行为名称!" }]}
+        >
           <Input placeholder="请输入" />
         </Form.Item>
 
-        <Form.Item label="程度" name="behaviorType">
+        <Form.Item
+          label="程度"
+          name="behaviorType"
+          rules={[{ required: true, message: "请选择程度!" }]}
+        >
           <Select placeholder="请选择">
             {behaviorTypeOptions.map((o) => (
               <Option value={o.value} key={o.value}>
@@ -92,7 +96,11 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           </Select>
         </Form.Item>
 
-        <Form.Item label="惩罚措施" name="note">
+        <Form.Item
+          label="惩罚措施"
+          name="note"
+          rules={[{ required: true, message: "请输入惩罚措施!" }]}
+        >
           <Input placeholder="请输入" />
         </Form.Item>
 

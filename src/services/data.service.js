@@ -107,6 +107,26 @@ class DataService {
       return Promise.reject(error);
     }
   };
+  exportOrderList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Order/ExportDetails?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  exportStaffList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Staff/Export?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
   // 行为规范导入
   importBlockBehavior = async (creds) => {
     try {

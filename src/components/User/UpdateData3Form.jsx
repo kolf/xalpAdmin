@@ -109,17 +109,33 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         onFinish={onFinish}
         initialValues={makeDefaultValues(defaultValues)}
       >
-        <Form.Item label="供应商名称" name="name">
+        <Form.Item
+          label="供应商名称"
+          name="name"
+          rules={[{ required: true, message: "请输入供应商名称！" }]}
+        >
           <Input placeholder="请输入供应商名称" />
         </Form.Item>
-        <Form.Item label="申请人姓名" name="handlerName">
-          <Input placeholder="请输入申请人姓名" />
+        <Form.Item
+          label="负责人姓名"
+          name="handlerName"
+          rules={[{ required: true, message: "请输入负责人姓名！" }]}
+        >
+          <Input placeholder="请输入负责人姓名" />
         </Form.Item>
-        <Form.Item label="申请人电话" name="handlerPhone">
-          <Input placeholder="请输入申请人电话" />
+        <Form.Item
+          label="负责人电话"
+          name="handlerPhone"
+          rules={[{ required: true, message: "请输入负责人电话！" }]}
+        >
+          <Input placeholder="请输入负责人电话" />
         </Form.Item>
 
-        <Form.Item label="供应商类型" name="merchantTypeId">
+        <Form.Item
+          label="供应商类型"
+          name="merchantTypeId"
+          rules={[{ required: true, message: "请选择供应商类型！" }]}
+        >
           <Select placeholder="请选择">
             {makeData(merchantOptions).map((o) => (
               <Select.Option key={o.value} value={o.value}>
@@ -127,10 +143,6 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
               </Select.Option>
             ))}
           </Select>
-        </Form.Item>
-
-        <Form.Item label="有效入园时间段" name="date">
-          <RangePicker />
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit">

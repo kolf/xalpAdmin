@@ -69,21 +69,34 @@ export default function DataTable({ id, dataSource, onClose }) {
       title: "门票数量/剩余数量",
       dataIndex: "remainTouristsQuantity",
       render(text, creds) {
-        return creds.remainTouristsQuantity + "/" + creds.touristsCount;
+        return (
+          creds.maxTouristsQuantity +
+          "/" +
+          (creds.groupRemainTouristsQuantity +
+            creds.individualRemainTouristsQuantity)
+        );
       },
     },
     {
       title: "个人时段票数量/剩余数量",
-      dataIndex: "touristsCount",
+      dataIndex: "individualMaxTouristsQuantity",
       render(text, creds) {
-        return creds.remainTouristsQuantity + "/" + creds.touristsCount;
+        return (
+          creds.individualMaxTouristsQuantity +
+          "/" +
+          creds.individualRemainTouristsQuantity
+        );
       },
     },
     {
       title: "团体时段票数量/剩余数量",
-      dataIndex: "touristsCount",
+      dataIndex: "groupMaxTouristsQuantity",
       render(text, creds) {
-        return creds.remainTouristsQuantity + "/" + creds.touristsCount;
+        return (
+          creds.groupMaxTouristsQuantity +
+          "/" +
+          creds.groupRemainTouristsQuantity
+        );
       },
     },
     {
@@ -129,7 +142,7 @@ export default function DataTable({ id, dataSource, onClose }) {
     <div>
       <div className="calendar-details-title">{id}</div>
       <Table
-        rowKey="id"
+        rowKey="timeRangeName"
         dataSource={makeData(dataSource)}
         columns={columns}
         pagination={false}

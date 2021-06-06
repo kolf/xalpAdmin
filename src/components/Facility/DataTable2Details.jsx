@@ -103,6 +103,12 @@ export default function DataTable({ dataSource, showType }) {
     }
   }
 
+  function getRowClassName(creds, index) {
+    if (creds.status !== 1) {
+      return "ant-table-row-disabled";
+    }
+  }
+
   function makeColumns() {
     let columns = [
       {
@@ -169,16 +175,24 @@ export default function DataTable({ dataSource, showType }) {
         title: "操作",
         dataIndex: "options",
         fixed: "right",
-        width: 80,
+        width: 90,
         render(text, creds) {
           return (
             <div className="text-center">
               {showType === "CANCEL" ? (
-                <Button size="small" onClick={(e) => showDeleteModal(creds)}>
-                  取消
+                <Button
+                  size="small"
+                  onClick={(e) => showDeleteModal(creds)}
+                  disabled={creds.status !== 1}
+                >
+                  取消预约
                 </Button>
               ) : (
-                <Button size="small" onClick={(e) => showReviewModal(creds)}>
+                <Button
+                  size="small"
+                  onClick={(e) => showReviewModal(creds)}
+                  disabled={creds.status !== 1}
+                >
                   核销
                 </Button>
               )}
@@ -242,6 +256,7 @@ export default function DataTable({ dataSource, showType }) {
         rowKey="id"
         dataSource={makeData(dataList)}
         columns={makeColumns()}
+        rowClassName={getRowClassName}
         pagination={false}
         size="small"
         bordered

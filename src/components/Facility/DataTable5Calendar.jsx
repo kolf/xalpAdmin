@@ -93,7 +93,9 @@ export default function DataTable5ListCalendar({ renderHeader }) {
                     {time.startTimeRange}-{time.endTimeRange}
                   </span>
                   <span>
-                    {time.remainTouristsQuantity}/{time.maxTouristsQuantity}
+                    {time.groupRemainTouristsQuantity +
+                      time.individualRemainTouristsQuantity}
+                    /{time.maxTouristsQuantity}
                   </span>
                 </div>
               ))}

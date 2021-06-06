@@ -124,7 +124,6 @@ export default function DataTable() {
         makeQuery(query)
       );
       window.open(res)
-      console.log(res, "res");
     } catch (error) {
       utils.error(`下载失败！`);
     }

@@ -158,8 +158,6 @@ export default function DataTable() {
   async function openFile() {
     try {
       const res = await dataService.exportBlockAllowRecord(makeQuery(query));
-      window.open(res);
-      console.log(res, "res");
     } catch (error) {}
   }
 

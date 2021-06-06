@@ -157,7 +157,6 @@ export default function DataTable() {
     try {
       const res = await dataService.exportMerchantList(makeQuery(query));
       window.open(res);
-      console.log(res, "res");
     } catch (error) {}
   }
 
@@ -167,7 +166,7 @@ export default function DataTable() {
       dataIndex: "name",
     },
     {
-      title: "姓名",
+      title: "负责人姓名",
       dataIndex: "handlerName",
     },
     {
@@ -175,7 +174,7 @@ export default function DataTable() {
       dataIndex: "handlerPhone",
     },
     {
-      title: "类型",
+      title: "供应商类型",
       dataIndex: "merchantTypeName",
       render(text) {
         return text || "无";
@@ -186,20 +185,6 @@ export default function DataTable() {
       dataIndex: "lastModificationTime",
       render(text) {
         return text ? moment(text).format(secFormat) : "无";
-      },
-    },
-    {
-      title: "预约时间",
-      dataIndex: "openingHours",
-      render(text) {
-        return text || "无";
-      },
-    },
-    {
-      title: "状态",
-      dataIndex: "status",
-      render(text, creds) {
-        return "正常";
       },
     },
     {
@@ -273,21 +258,6 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
-          <Select size="small" placeholder="核销状态" allowClear>
-            {reviewOptions.map((o) => (
-              <Option key={o.value}>{o.label}</Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item name="date">
-          <RangePicker size="small" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" size="small">
-            查询数据
-          </Button>
-        </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
