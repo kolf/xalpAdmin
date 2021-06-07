@@ -69,7 +69,7 @@ export default function DataTable() {
       if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
-      if (key === "isOnline" && value) {
+      if (key === "isOnline") {
         result[key] = value === "1";
       }
       if (query.skipCount) {
@@ -186,6 +186,8 @@ export default function DataTable() {
     {
       title: "操作",
       dataIndex: "options",
+      width:180,
+      fixed: "right",
       render(text, creds) {
         return (
           <div className="text-center">
@@ -288,6 +290,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
+        scroll={{ x:1200}}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

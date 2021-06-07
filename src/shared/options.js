@@ -17,7 +17,7 @@ const onlineEnum = {
 
 const deviceActiveEnum = {
   1: "启用",
-  2: "停用",
+  0: "停用",
 };
 
 const reviewEnum = {
@@ -45,8 +45,8 @@ export const behaviorTypeEnum = {
 };
 
 export const enterEnum = {
-  1: "出口",
-  2: "入口",
+  0: "出口",
+  1: "入口",
 };
 
 export const activityEnum = {

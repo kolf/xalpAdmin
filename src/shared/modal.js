@@ -18,7 +18,7 @@ class Mod extends React.Component {
   innerHeight = 600;
 
   componentDidMount() {
-    this.innerHeight = window.innerHeight - 300;
+    this.innerHeight = window.innerHeight - 200;
   }
 
   draggleRef = React.createRef();

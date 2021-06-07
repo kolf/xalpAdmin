@@ -22,6 +22,10 @@ class Utils {
       return (number / 10000).toFixed(2);
     }
   };
+
+  todo = (number) => {
+    return number < 10 ? "0" + number : number;
+  };
 }
 
 export default new Utils();

@@ -52,7 +52,7 @@ export default function DataTable({ dataSource, showType }) {
         if (value !== undefined && value !== "-1") {
           result[key] = value;
         }
-        if (key === "isOnline" && value) {
+        if (key === "isOnline") {
           result[key] = value === "1";
         }
         if (query.skipCount) {

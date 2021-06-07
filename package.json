@@ -6,6 +6,7 @@
     "@ant-design/icons": "^4.6.2",
     "@antv/f2": "^3.8.8",
     "@uiw/react-amap": "^1.7.11",
+    "ahooks": "^2.10.5",
     "antd": "^4.16.1",
     "axios": "^0.19.2",
     "cogo-toast": "^4.2.3",

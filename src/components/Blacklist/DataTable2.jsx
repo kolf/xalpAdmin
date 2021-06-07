@@ -23,7 +23,7 @@ import { behaviorTypeEnum } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD hh:mm:ss";
+const secFormat = "YYYY-MM-DD HH:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -169,10 +169,12 @@ export default function DataTable() {
     {
       title: "序号",
       dataIndex: "index",
+      width: 60,
     },
     {
       title: "程度",
       dataIndex: "behaviorType",
+      width: 100,
       render(text) {
         return behaviorTypeEnum[text] || "无";
       },
@@ -180,6 +182,7 @@ export default function DataTable() {
     {
       title: "行为",
       dataIndex: "name",
+      width:160
     },
     {
       title: "惩罚措施",
@@ -188,6 +191,7 @@ export default function DataTable() {
     {
       title: "创建时间",
       dataIndex: "creationTime",
+      width: 180,
       render(text) {
         return text ? moment(text).format(secFormat) : "无";
       },
@@ -195,17 +199,19 @@ export default function DataTable() {
     {
       title: "操作",
       dataIndex: "options",
+      fixed: "right",
+      width: 120,
       render(text, creds) {
         return (
           <div className="text-center">
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={e => showEditModal(creds)}
+              onClick={(e) => showEditModal(creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={e => showDeleteModal(creds)}>
+            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -279,7 +285,8 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, skipCount: "1", keyword: value })
             }
@@ -295,6 +302,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
+        scroll={{ x: 900 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

@@ -76,7 +76,9 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     return Object.keys(values).reduce(
       (result, key) => {
         const value = values[key];
-        if (key === "date" && value) {
+        if (key === "startTime" && value) {
+
+          result.startTime = value.format(dateFormat);
         } else if (value !== undefined && value !== "-1") {
           result[key] = value;
         }

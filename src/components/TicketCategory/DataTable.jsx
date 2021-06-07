@@ -7,7 +7,7 @@ import utils from "../../shared/utils";
 import ticketCategoryService from "../../services/ticket-category.service";
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD hh:mm:ss";
+const secFormat = "YYYY-MM-DD HH:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();

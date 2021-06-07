@@ -22,7 +22,7 @@ import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD hh:mm:ss";
+const secFormat = "YYYY-MM-DD HH:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -166,6 +166,7 @@ export default function DataTable() {
     {
       title: "序号",
       dataIndex: "index",
+      width: 60,
     },
     {
       title: "姓名",
@@ -186,6 +187,7 @@ export default function DataTable() {
     {
       title: "不文明行为发生时间",
       dataIndex: "startTime",
+      width: 170,
       render(text) {
         return text ? moment(text).format(secFormat) : "无";
       },
@@ -208,6 +210,7 @@ export default function DataTable() {
     {
       title: "操作",
       dataIndex: "options",
+      fixed: "right",
       render(text, creds) {
         return (
           <div className="text-center">
@@ -309,6 +312,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
+        scroll={{ x: 1400 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

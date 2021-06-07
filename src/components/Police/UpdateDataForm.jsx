@@ -38,9 +38,9 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
     return Object.keys(values).reduce(
       (result, key) => {
         const value = values[key];
-        if (key === "isActive" && value) {
+        if (key === "isActive") {
           result.isActive = value === "1";
-        } else if (key === "isDirectionEnter" && value) {
+        } else if (key === "isDirectionEnter") {
           result.isDirectionEnter = value === "1";
         } else if (value !== undefined && value !== "-1") {
           result[key] = value;
@@ -59,10 +59,10 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
     }
     return Object.keys(values).reduce((result, key) => {
       const value = values[key];
-      if (key === "isActive" && value) {
+      if (key === "isActive") {
         result.isActive = value ? "1" : "0";
-      } else if (key === "isDirectionEnter" && value) {
-        result.isActive = value ? "1" : "0";
+      } else if (key === "isDirectionEnter") {
+        result.isDirectionEnter = value ? "1" : "0";
       } else if (/^(checkDeviceType)$/.test(key)) {
         result[key] = value + "";
       } else if (value !== undefined && value !== "-1") {
