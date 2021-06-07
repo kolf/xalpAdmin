@@ -181,14 +181,6 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item name="date">
-          <RangePicker size="small" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" size="small">
-            查询数据
-          </Button>
-        </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"

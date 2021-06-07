@@ -39,7 +39,6 @@ export default function DataTable({ id, onOk }) {
   }
 
   function getRowClassName(creds, index) {
-    console.log(creds, 'creds')
     if (creds.exception) {
       return "ant-table-row-error";
     }

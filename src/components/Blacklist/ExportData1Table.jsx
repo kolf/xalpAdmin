@@ -12,6 +12,7 @@ export default function DataTable({ id, onOk }) {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [fileName, setFileName] = useState("");
+  const [error, setError] = useState("");
 
   function makeData(data) {
     return data.map((item, index) => {
@@ -24,6 +25,10 @@ export default function DataTable({ id, onOk }) {
   }
 
   async function onFinish() {
+    if (error) {
+      utils.error(error);
+      return;
+    }
     try {
       const res = await dataService.importBlockAllowRecord({ fileName });
       utils.success(`导入成功！`);
@@ -33,7 +38,6 @@ export default function DataTable({ id, onOk }) {
   }
 
   function getRowClassName(creds, index) {
-    console.log(creds, 'creds')
     if (creds.exception) {
       return "ant-table-row-error";
     }
@@ -78,12 +82,15 @@ export default function DataTable({ id, onOk }) {
     },
     onChange(info) {
       if (info.file.status !== "uploading") {
-        console.log(info.file, info.fileList);
       }
       if (info.file.status === "done") {
+        const res = info.file.response;
         try {
-          setDataList(info.file.response.blockAllowRecords);
-          setFileName(info.file.response.tempExcelFileName);
+          setDataList(res.blockAllowRecords);
+          setFileName(res.tempExcelFileName);
+          if (!res.isSuccess) {
+            setError(res.failMessage);
+          }
         } catch (error) {
           utils.error(`文件格式有误！`);
         }

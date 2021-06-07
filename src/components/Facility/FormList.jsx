@@ -11,12 +11,13 @@ export default function FormList({
   pickerOptions = [],
   name,
   onChange,
-  value,
-  defaultValue,
+  value = [],
 }) {
   const [fields, setFields] = useState([createId(name)]);
 
-  console.log(value, defaultValue, "value");
+  useEffect(() => {
+    console.log(value, "useEffect");
+  }, [value.length]);
 
   function add() {
     setFields([...fields, createId(name)]);

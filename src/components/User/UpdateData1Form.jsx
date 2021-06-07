@@ -86,7 +86,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         onFinish={onFinish}
         initialValues={makeDefaultValues(defaultValues)}
       >
-        <Form.Item label="选择角色" name="roleNames">
+        <Form.Item label="选择角色" name="roleNames" rules={[{ required: true, message: "请选择角色！" }]}>
           <Select placeholder="请选择" mode="multiple" allowClear>
             {roleOptions.map((o) => (
               <Option value={o.label} key={o.value}>

@@ -69,6 +69,11 @@ export default function DataTable5ListCalendar({ renderHeader }) {
     }
 
     const date = e.date();
+    let isSpecial = false;
+    if (current && current.timeRanges) {
+      isSpecial = current.timeRanges.some((item) => item.isSpecial);
+    }
+
     return (
       <div
         className="calendar-cell"
@@ -79,26 +84,33 @@ export default function DataTable5ListCalendar({ renderHeader }) {
           {current &&
             (current.timeRanges || [])
               .filter((item, index) => index < 3)
-              .map((time) => (
-                <div
-                  key={time.id}
-                  style={{
-                    height: 18,
-                    overflow: "hidden",
-                    whiteSpace: "nowrap",
-                  }}
-                  title={`${time.startTimeRange}-${time.endTimeRange} ${time.remainTouristsQuantity}/${time.maxTouristsQuantity}`}
-                >
-                  <span style={{ paddingRight: 4 }}>
-                    {time.startTimeRange}-{time.endTimeRange}
-                  </span>
-                  <span>
-                    {time.remainTouristsQuantity}/{time.maxTouristsQuantity}
-                  </span>
-                </div>
-              ))}
+              .map((time) => {
+                return (
+                  <div
+                    key={time.id}
+                    style={{
+                      height: 18,
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                    }}
+                    title={`${time.startTimeRange}-${time.endTimeRange} ${time.remainTouristsQuantity}/${time.maxTouristsQuantity}`}
+                  >
+                    <span style={{ paddingRight: 4 }}>
+                      {time.startTimeRange}-{time.endTimeRange}
+                    </span>
+                    <span>
+                      {time.groupRemainTouristsQuantity +
+                        time.individualRemainTouristsQuantity}
+                      /{time.maxTouristsQuantity}
+                    </span>
+                  </div>
+                );
+              })}
         </div>
-        <div className="calendar-cell-value">
+        <div
+          className="calendar-cell-value"
+          style={isSpecial ? { color: "#ffe58f" } : null}
+        >
           {current ? current.timeRanges[0].maxTouristsQuantity : "0"}
         </div>
       </div>

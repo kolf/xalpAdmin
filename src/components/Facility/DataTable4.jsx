@@ -19,6 +19,7 @@ import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import UpdateDataForm from "./UpdateData4Form";
 import faciliyService from "../../services/faciliy.service";
+import dataService from "../../services/data.service";
 import { userStatusOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -146,7 +147,12 @@ export default function DataTable() {
     }
   }
 
-  function openFile() {}
+  async function openFile() {
+    try {
+      const res = await dataService.exportStaffList(makeQuery(query));
+      window.open(res);
+    } catch (error) {}
+  }
 
   const columns = [
     {
@@ -214,11 +220,11 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={e => showEditModal(creds)}
+              onClick={(e) => showEditModal(creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={e => showDeleteModal(creds)}>
+            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -289,7 +295,8 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, keyword: value, skipCount: "1" })
             }

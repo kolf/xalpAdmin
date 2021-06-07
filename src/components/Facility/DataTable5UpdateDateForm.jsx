@@ -34,7 +34,7 @@ const tailLayout = {
 
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [datePickerOptions, setDatePickerOptions] = useState([]);
   useEffect(() => {
     if (datePickerOptions.length === 0) {
@@ -141,6 +141,35 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     };
   }
 
+  function splitTimeData(data) {
+    if (!data) {
+      return [[], []];
+    }
+    return data.reduce(
+      (result, item) => {
+        const {
+          individualMaxTouristsQuantity,
+          groupMaxTouristsQuantity,
+          timeItemId,
+        } = item;
+        if (individualMaxTouristsQuantity) {
+          result[0].push({
+            timeItemId,
+            maxTouristsQuantity: individualMaxTouristsQuantity,
+          });
+        }
+        if (groupMaxTouristsQuantity) {
+          result[1].push({
+            timeItemId,
+            maxTouristsQuantity: groupMaxTouristsQuantity,
+          });
+        }
+        return result;
+      },
+      [[], []]
+    );
+  }
+
   function makeDefaultValues(values) {
     const {
       isSpecial,
@@ -152,13 +181,14 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       id,
     } = values;
 
-    console.log("df", timeItems);
-
     if (!id) {
       return {};
     }
+    const [_items1, _items2] = splitTimeData(timeItems);
+
     return {
-      _items1: [],
+      _items1,
+      _items2,
       maxTouristsQuantity,
       date: isSpecial
         ? [moment(dateTitle, dateFormat), moment(dateTitle, dateFormat)]
@@ -196,6 +226,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           style={{ marginBottom: 12 }}
           name="_items1"
           className="form-item-list"
+          required
           rules={[{ validator: checkDateList1 }]}
         >
           <FormList name="items1" pickerOptions={datePickerOptions} />
@@ -204,6 +235,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           label="团体时间段票数"
           style={{ marginBottom: 12 }}
           name="_items2"
+          required
           className="form-item-list"
           rules={[{ validator: checkDateList2 }]}
         >

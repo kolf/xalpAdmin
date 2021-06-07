@@ -159,7 +159,6 @@ export default function DataTable() {
     try {
       const res = await dataService.exportBlockAllowRecord(makeQuery(query));
       window.open(res);
-      console.log(res, "res");
     } catch (error) {}
   }
 

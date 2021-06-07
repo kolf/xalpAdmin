@@ -1,18 +1,13 @@
-import { message } from "antd";
-
 import moment from "moment";
+import message from "./message";
 
-message.config({
-  duration: 2,
-  maxCount: 1,
-});
 class Utils {
-  success = (msg, duration = 1) => {
-    message.success(msg, duration);
+  success = (msg) => {
+    message({ type: "success", content: msg });
   };
 
-  error = (msg, duration = 1) => {
-    message.error(msg, duration);
+  error = (msg) => {
+    message({ type: "error", content: msg });
   };
 
   dateTimeFormater = (datetime, formatString) => {

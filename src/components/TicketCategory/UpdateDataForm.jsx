@@ -48,16 +48,12 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           id: defaultValues.id,
         });
         utils.success(`更新成功！`);
-      } catch (error) {
-
-      }
+      } catch (error) {}
     } else {
       try {
         res = await ticketCategoryService.addProduct(makeParams(values));
         utils.success(`添加成功！`);
-      } catch (error) {
-
-      }
+      } catch (error) {}
     }
 
     onOk && onOk(res);
@@ -140,36 +136,72 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         onFinish={onFinish}
         initialValues={makeDefaultValues()}
       >
-        <Form.Item label="门票名称" name="name">
+        <Form.Item
+          label="门票名称"
+          name="name"
+          rules={[{ required: true, message: "请输入门票名称！" }]}
+        >
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="客户类型" name="clientType">
+        <Form.Item
+          label="客户类型"
+          name="clientType"
+          rules={[{ required: true, message: "请选择客户类型！" }]}
+        >
           <Radio.Group>
             <Radio value={1}>个人</Radio>
             <Radio value={2}>团体</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item label="票面价格" name="priceSale">
+        <Form.Item
+          label="票面价格"
+          name="priceSale"
+          rules={[{ required: true, message: "请输入票面价格！" }]}
+        >
           <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
         </Form.Item>
 
-        <Form.Item label="可用次数" name="enterTimes">
+        <Form.Item
+          label="可用次数"
+          name="enterTimes"
+          rules={[{ required: true, message: "请输入可用次数！" }]}
+        >
           <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
         </Form.Item>
 
-        <Form.Item label="包含人数" name="unitUserCount">
+        <Form.Item
+          label="包含人数"
+          name="unitUserCount"
+          rules={[{ required: true, message: "请输入可用次数！" }]}
+        >
           <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
         </Form.Item>
-        <Form.Item label="选项" name="options">
+        <Form.Item
+          label="选项"
+          name="options"
+          rules={[{ required: true, message: "请选择！" }]}
+        >
           <Checkbox.Group options={plainOptions} />
         </Form.Item>
-        <Form.Item label="可预售天数" name="presaleDays">
+        <Form.Item
+          label="可预售天数"
+          name="presaleDays"
+          rules={[{ required: true, message: "请输入可预售天数！" }]}
+        >
           <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
         </Form.Item>
-        <Form.Item label="有效天数" name="validDays">
+        <Form.Item
+          label="有效天数"
+          name="validDays"
+          rules={[{ required: true, message: "请输入有效天数！" }]}
+        >
           <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
         </Form.Item>
-        <Form.Item label="详情描述" name="note">
+        <Form.Item
+          label="详情描述"
+          name="note"
+          rules={[{ required: true, message: "请输入详情描述！" }]}
+        >
           <Input.TextArea placeholder="请输入" />
         </Form.Item>
 

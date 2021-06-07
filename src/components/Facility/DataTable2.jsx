@@ -84,22 +84,27 @@ export default function DataTable() {
   }
 
   function makeQuery(query) {
-    return Object.keys(query).reduce((result, key) => {
-      const value = query[key];
-      if (key === "date" && value) {
-        const [start, end] = value;
-        result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
-        result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
-      } else if (key === "isActivityApply" && value) {
-        result.isActivityApplySuccess = value === "1";
-      } else if (value !== undefined && value !== "-1") {
-        result[key] = value;
+    return Object.keys(query).reduce(
+      (result, key) => {
+        const value = query[key];
+        if (key === "date" && value) {
+          const [start, end] = value;
+          result.StartTravelTime = start.format(dateFormat) + " 00:00:00";
+          result.EndTravelTime = end.format(dateFormat) + " 23:59:59";
+        } else if (key === "isActivityApply" && value) {
+          result.isActivityApplySuccess = value === "1";
+        } else if (value !== undefined && value !== "-1") {
+          result[key] = value;
+        }
+        if (query.skipCount) {
+          result.skipCount = (query.skipCount - 1) * query.maxResultCount;
+        }
+        return result;
+      },
+      {
+        ClientType: 2,
       }
-      if (query.skipCount) {
-        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
-      }
-      return result;
-    }, {});
+    );
   }
 
   function showDetailsModal(creds, type) {
@@ -120,9 +125,15 @@ export default function DataTable() {
     function onOk() {}
   }
 
-  function openFile() {}
+  async function openFile() {
+    try {
+      const res = await dataService.exportOrderList(makeQuery(query));
+      window.open(res);
+    } catch (error) {}
+  }
 
   function getRowClassName(creds, index) {
+    return "";
     if (creds.orderStatus !== 1) {
       return "ant-table-row-disabled";
     }
@@ -149,9 +160,9 @@ export default function DataTable() {
     {
       title: "团体类型",
       dataIndex: "groupTypeName",
-      render(text){
-        return text || '无'
-      }
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "预约时段",
@@ -163,7 +174,10 @@ export default function DataTable() {
     },
     {
       title: "车牌号",
-      dataIndex: "phone",
+      dataIndex: "licensePlateNumber",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "抵达方式",
@@ -183,9 +197,9 @@ export default function DataTable() {
     {
       title: "随行设备",
       dataIndex: "equipmentInfo",
-      render(text){
-        return text || '无'
-      }
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "参与活动",
@@ -199,7 +213,7 @@ export default function DataTable() {
       dataIndex: "orderTicketCount",
       width: 110,
       render(text, creds) {
-        return `${creds.sedTicketCount || "0"}/${
+        return `${creds.usedTicketCount || "0"}/${
           creds.orderTicketCount || "0"
         }`;
       },
@@ -208,7 +222,7 @@ export default function DataTable() {
       title: "操作",
       dataIndex: "options",
       fixed: "right",
-      width: 176,
+      width: 206,
       render(text, creds) {
         return (
           <div className="text-center">
@@ -222,17 +236,17 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              disabled={creds.orderStatus !== 1}
+              // disabled={creds.orderStatus !== 1}
               onClick={(e) => showDetailsModal(creds, "REVIEW")}
             >
               核销
             </Button>
             <Button
               size="small"
-              disabled={creds.orderStatus !== 1}
+              // disabled={creds.orderStatus !== 1}
               onClick={(e) => showDetailsModal(creds, "CANCEL")}
             >
-              取消
+              取消预约
             </Button>
           </div>
         );

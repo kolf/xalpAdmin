@@ -117,10 +117,18 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         onFinish={onFinish}
         initialValues={makeDefaultValues(defaultValues)}
       >
-        <Form.Item label="角色名称" name="name">
+        <Form.Item
+          label="角色名称"
+          name="name"
+          rules={[{ required: true, message: "请输入角色名称！" }]}
+        >
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="权限设置" name="permissions">
+        <Form.Item
+          label="权限设置"
+          name="permissions"
+          rules={[{ required: true, message: "请选择权限！" }]}
+        >
           <Checkbox.Group options={providerOptions} />
         </Form.Item>
         <Form.Item {...tailLayout}>
