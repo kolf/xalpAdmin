@@ -15,7 +15,11 @@ import {
 import DataTableDetailas from "./DataTable2Detailas";
 import moment from "moment";
 import modal from "../../shared/modal";
-import { activityOptions, checkModeEnum } from "../../shared/options";
+import {
+  activityOptions,
+  checkModeEnum,
+  orderChannelEnum,
+} from "../../shared/options";
 import facilityService from "../../services/faciliy.service";
 import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
@@ -39,7 +43,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
-    Keyword: "",
+    keyword: "",
   });
 
   useEffect(() => {
@@ -137,14 +141,28 @@ export default function DataTable() {
     {
       title: "联系电话",
       dataIndex: "phone",
-      // width: 116,
     },
     {
-      title: "预约时间段",
+      title: "团队名称",
+      dataIndex: "phone",
+    },
+    {
+      title: "团队类型",
+      dataIndex: "phone",
+    },
+    {
+      title: "预约时段",
       dataIndex: "timeRangeName",
       width: 196,
       render(text, creds) {
         return moment(creds.travelDate).format(dateFormat) + " " + text;
+      },
+    },
+    {
+      title: "车牌号",
+      dataIndex: "licensePlateNumber",
+      render(text) {
+        return text || "无";
       },
     },
     {
@@ -156,9 +174,29 @@ export default function DataTable() {
       },
     },
     {
-      title: "核销设备(核销方式)",
+      title: "预约来源",
+      dataIndex: "orderChannel",
+      render(text) {
+        return text ? orderChannelEnum[text] : "未知";
+      },
+    },
+    {
+      title: "随行设备",
       dataIndex: "checkMode",
-      width: 158,
+      render(text) {
+        return checkModeEnum[text] || "无";
+      },
+    },
+    {
+      title: "参与活动",
+      dataIndex: "checkMode",
+      render(text) {
+        return activityName || "无";
+      },
+    },
+    {
+      title: "已核销/总人数",
+      dataIndex: "checkMode",
       render(text) {
         return checkModeEnum[text] || "无";
       },
@@ -291,7 +329,7 @@ export default function DataTable() {
             placeholder="模糊搜索"
             allowClear
             onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", Keyword: value })
+              setQuery({ ...query, skipCount: "1", keyword: value })
             }
           />
         </Form.Item>
@@ -306,7 +344,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        scroll={{ x: 1100 }}
+        scroll={{ x: 1600 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

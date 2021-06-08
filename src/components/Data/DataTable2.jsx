@@ -25,7 +25,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "100",
-    Keyword: "",
+    keyword: "",
   });
 
   useEffect(() => {

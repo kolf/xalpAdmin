@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Form, Input, Pagination } from "antd";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
+import { checkModeEnum } from "../../shared/options";
 import facilityService from "../../services/faciliy.service";
 const { Search } = Input;
 export default function DataTable({ dataSource, showType }) {
@@ -13,7 +14,7 @@ export default function DataTable({ dataSource, showType }) {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
-    Keyword: "",
+    keyword: "",
   });
 
   useEffect(() => {
@@ -140,6 +141,28 @@ export default function DataTable({ dataSource, showType }) {
           return text || "无";
         },
       },
+      {
+        title: "核销设备（核销方式）",
+        dataIndex: "checkMode",
+        width: 158,
+        render(text) {
+          return checkModeEnum[text] || "无";
+        },
+      },
+      {
+        title: "核销设备ID",
+        dataIndex: "checkDeviceCode",
+        render(text) {
+          return text || "无";
+        },
+      },
+      {
+        title: "闸机位置",
+        dataIndex: "checkDeviceName",
+        render(text) {
+          return text || "无";
+        },
+      },
     ];
     if (/(REVIEW|CANCEL)/.test(showType)) {
       columns.push({
@@ -210,7 +233,7 @@ export default function DataTable({ dataSource, showType }) {
             placeholder="模糊搜索"
             allowClear
             onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", Keyword: value })
+              setQuery({ ...query, skipCount: "1", keyword: value })
             }
           />
         </Form.Item>

@@ -35,7 +35,7 @@ export default function DataTable() {
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
-    Keyword: "",
+    keyword: "",
   });
 
   useEffect(() => {
@@ -174,7 +174,7 @@ export default function DataTable() {
       dataIndex: "webUrl",
       width: 76,
       render(text) {
-        return text ? <Image src={text} width={60}/> : "无";
+        return text ? <Image src={text} width={60} /> : "无";
       },
     },
     {
