@@ -38,24 +38,33 @@ export default function DataTable() {
   });
 
   useEffect(() => {
+    let mounted = true;
     loadData();
-  }, [JSON.stringify(query), counter]);
 
-  async function loadData() {
-    setLoading(true);
-    try {
-      const { items, totalCount } =
-        await blanklistService.getBlockAllowUserList(makeQuery(query));
-      const { totalBlockingCount, totalCount: AllTotalCount } =
-        await blanklistService.getBlockAllowUserList();
-      setLoading(false);
-      setDataList(items);
-      setTotalArr([AllTotalCount, totalBlockingCount]);
-      setTotal(totalCount);
-    } catch (error) {
-      setLoading(false);
+    async function loadData() {
+      setLoading(true);
+      try {
+        const { items, totalCount } =
+          await blanklistService.getBlockAllowUserList(makeQuery(query));
+        const { totalBlockingCount, totalCount: AllTotalCount } =
+          await blanklistService.getBlockAllowUserList();
+        if (mounted) {
+          setLoading(false);
+          setDataList(items);
+          setTotalArr([AllTotalCount, totalBlockingCount]);
+          setTotal(totalCount);
+        }
+      } catch (error) {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     }
-  }
+
+    return () => {
+      mounted = false;
+    };
+  }, [JSON.stringify(query), counter]);
 
   function makeData(data) {
     if (!data) {

@@ -46,7 +46,87 @@ export default function AdmissionChart() {
   const [loading, setLoading] = useState(false);
   const [query, setQuery] = useState({});
   useEffect(() => {
+    let mounted = true;
     renderChart();
+
+    async function renderChart() {
+      const { TimeRangeType, CheckDeviceType } = query;
+      let data = [];
+      let res1 = [];
+      let res2 = [];
+      try {
+        if (query["year-1"]) {
+          res1 = await dataService.getOrderCheckTimeRanges({
+            TimeRangeType,
+            CheckDeviceType,
+            ...makeDate(
+              TimeRangeType,
+              query["year-1"],
+              query["month-1"],
+              query["date-1"]
+            ),
+          });
+        }
+        if (query["year-2"]) {
+          res2 = await dataService.getOrderCheckTimeRanges({
+            TimeRangeType,
+            CheckDeviceType,
+            ...makeDate(
+              TimeRangeType,
+              query["year-2"],
+              query["month-2"],
+              query["date-2"]
+            ),
+          });
+        }
+
+        if (!mounted) {
+          return null;
+        }
+
+        data = [
+          ...res1.map((item) => ({
+            type: "数据1",
+            value: item.personCount,
+            date: item.checkTime,
+          })),
+          ...res2.map((item) => ({
+            type: "数据2",
+            value: item.personCount,
+            date: item.checkTime,
+          })),
+        ];
+
+        const chart = new F2.Chart({
+          id: "chart1",
+          pixelRatio: window.devicePixelRatio,
+        });
+        chart.source(data, {
+          date: {
+            tickCount: 6,
+            range: [0, 1],
+          },
+        });
+        chart.legend(false);
+        chart.axis("date", {
+          label: function label(text, index, total) {
+            const textCfg = {};
+            if (index === 0) {
+              textCfg.textAlign = "left";
+            } else if (index === total - 1) {
+              textCfg.textAlign = "right";
+            }
+            return textCfg;
+          },
+        });
+        chart.line().position("date*value").color("type", colors);
+        chart.point().position("date*value").color("type", colors);
+        chart.render();
+      } catch (error) {}
+    }
+    return () => {
+      mounted = false;
+    };
   });
 
   async function openFile() {
@@ -85,78 +165,6 @@ export default function AdmissionChart() {
     } catch (error) {
       utils.error(`下载失败！`);
     }
-  }
-
-  async function renderChart() {
-    const { TimeRangeType, CheckDeviceType } = query;
-    let data = [];
-    let res1 = [];
-    let res2 = [];
-    try {
-      if (query["year-1"]) {
-        res1 = await dataService.getOrderCheckTimeRanges({
-          TimeRangeType,
-          CheckDeviceType,
-          ...makeDate(
-            TimeRangeType,
-            query["year-1"],
-            query["month-1"],
-            query["date-1"]
-          ),
-        });
-      }
-      if (query["year-2"]) {
-        res2 = await dataService.getOrderCheckTimeRanges({
-          TimeRangeType,
-          CheckDeviceType,
-          ...makeDate(
-            TimeRangeType,
-            query["year-2"],
-            query["month-2"],
-            query["date-2"]
-          ),
-        });
-      }
-
-      data = [
-        ...res1.map((item) => ({
-          type: "数据1",
-          value: item.personCount,
-          date: item.checkTime,
-        })),
-        ...res2.map((item) => ({
-          type: "数据2",
-          value: item.personCount,
-          date: item.checkTime,
-        })),
-      ];
-
-      const chart = new F2.Chart({
-        id: "chart1",
-        pixelRatio: window.devicePixelRatio,
-      });
-      chart.source(data, {
-        date: {
-          tickCount: 6,
-          range: [0, 1],
-        },
-      });
-      chart.legend(false);
-      chart.axis("date", {
-        label: function label(text, index, total) {
-          const textCfg = {};
-          if (index === 0) {
-            textCfg.textAlign = "left";
-          } else if (index === total - 1) {
-            textCfg.textAlign = "right";
-          }
-          return textCfg;
-        },
-      });
-      chart.line().position("date*value").color("type", colors);
-      chart.point().position("date*value").color("type", colors);
-      chart.render();
-    } catch (error) {}
   }
 
   return (

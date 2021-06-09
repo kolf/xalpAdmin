@@ -31,20 +31,26 @@ export default function DataTable() {
   });
 
   useEffect(() => {
+    let mounted = true;
     loadData();
-  }, [JSON.stringify(query), counter]);
-
-  async function loadData() {
-    setLoading(true);
-    try {
-      const items = await dataService.getOrderAgeList(makeQuery(query));
-      setLoading(false);
-      setDataList(items);
-      setTotal(items.length);
-    } catch (error) {
-      setLoading(false);
+    
+    async function loadData() {
+      setLoading(true);
+      try {
+        const items = await dataService.getOrderAgeList(makeQuery(query));
+        if (mounted) {
+          setLoading(false);
+          setDataList(items);
+          setTotal(items.length);
+        }
+      } catch (error) {
+        setLoading(false);
+      }
     }
-  }
+    return () => {
+      mounted = false;
+    };
+  }, [JSON.stringify(query), counter]);
 
   function makeData(data) {
     if (!data) {

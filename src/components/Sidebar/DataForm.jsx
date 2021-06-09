@@ -17,8 +17,14 @@ export default function HorizontalLoginForm({ onChange }) {
   const [timeRangeType, setTimeRangeType] = useState("");
 
   useEffect(() => {
-    console.log("55");
-    onChange(makeInitialValues());
+    let mounted = true;
+    if (mounted) {
+      onChange(makeInitialValues());
+    }
+
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const checkValues = async (values) => {

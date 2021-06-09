@@ -47,28 +47,35 @@ export default function DataTable() {
   });
 
   useEffect(() => {
+    let mounted = true;
     loadData();
-  }, [JSON.stringify(query), counter]);
-
-  async function loadData() {
-    setLoading(true);
-    try {
-      const { items, totalCount } = await facilityService.getOrderList(
-        makeQuery(query)
-      );
-      const res = await dataService.getOrderStatistics({
-        ClientType: 2,
-        StartTravelTime: moment().format(dateFormat) + " 00:00:00",
-        EndTravelTime: moment().format(dateFormat) + " 23:59:59",
-      });
-      setLoading(false);
-      setDataList(items);
-      setTotalData(res);
-      setTotal(totalCount);
-    } catch (error) {
-      setLoading(false);
+    async function loadData() {
+      setLoading(true);
+      try {
+        const { items, totalCount } = await facilityService.getOrderList(
+          makeQuery(query)
+        );
+        const res = await dataService.getOrderStatistics({
+          ClientType: 2,
+          StartTravelTime: moment().format(dateFormat) + " 00:00:00",
+          EndTravelTime: moment().format(dateFormat) + " 23:59:59",
+        });
+        if (mounted) {
+          setLoading(false);
+          setDataList(items);
+          setTotalData(res);
+          setTotal(totalCount);
+        }
+      } catch (error) {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     }
-  }
+    return () => {
+      mounted = false;
+    };
+  }, [JSON.stringify(query), counter]);
 
   function makeData(data) {
     if (!data) {

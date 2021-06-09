@@ -14,7 +14,7 @@ import faciliyService from "../../services/faciliy.service";
 const dateFormat = "YYYY-MM-DD";
 const currentMoment = moment();
 function makeDate(date) {
-  const currentDate = date.startOf('month');
+  const currentDate = date.startOf("month");
   const startTime = currentDate.date(-currentDate.day() + 1);
 
   return [
@@ -122,10 +122,10 @@ export default function DataTable5ListCalendar({ renderHeader }) {
           {current &&
             (current.timeRanges || [])
               .filter((item, index) => index < 3)
-              .map((time) => {
+              .map((time,j) => {
                 return (
                   <div
-                    key={time.id}
+                    key={time.reserveDate + time.timeItemId + "-" + j}
                     style={{
                       height: 18,
                       overflow: "hidden",

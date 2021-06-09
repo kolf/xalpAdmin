@@ -34,19 +34,26 @@ const tailLayout = {
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   const [blockBehaviorOptions, setBlockBehaviorOptions] = useState([]);
   useEffect(() => {
-    loadData();
-  }, []);
+    let mounted = true;
 
-  async function loadData() {
-    try {
-      const res = await blanklistService.getBlockAllowUserOptions();
-      const options = res.items.map((item) => ({
-        value: item.id,
-        label: item.displayText,
-      }));
-      setBlockBehaviorOptions(options);
-    } catch (error) {}
-  }
+    loadData();
+
+    async function loadData() {
+      try {
+        const res = await blanklistService.getBlockAllowUserOptions();
+        const options = res.items.map((item) => ({
+          value: item.id,
+          label: item.displayText,
+        }));
+        if (mounted) {
+          setBlockBehaviorOptions(options);
+        }
+      } catch (error) {}
+    }
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   async function onFinish(values) {
     let res = null;
@@ -77,7 +84,6 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       (result, key) => {
         const value = values[key];
         if (key === "startTime" && value) {
-
           result.startTime = value.format(dateFormat);
         } else if (value !== undefined && value !== "-1") {
           result[key] = value;

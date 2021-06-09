@@ -16,8 +16,7 @@ import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 
-import blanklistService from "../../services/blanklist.service";
-import dataService from "../../services/data.service";
+import activityService from "../../services/activity.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
@@ -28,7 +27,6 @@ export default function DataTable() {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
-  const [totalArr, setTotalArr] = useState([0, 0]);
   const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
@@ -37,24 +35,32 @@ export default function DataTable() {
   });
 
   useEffect(() => {
+    let mounted = true;
     loadData();
-  }, [JSON.stringify(query), counter]);
 
-  async function loadData() {
-    setLoading(true);
-    try {
-      const { items, totalCount } =
-        await blanklistService.getBlockAllowUserList(makeQuery(query));
-      const { totalBlockingCount, totalCount: AllTotalCount } =
-        await blanklistService.getBlockAllowUserList();
-      setLoading(false);
-      setDataList(items);
-      setTotalArr([AllTotalCount, totalBlockingCount]);
-      setTotal(totalCount);
-    } catch (error) {
-      setLoading(false);
+    async function loadData() {
+      setLoading(true);
+      try {
+        const { items, totalCount } = await activityService.getActivityList(
+          makeQuery(query)
+        );
+
+        if (mounted) {
+          setLoading(false);
+          setDataList(items);
+          setTotal(totalCount);
+        }
+      } catch (error) {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     }
-  }
+
+    return () => {
+      mounted = false;
+    };
+  }, [JSON.stringify(query), counter]);
 
   function makeData(data) {
     if (!data) {
@@ -63,8 +69,6 @@ export default function DataTable() {
     return data.map((item, index) => {
       return {
         ...item,
-        ...item.blockAllowUser,
-        blockAllowUser: undefined,
         index: index + 1,
       };
     });
@@ -75,8 +79,8 @@ export default function DataTable() {
       const value = query[key];
       if (key === "date" && value) {
         const [start, end] = value;
-        result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
-        result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
+        result.startDate = start.format(dateFormat) + " 00:00:00";
+        result.endDate = end.format(dateFormat) + " 23:59:59";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
@@ -90,8 +94,10 @@ export default function DataTable() {
   function showAddModal() {
     const mod = modal({
       title: "新增",
+      width: 900,
+      style: { top: 20 },
       content: <UpdateDataForm onOk={onOk} />,
-      footer: null,
+      // footer: null,
     });
 
     function onOk() {
@@ -107,8 +113,10 @@ export default function DataTable() {
   function showEditModal(creds) {
     const mod = modal({
       title: "编辑",
+      width: 900,
+      style: { top: 20 },
       content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
-      footer: null,
+      // footer: null,
     });
 
     function onOk() {
@@ -128,7 +136,7 @@ export default function DataTable() {
     });
     async function onOk() {
       try {
-        const res = await blanklistService.deleteBlockAllowUser({
+        const res = await activityService.deleteActivity({
           id: creds.id,
         });
         mod.close();
@@ -148,63 +156,60 @@ export default function DataTable() {
     },
     {
       title: "举办地址",
-      dataIndex: "phone",
+      dataIndex: "address",
     },
     {
       title: "活动状态",
-      dataIndex: "certNumber",
+      dataIndex: "isActive",
     },
     {
       title: "活动举办时间",
-      dataIndex: "behaviorName",
+      dataIndex: "startDate",
     },
     {
       title: "报名状态",
-      dataIndex: "startTime",
-      render(text) {
-        return text ? moment(text).format(secFormat) : "无";
-      },
+      dataIndex: "111111",
     },
     {
       title: "报名起止时间",
-      dataIndex: "historyBehaviorName",
+      dataIndex: "applyStartDate",
       render(text) {
         return text || "无";
       },
     },
     {
       title: "最后操作人",
-      dataIndex: "behaviorDescription",
+      dataIndex: "111111111",
     },
     {
       title: "操作",
       dataIndex: "options",
-      width:230,
+      width: 230,
       render(text, creds) {
         return (
           <div className="text-center">
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={e => showEditModal(creds)}
+              onClick={(e) => showEditModal(creds)}
             >
               查看
             </Button>
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={e => showEditModal(creds)}
+              onClick={(e) => showEditModal(creds)}
             >
               编辑
             </Button>
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={e => showEditModal(creds)}
+              onClick={(e) => showEditModal(creds)}
             >
               下架
             </Button>
-            <Button size="small" onClick={e => showDeleteModal(creds)}>
+            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -282,7 +287,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        scroll={{ x:1200}}
+        scroll={{ x: 1200 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

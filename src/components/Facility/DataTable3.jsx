@@ -307,7 +307,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        rowKey="creatorId"
+        rowKey="id"
         scroll={{ x: 1200 }}
       />
       <div className="page-container">
