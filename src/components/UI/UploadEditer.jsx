@@ -31,15 +31,30 @@ export default class UploadEditer extends React.Component {
   };
 
   render() {
-    const controls = [
+    const excludeControls = [
       "letter-spacing",
-      "bold",
-      "italic",
-      "underline",
-      "text-color",
-      "separator",
-      "link",
-      "separator",
+      "line-height",
+      "clear",
+      "headings",
+      "list-ol",
+      "list-ul",
+      "remove-styles",
+      "superscript",
+      "subscript",
+      "hr",
+      "text-align",
+    ];
+
+    const controls = [
+      "clear",
+      "headings",
+      "list-ol",
+      "list-ul",
+      "remove-styles",
+      "superscript",
+      "subscript",
+      "hr",
+      "text-align",
     ];
     const extendControls = [
       {
@@ -51,7 +66,6 @@ export default class UploadEditer extends React.Component {
             showUploadList={false}
             customRequest={this.uploadHandler}
           >
-
             <button
               type="button"
               className="control-item button upload-button"
@@ -72,7 +86,7 @@ export default class UploadEditer extends React.Component {
           onChange={this.handleChange}
           controls={controls}
           extendControls={extendControls}
-          contentStyle={{ height: 160, width: "100%" }}
+          contentStyle={{ height: 160, width: "100%", fontSize: 14 }}
         />
       </div>
     );

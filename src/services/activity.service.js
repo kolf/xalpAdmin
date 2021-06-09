@@ -42,6 +42,37 @@ class ActivityService {
       return Promise.reject(error);
     }
   };
+  
+  getActivityOrderList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/ActivityOrder/ActivityOrderList?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  getActivityOrderDetails = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/ActivityOrder/ActivityOrderList?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  updateActivityOrder = async (creds) => {
+    try {
+      const res = await api.put(`api/ActivityOrder/${creds.id}`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
 }
 
 export default new ActivityService();

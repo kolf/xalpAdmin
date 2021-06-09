@@ -11,6 +11,7 @@ import DataTable5CalendarDetails from "./DataTable5CalendarDetails";
 import UpdateDataForm from "./DataTable5UpdateTabs";
 import modal from "../../shared/modal";
 import faciliyService from "../../services/faciliy.service";
+const monthFormat = "YYYY-MM";
 const dateFormat = "YYYY-MM-DD";
 const currentMoment = moment();
 function makeDate(date) {
@@ -27,7 +28,7 @@ export default function DataTable5ListCalendar({ renderHeader }) {
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState("");
   const [dataList, setDataList] = useState([]);
-  const [monthDate, setMonthDate] = useState(currentMoment.format("YYYY-M"));
+  const [monthDate, setMonthDate] = useState(currentMoment.format(monthFormat));
 
   useEffect(() => {
     const [StartTime, EndTime] = makeDate(moment(monthDate));
@@ -47,32 +48,6 @@ export default function DataTable5ListCalendar({ renderHeader }) {
       setLoading(false);
       setDataList([]);
     }
-  }
-
-  function next(value) {
-    let [year, month] = monthDate.split("-");
-
-    if (value === "--1") {
-      year = year - 1;
-    } else if (value === "++1") {
-      year = year * 1 + 1;
-    } else if (value === "-1") {
-      if (month === "1") {
-        month = 12;
-        year = year - 1;
-      } else {
-        month = month - 1;
-      }
-    } else if (value === "+1") {
-      if (month === "12") {
-        month = 1;
-        year = year * 1 + 1;
-      } else {
-        month = month * 1 + 1;
-      }
-    }
-
-    return year + "-" + month;
   }
 
   function todo(date) {
@@ -105,7 +80,6 @@ export default function DataTable5ListCalendar({ renderHeader }) {
     if (dataList.length > 0) {
       current = getDayData(currentDate);
     }
-
     const date = e.date();
     let isSpecial = false;
     if (current && current.timeRanges) {
@@ -122,7 +96,7 @@ export default function DataTable5ListCalendar({ renderHeader }) {
           {current &&
             (current.timeRanges || [])
               .filter((item, index) => index < 3)
-              .map((time,j) => {
+              .map((time, j) => {
                 return (
                   <div
                     key={time.reserveDate + time.timeItemId + "-" + j}
@@ -159,27 +133,50 @@ export default function DataTable5ListCalendar({ renderHeader }) {
     );
   }
 
-  function headerRender() {
+  function headerRender({ value, onChange }) {
+    const month = value.month();
+    const year = value.year();
     return (
       <div className="calendar-heading">
         <Button
           icon={<DoubleLeftOutlined />}
-          onClick={(e) => setMonthDate(next("--1"))}
+          onClick={(e) => {
+            const nextValue = value.clone();
+            nextValue.year(nextValue.year() - 1);
+            onChange(nextValue);
+            console.log(nextValue, "nextValue");
+            setMonthDate(nextValue.format(monthFormat));
+          }}
         ></Button>
         <Button
           icon={<LeftOutlined />}
-          onClick={(e) => setMonthDate(next("-1"))}
+          onClick={(e) => {
+            const nextValue = value.clone();
+            nextValue.month(month - 1);
+            onChange(nextValue);
+            setMonthDate(nextValue.format(monthFormat));
+          }}
         ></Button>
         <span style={{ height: 32, lineHeight: "32px", padding: "0 24px" }}>
-          {todo(monthDate)}
+          {monthDate}
         </span>
         <Button
           icon={<RightOutlined />}
-          onClick={(e) => setMonthDate(next("+1"))}
+          onClick={(e) => {
+            const nextValue = value.clone();
+            nextValue.month(month + 1);
+            onChange(nextValue);
+            setMonthDate(nextValue.format(monthFormat));
+          }}
         ></Button>
         <Button
           icon={<DoubleRightOutlined />}
-          onClick={(e) => setMonthDate(next("++1"))}
+          onClick={(e) => {
+            const nextValue = value.clone();
+            nextValue.year(year + 1);
+            onChange(nextValue);
+            setMonthDate(nextValue.format(monthFormat));
+          }}
         ></Button>
       </div>
     );

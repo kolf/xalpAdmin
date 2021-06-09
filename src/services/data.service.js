@@ -2,6 +2,16 @@ import queryString from "query-string";
 import api from "../core/http";
 
 class DataService {
+  getAreaOptions = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Region/Items?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
   // 黑名单列表
   getOrderAreaList = async (creds) => {
     try {

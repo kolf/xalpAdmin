@@ -1,26 +1,27 @@
 import React, { useState, useEffect } from "react";
-import moment from "moment";
 import {
   Table,
   Button,
-  DatePicker,
   Form,
   Input,
   Row,
   Col,
   Space,
   Pagination,
+  Select,
 } from "antd";
 import UpdateDataForm from "./UpdateData1Form";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
-
+import {
+  activityStatusOptions,
+  activityApplyStatusOptions,
+} from "../../shared/options";
 import activityService from "../../services/activity.service";
-const { RangePicker } = DatePicker;
+import dataService from "../../services/data.service";
 const { Search } = Input;
-const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD HH:mm:ss";
+const { Option } = Select;
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -28,6 +29,7 @@ export default function DataTable() {
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
   const [counter, setCounter] = useState(0);
+  const [areaOptions, setareaOptions] = useState([]);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -37,6 +39,9 @@ export default function DataTable() {
   useEffect(() => {
     let mounted = true;
     loadData();
+    if (areaOptions.length === 0) {
+      loadAreaOptions();
+    }
 
     async function loadData() {
       setLoading(true);
@@ -55,6 +60,10 @@ export default function DataTable() {
           setLoading(false);
         }
       }
+    }
+
+    async function loadAreaOptions() {
+      const res = await dataService.getAreaOptions({ leval: 4, parentCode: 0 });
     }
 
     return () => {
@@ -77,11 +86,7 @@ export default function DataTable() {
   function makeQuery(query) {
     return Object.keys(query).reduce((result, key) => {
       const value = query[key];
-      if (key === "date" && value) {
-        const [start, end] = value;
-        result.startDate = start.format(dateFormat) + " 00:00:00";
-        result.endDate = end.format(dateFormat) + " 23:59:59";
-      } else if (value !== undefined && value !== "-1") {
+      if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
       if (query.skipCount) {
@@ -94,9 +99,10 @@ export default function DataTable() {
   function showAddModal() {
     const mod = modal({
       title: "新增",
-      width: 900,
+      width: 960,
       style: { top: 20 },
-      content: <UpdateDataForm onOk={onOk} />,
+      bodyStyle: { paddingBottom: 0, paddingRight: 24 },
+      content: <UpdateDataForm onOk={onOk} areaOptions={areaOptions} />,
       // footer: null,
     });
 
@@ -113,9 +119,16 @@ export default function DataTable() {
   function showEditModal(creds) {
     const mod = modal({
       title: "编辑",
-      width: 900,
+      width: 960,
       style: { top: 20 },
-      content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
+      bodyStyle: { paddingBottom: 0, paddingRight: 24 },
+      content: (
+        <UpdateDataForm
+          onOk={onOk}
+          areaOptions={areaOptions}
+          defaultValues={creds}
+        />
+      ),
       // footer: null,
     });
 
@@ -260,8 +273,23 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item name="date">
-          <RangePicker size="small" />
+        <Form.Item name="Status1" style={{ marginBottom: 6, width: 100 }}>
+          <Select size="small" placeholder="活动状态" allowClear>
+            {activityStatusOptions.map((o) => (
+              <Option key={o.value} value={o.value}>
+                {o.label}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item name="Status2" style={{ marginBottom: 6, width: 100 }}>
+          <Select size="small" placeholder="报名状态" allowClear>
+            {activityApplyStatusOptions.map((o) => (
+              <Option key={o.value} value={o.value}>
+                {o.label}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" size="small">

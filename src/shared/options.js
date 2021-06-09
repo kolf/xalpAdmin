@@ -84,6 +84,43 @@ export const colors = [
   "#8543E0",
 ];
 
+const activityOrderStatusEnum = {
+  1: "审核通过",
+  2: "待审核",
+};
+
+const activityStatusEnum = {
+  1: "已上架",
+  2: "已下架",
+};
+
+const activityApplyStatusEnum = {
+  1: "未开始",
+  2: "报名中",
+  3: "已结束",
+};
+
+export const activityOrderStatusOptions = Object.keys(
+  activityOrderStatusEnum
+).map((key) => ({
+  value: key + "",
+  label: activityOrderStatusEnum[key],
+}));
+
+export const activityStatusOptions = Object.keys(activityStatusEnum).map(
+  (key) => ({
+    value: key + "",
+    label: activityStatusEnum[key],
+  })
+);
+
+export const activityApplyStatusOptions = Object.keys(
+  activityApplyStatusEnum
+).map((key) => ({
+  value: key + "",
+  label: activityApplyStatusEnum[key],
+}));
+
 export const userStatusOptions = Object.keys(userStateEnum).map((key) => ({
   value: key + "",
   label: userStateEnum[key],

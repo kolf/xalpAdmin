@@ -1,26 +1,15 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import {
-  Table,
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  Row,
-  Col,
-  Space,
-  Pagination,
-} from "antd";
+import { Table, Button, Form, Input, Pagination, Select } from "antd";
 import UpdateDataForm from "./UpdateData2Form";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 
-import blanklistService from "../../services/blanklist.service";
-import dataService from "../../services/data.service";
-import { behaviorTypeEnum } from "../../shared/options";
-const { RangePicker } = DatePicker;
+import activityService from "../../services/activity.service";
+import { activityOrderStatusOptions } from "../../shared/options";
 const { Search } = Input;
+const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
 const secFormat = "YYYY-MM-DD HH:mm:ss";
 
@@ -29,7 +18,6 @@ export default function DataTable() {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
-  const [totalArr, setTotalArr] = useState([0, 0]);
   const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
@@ -44,15 +32,16 @@ export default function DataTable() {
       setLoading(true);
       try {
         const { items, totalCount } =
-          await blanklistService.getBlockBehaviorList(makeQuery(query));
-        const { totalBlockingCount, totalCount: AllTotalCount } =
-          await blanklistService.getBlockAllowUserList();
-        setLoading(false);
-        setDataList(items);
-        setTotalArr([AllTotalCount, totalBlockingCount]);
-        setTotal(totalCount);
+          await activityService.getActivityOrderList(makeQuery(query));
+        if (mounted) {
+          setLoading(false);
+          setDataList(items);
+          setTotal(totalCount);
+        }
       } catch (error) {
-        setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
       }
     }
     return () => {
@@ -72,11 +61,7 @@ export default function DataTable() {
   function makeQuery(query) {
     return Object.keys(query).reduce((result, key) => {
       const value = query[key];
-      if (key === "date" && value) {
-        const [start, end] = value;
-        result.StartCreationTime = start.format(dateFormat) + " 00:00:00";
-        result.EndCreationTime = end.format(dateFormat) + " 23:59:59";
-      } else if (value !== undefined && value !== "-1") {
+      if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
       if (query.skipCount) {
@@ -86,26 +71,9 @@ export default function DataTable() {
     }, {});
   }
 
-  function showAddModal() {
-    const mod = modal({
-      title: "新增",
-      content: <UpdateDataForm onOk={onOk} />,
-      footer: null,
-    });
-
-    function onOk() {
-      mod.close();
-      setCounter(counter + 1);
-      setQuery({
-        ...query,
-        skipCount: "1",
-      });
-    }
-  }
-
   function showEditModal(creds) {
     const mod = modal({
-      title: "编辑",
+      title: "审核订单",
       content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
       footer: null,
     });
@@ -120,52 +88,35 @@ export default function DataTable() {
     }
   }
 
-  function showDeleteModal(creds) {
-    const mod = confirm({
-      content: `确认删除此条内容, 是否继续?`,
-      onOk,
-    });
-    async function onOk() {
-      try {
-        const res = await blanklistService.deleteBlockBehavior({
-          id: creds.id,
-        });
-        mod.close();
-        utils.success(`删除成功！`);
-        setCounter(counter + 1);
-        setQuery({ ...query, skipCount: "1" });
-      } catch (error) {
-        mod.close();
-      }
-    }
-  }
+  function showDetailsModal(creds) {}
 
   const columns = [
     {
-      title: "序号",
+      title: "订单号",
       dataIndex: "index",
     },
     {
-      title: "程度",
+      title: "活动名称",
       dataIndex: "behaviorType",
-      render(text) {
-        return behaviorTypeEnum[text] || "无";
-      },
     },
     {
-      title: "行为",
+      title: "订单状态",
       dataIndex: "name",
     },
     {
-      title: "惩罚措施",
-      dataIndex: "note",
-    },
-    {
-      title: "创建时间",
+      title: "下单时间",
       dataIndex: "creationTime",
       render(text) {
         return text ? moment(text).format(secFormat) : "无";
       },
+    },
+    {
+      title: "团队负责人",
+      dataIndex: "note",
+    },
+    {
+      title: "报名",
+      dataIndex: "note",
     },
     {
       title: "操作",
@@ -177,12 +128,12 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={(e) => showEditModal(creds)}
+              onClick={(e) => showDetailsModal(creds)}
             >
-              编辑
+              查看
             </Button>
-            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
-              删除
+            <Button size="small" onClick={(e) => showEditModal(creds)}>
+              审核
             </Button>
           </div>
         );
@@ -203,7 +154,6 @@ export default function DataTable() {
       if (pageSize != query.maxResultCount * 1) {
         nextPageNum = 1;
       }
-
       setQuery({
         ...query,
         skipCount: nextPageNum + "",
@@ -214,16 +164,6 @@ export default function DataTable() {
 
   return (
     <div>
-      <Row style={{ paddingBottom: 12 }}>
-        <Col flex="auto"></Col>
-        <Col flex="120px" style={{ textAlign: "right" }}>
-          <Space>
-            <Button size="small" type="primary" onClick={showAddModal}>
-              新增
-            </Button>
-          </Space>
-        </Col>
-      </Row>
       <Form
         form={form}
         name="form"
@@ -231,8 +171,14 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item name="date">
-          <RangePicker size="small" />
+        <Form.Item name="Status1" style={{ marginBottom: 6, width: 100 }}>
+          <Select size="small" placeholder="订单状态" allowClear>
+            {activityOrderStatusOptions.map((o) => (
+              <Option key={o.value} value={o.value}>
+                {o.label}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" size="small">
