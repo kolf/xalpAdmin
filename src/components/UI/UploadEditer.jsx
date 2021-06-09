@@ -51,7 +51,7 @@ export default class UploadEditer extends React.Component {
             showUploadList={false}
             customRequest={this.uploadHandler}
           >
-            {/* 这里的按钮最好加上type="button"，以避免在表单容器中触发表单提交，用Antd的Button组件则无需如此 */}
+
             <button
               type="button"
               className="control-item button upload-button"

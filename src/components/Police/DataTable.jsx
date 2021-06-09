@@ -169,6 +169,7 @@ export default function DataTable() {
         return text || "无";
       },
     },
+
     {
       title: "在线状态",
       dataIndex: "isOnline",
@@ -184,9 +185,16 @@ export default function DataTable() {
       },
     },
     {
+      title: "设备状态",
+      dataIndex: "isActive",
+      render(text) {
+        return text ? "启用" : "停用";
+      },
+    },
+    {
       title: "操作",
       dataIndex: "options",
-      width:180,
+      width: 180,
       fixed: "right",
       render(text, creds) {
         return (
@@ -290,7 +298,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        scroll={{ x:1200}}
+        scroll={{ x: 1200 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

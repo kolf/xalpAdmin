@@ -170,6 +170,7 @@ export default function DataTable() {
     {
       title: "操作",
       dataIndex: "options",
+      fixed: "right",
       render(text, creds) {
         return (
           <div className="text-center">

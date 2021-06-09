@@ -130,7 +130,7 @@ export default function TouristChart() {
               <Col span={3}>{item.name}</Col>
               <Col span={16}>
                 <Progress
-                  percent={item.rate}
+                  percent={item.rate ? item.rate * 100 : 0}
                   strokeLinecap="square"
                   format={() => item.value}
                 />

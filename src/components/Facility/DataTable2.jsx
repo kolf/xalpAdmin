@@ -9,7 +9,7 @@ import {
   Col,
   Space,
   Select,
-  Pagination
+  Pagination,
 } from "antd";
 import DataTableDetailas from "./DataTable2Details";
 import moment from "moment";
@@ -135,8 +135,7 @@ export default function DataTable() {
   }
 
   function getRowClassName(creds, index) {
-    return "";
-    if (creds.orderStatus !== 1) {
+    if (creds.usedTicketCount === creds.orderTicketCount) {
       return "ant-table-row-disabled";
     }
   }

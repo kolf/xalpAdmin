@@ -12,12 +12,13 @@ class Mod extends React.Component {
   state = {
     disabled: true,
     bounds: { left: 0, top: 0, bottom: 0, right: 0 },
+    innerHeight: 600,
   };
 
-  innerHeight = 600;
-
   componentDidMount() {
-    this.innerHeight = window.innerHeight - 200;
+    this.setState({
+      innerHeight: window.innerHeight - 200,
+    });
   }
 
   render() {
@@ -30,7 +31,7 @@ class Mod extends React.Component {
           wrapClassName={wrapClassName + " my-modal"}
           bodyStyle={{
             ...otherProps.bodyStyle,
-            maxHeight: this.innerHeight,
+            maxHeight: this.state.innerHeight,
             overflowY: "auto",
           }}
           cancelText="取消"

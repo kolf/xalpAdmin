@@ -185,6 +185,7 @@ export default function DataTable() {
       title: "操作",
       dataIndex: "options",
       width: 230,
+      fixed: "right",
       render(text, creds) {
         return (
           <div className="text-center">

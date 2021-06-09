@@ -4,9 +4,6 @@
     .text-color-dropdown button.dropdown-handler span {
       line-height: 30px;
     }
-    .bf-dropdown .dropdown-handler>span{
-        line-height: 30px;
-    }
   }
   &-toolbar {
     height: 30px;
@@ -14,8 +11,15 @@
     .control-item,
     .dropdown-handler {
       height: 30px;
+      line-height: 30px;
       margin-top: 0;
       margin-bottom: 0;
+      & > span,
+      & > span i,
+      .bfi-drop-down {
+        line-height: 30px;
+        height: 30px;
+      }
     }
     .separator-line {
       height: 20px;

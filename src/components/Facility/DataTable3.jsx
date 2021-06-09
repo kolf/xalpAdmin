@@ -184,17 +184,6 @@ export default function DataTable() {
       },
     },
     {
-      title: "剩余天数",
-      dataIndex: "dayToPermissionEnd",
-    },
-    {
-      title: "更新时间",
-      dataIndex: "lastModificationTime",
-      render(text) {
-        return text ? moment(text).format(secFormat) : "无";
-      },
-    },
-    {
       title: "有效入园时间",
       dataIndex: "permissionDate",
       render(text, creds) {
@@ -203,6 +192,20 @@ export default function DataTable() {
           "至" +
           moment(creds.endCardTime).format(dateFormat)
         );
+      },
+    },
+    {
+      title: "剩余天数",
+      dataIndex: "dayToPermissionEnd",
+      render(text) {
+        return Math.max(text, 0);
+      },
+    },
+    {
+      title: "更新时间",
+      dataIndex: "lastModificationTime",
+      render(text) {
+        return text ? moment(text).format(secFormat) : "无";
       },
     },
     {

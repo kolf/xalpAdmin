@@ -56,14 +56,17 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         res = await userService.updateRole({
           ...makeParams(values),
           id: defaultValues.id,
-          providerKey: defaultValues.name,
+          providerKey: values.name || defaultValues.name,
           concurrencyStamp: defaultValues.concurrencyStamp,
         });
         utils.success(`更新成功！`);
       } catch (error) {}
     } else {
       try {
-        res = await userService.addRole(makeParams(values));
+        res = await userService.addRole({
+          ...makeParams(values),
+          providerKey: values.name,
+        });
         utils.success(`添加成功！`);
       } catch (error) {}
     }
