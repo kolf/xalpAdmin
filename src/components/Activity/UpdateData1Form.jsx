@@ -8,20 +8,17 @@ import {
   Checkbox,
   Select,
   DatePicker,
-  InputNumber,
-  message,
+  Row,
+  Col,
 } from "antd";
+import UploadImage from "../../components/UI/UploadImage";
+import UploadImageList from "../../components/UI/UploadImageList";
+import UploadEditer from "../../components/UI/UploadEditer";
 import utils from "../../shared/utils";
-import blanklistService from "../../services/blanklist.service";
+import activityService from "../../services/activity.service";
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
-
-const plainOptions = [
-  { value: "1", label: "启用" },
-  { value: "2", label: "再次验证未入园" },
-  { value: "3", label: "可预售" },
-];
 
 const layout = {
   labelCol: { span: 8 },
@@ -39,7 +36,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
 
   async function loadData() {
     try {
-      const res = await blanklistService.getBlockAllowUserOptions();
+      const res = await activityService.getBlockAllowUserOptions();
       const options = res.items.map((item) => ({
         value: item.id,
         label: item.displayText,
@@ -52,21 +49,17 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     let res = null;
     if (defaultValues.id) {
       try {
-        res = await blanklistService.updateBlockAllowUser({
+        res = await activityService.updateBlockAllowUser({
           ...makeParams(values),
           id: defaultValues.id,
         });
         utils.success(`更新成功！`);
-      } catch (error) {
-
-      }
+      } catch (error) {}
     } else {
       try {
-        res = await blanklistService.addBlockAllowUser(makeParams(values));
+        res = await activityService.addBlockAllowUser(makeParams(values));
         utils.success(`添加成功！`);
-      } catch (error) {
-   
-      }
+      } catch (error) {}
     }
 
     onOk && onOk(res);
@@ -113,34 +106,172 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         onFinish={onFinish}
         initialValues={makeDefaultValues(defaultValues)}
       >
-        <Form.Item label="姓名" name="name">
-          <Input placeholder="请输入" />
-        </Form.Item>
+        <Row>
+          <Col span={12}>
+            <Form.Item
+              label="所属地址"
+              name="name"
+              rules={[{ required: true, message: "请输入所属地址!" }]}
+            >
+              <Input placeholder="请输入" />
+            </Form.Item>
 
-        <Form.Item label="身份证" name="certNumber">
-          <Input placeholder="请输入" />
-        </Form.Item>
+            <Form.Item
+              label="活动起止日期"
+              name="certNumber"
+              rules={[{ required: true, message: "请选择活动起止日期!" }]}
+            >
+              <DatePicker size="small" />
+            </Form.Item>
 
-        <Form.Item label="手机号" name="phone">
-          <Input placeholder="请输入" />
-        </Form.Item>
-        <Form.Item label="当前不文明行为" name="behaviorId">
-          <Select placeholder="请选择">
-            {blockBehaviorOptions.map((o) => (
-              <Option value={o.value} key={o.value}>
-                {o.label}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item label="发生时间" name="startTime">
-          <DatePicker size="small" />
-        </Form.Item>
-        <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
-            确定
-          </Button>
-        </Form.Item>
+            <Form.Item
+              label="举办地址"
+              name="phone"
+              rules={[{ required: true, message: "请输入举办地址!" }]}
+            >
+              <Input placeholder="请输入" />
+            </Form.Item>
+            <Form.Item
+              label="举办方"
+              name="behaviorId"
+              rules={[{ required: true, message: "请选择举办方!" }]}
+            >
+              <Select placeholder="请选择">
+                {blockBehaviorOptions.map((o) => (
+                  <Option value={o.value} key={o.value}>
+                    {o.label}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label="报名名额"
+              name="startTime"
+              rules={[{ required: true, message: "请输入报名名额!" }]}
+            >
+              <Input placeholder="请输入" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="活动名称"
+              name="name"
+              rules={[{ required: true, message: "请输入活动名称!" }]}
+            >
+              <Input placeholder="请输入" />
+            </Form.Item>
+
+            <Form.Item
+              label="报名起止日期"
+              name="certNumber"
+              rules={[{ required: true, message: "选择报名起止日期!" }]}
+            >
+              <DatePicker size="small" />
+            </Form.Item>
+
+            <Form.Item
+              label="经纬度"
+              name="phone"
+              rules={[{ required: true, message: "请输入经纬度!" }]}
+            >
+              <Input placeholder="请输入" />
+            </Form.Item>
+            <Form.Item
+              label="承办方"
+              name="behaviorId"
+              rules={[{ required: true, message: "请输入承办方!" }]}
+            >
+              <Input placeholder="请输入" />
+            </Form.Item>
+            <Form.Item
+              label="标签"
+              name="startTime"
+              rules={[{ required: true, message: "请输入标签!" }]}
+            >
+              <Input placeholder="请输入" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <Form.Item
+              labelCol={{ span: 4 }}
+              label="封面图"
+              name="startTime"
+              rules={[{ required: true, message: "请输入!" }]}
+            >
+              <UploadImage />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              labelCol={{ span: 4 }}
+              label="图集"
+              name="startTime"
+              rules={[{ required: true, message: "请输入!" }]}
+            >
+              <UploadImageList />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={12}>
+            <Form.Item
+              label="预约电话"
+              name="name"
+              rules={[{ required: true, message: "请输入预约电话!" }]}
+            >
+              <Input placeholder="请输入" />
+            </Form.Item>
+
+            <Form.Item
+              label="报名人数"
+              name="certNumber"
+              rules={[{ required: true, message: "请输入报名人数!" }]}
+            >
+              <Input placeholder="请输入" />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item
+              label="参与要求"
+              name="name"
+              rules={[{ required: true, message: "请输入姓名!" }]}
+            >
+              <Input placeholder="请输入" />
+            </Form.Item>
+
+            <Form.Item
+              label="是否上架"
+              name="certNumber"
+              rules={[{ required: true, message: "请输入身份证!" }]}
+            >
+              <Input placeholder="请输入" />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <Form.Item
+              labelCol={{ span: 4 }}
+              label="活动介绍"
+              name="startTime"
+              rules={[{ required: true, message: "请输入!" }]}
+            >
+              <UploadEditer />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              labelCol={{ span: 4 }}
+              label="其他说明"
+              name="startTime"
+              rules={[{ required: true, message: "请输入!" }]}
+            >
+              <UploadEditer />
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     </>
   );

@@ -79,7 +79,7 @@ export default function DataTable({ renderHeader }) {
           ...timeItems.map((t, j) => ({
             ...item,
             ...t,
-            rowKey: item.id + "" + t.timeItemId,
+            rowKey: i + "-" + j + t.timeItemId,
             index: j === 0 ? i + 1 : -1,
             size: timeItems.length,
           })),
@@ -168,7 +168,7 @@ export default function DataTable({ renderHeader }) {
     {
       title: "起始日期",
       dataIndex: "startReserveDate",
-      width:200,
+      width: 200,
       render(text, creds, index) {
         const value = `${moment(creds.startReserveDate).format(
           dateFormat
@@ -188,12 +188,6 @@ export default function DataTable({ renderHeader }) {
       title: "门票数量",
       dataIndex: "maxTouristsQuantity",
       width: 100,
-      render(text, creds) {
-        const maxNum =
-          creds.maxTouristsQuantity + creds.groupMaxTouristsQuantity;
-
-        return maxNum;
-      },
     },
     {
       title: "个人时段票数量",

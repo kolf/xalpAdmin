@@ -31,7 +31,14 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData();
+    let mounted = true;
+    if (mounted) {
+      loadData();
+    }
+
+    return () => {
+      mounted = false;
+    };
   }, [JSON.stringify(query), counter]);
 
   async function loadData() {

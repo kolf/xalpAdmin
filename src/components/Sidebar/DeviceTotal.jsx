@@ -10,12 +10,18 @@ export default function DeviceTotal() {
   });
 
   useEffect(() => {
+    let mounted = true;
     loadData();
 
     async function loadData() {
       const res = await dataService.getDeviceTotal();
-      setData(res);
+      if (mounted) {
+        setData(res);
+      }
     }
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   return (

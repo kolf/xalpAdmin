@@ -1,11 +1,10 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import { Map, APILoader } from "@uiw/react-amap";
 import AppHeader from "./AppHeader";
 import Sidebar from "../Sidebar/Sidebar";
 import Menu from "../Sidebar/Menu";
 import "./PrivateLayout.less";
-import SessionService from "../../services/session.service";
+import sessionService from "../../services/session.service";
 
 import { Layout } from "antd";
 import AppFooter from "./AppFooter";
@@ -19,14 +18,14 @@ export default class PrivateLayout extends React.Component {
       <Route
         {...rest}
         render={(props) =>
-          SessionService.isAuthenticated() ? (
+          sessionService.isAuthenticated() ? (
             <Layout style={{ height: "100%", _backgroundColor: "transparent" }}>
               <AppHeader />
               <Layout
                 style={{ backgroundColor: "transparent", padding: "8px 8px 0" }}
               >
                 <Sider
-                  width={400}
+                  width={10}
                   style={{
                     backgroundColor: "transparent",
                     padding: "12px",

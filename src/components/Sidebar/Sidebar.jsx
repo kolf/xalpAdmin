@@ -18,15 +18,22 @@ export default function Sidebar() {
     quarterUsedTicketCount: 0,
   });
 
-  useEffect(async () => {
+  useEffect(() => {
+    let mounted = true;
+
     const windowHeight = window.innerHeight;
     setHeight(windowHeight - 102);
     loadData();
 
     async function loadData() {
       const res1 = await dataService.getOrderRealTimeStatistics();
-      setOrderRealTimeData(res1);
+      if (mounted) {
+        setOrderRealTimeData(res1);
+      }
     }
+    return () => {
+      mounted = false;
+    };
   }, [window.innerHeight]);
 
   return (
@@ -56,7 +63,8 @@ export default function Sidebar() {
               prefix: orderRealTimeData.todayTicketCount > 9999 ? "万人" : "人",
               title: (
                 <>
-                  <div>今日预约</div><div>人数</div>
+                  <div>今日预约</div>
+                  <div>人数</div>
                 </>
               ),
             },

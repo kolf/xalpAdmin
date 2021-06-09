@@ -122,10 +122,10 @@ export default function DataTable5ListCalendar({ renderHeader }) {
           {current &&
             (current.timeRanges || [])
               .filter((item, index) => index < 3)
-              .map((time) => {
+              .map((time,j) => {
                 return (
                   <div
-                    key={time.id}
+                    key={time.reserveDate + time.timeItemId + "-" + j}
                     style={{
                       height: 18,
                       overflow: "hidden",

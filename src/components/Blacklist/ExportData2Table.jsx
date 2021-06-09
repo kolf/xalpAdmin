@@ -34,7 +34,6 @@ export default function DataTable({ id, onOk }) {
       const res = await dataService.importBlockBehavior({ fileName });
       utils.success(`导入成功！`);
     } catch (error) {}
-    console.log("onFinish");
     onOk && onOk();
   }
 
