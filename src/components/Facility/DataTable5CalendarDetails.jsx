@@ -24,7 +24,10 @@ export default function DataTable({ id, dataSource, onClose }) {
     });
     async function onOk() {
       try {
-        const res = await faciliyService.deleteReservationTimeSetting(creds);
+        const res = await faciliyService.deleteReservationTimeSetting({
+          isSpecial: true,
+          id: creds.id,
+        });
         mod.close();
         onClose();
         utils.success(`删除成功！`);
@@ -66,21 +69,34 @@ export default function DataTable({ id, dataSource, onClose }) {
       title: "门票数量/剩余数量",
       dataIndex: "remainTouristsQuantity",
       render(text, creds) {
-        return creds.remainTouristsQuantity + "/" + creds.touristsCount;
+        return (
+          creds.maxTouristsQuantity +
+          "/" +
+          (creds.groupRemainTouristsQuantity +
+            creds.individualRemainTouristsQuantity)
+        );
       },
     },
     {
       title: "个人时段票数量/剩余数量",
-      dataIndex: "touristsCount",
+      dataIndex: "individualMaxTouristsQuantity",
       render(text, creds) {
-        return creds.remainTouristsQuantity + "/" + creds.touristsCount;
+        return (
+          creds.individualMaxTouristsQuantity +
+          "/" +
+          creds.individualRemainTouristsQuantity
+        );
       },
     },
     {
       title: "团体时段票数量/剩余数量",
-      dataIndex: "touristsCount",
+      dataIndex: "groupMaxTouristsQuantity",
       render(text, creds) {
-        return creds.remainTouristsQuantity + "/" + creds.touristsCount;
+        return (
+          creds.groupMaxTouristsQuantity +
+          "/" +
+          creds.groupRemainTouristsQuantity
+        );
       },
     },
     {
@@ -100,11 +116,11 @@ export default function DataTable({ id, dataSource, onClose }) {
               <Button
                 size="small"
                 style={{ marginRight: 4 }}
-                onClick={showEditModal.bind(this, creds)}
+                onClick={(e) => showEditModal(creds)}
               >
                 编辑
               </Button>
-              <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+              <Button size="small" onClick={(e) => showDeleteModal(creds)}>
                 删除
               </Button>
             </div>
@@ -126,7 +142,7 @@ export default function DataTable({ id, dataSource, onClose }) {
     <div>
       <div className="calendar-details-title">{id}</div>
       <Table
-        rowKey="id"
+        rowKey="timeRangeName"
         dataSource={makeData(dataSource)}
         columns={columns}
         pagination={false}

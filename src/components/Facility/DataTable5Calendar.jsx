@@ -1,15 +1,21 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
 import { Calendar, Space, Spin, Row, Col, Button } from "antd";
+import {
+  LeftOutlined,
+  DoubleLeftOutlined,
+  DoubleRightOutlined,
+  RightOutlined,
+} from "@ant-design/icons";
 import DataTable5CalendarDetails from "./DataTable5CalendarDetails";
 import UpdateDataForm from "./DataTable5UpdateTabs";
 import modal from "../../shared/modal";
 import faciliyService from "../../services/faciliy.service";
 const dateFormat = "YYYY-MM-DD";
-
+const currentMoment = moment();
 function makeDate(date) {
-  const currentDate = date.date(1);
-  const startTime = currentDate.date(-currentDate.date(1).day() + 1);
+  const currentDate = date.startOf("month");
+  const startTime = currentDate.date(-currentDate.day() + 1);
 
   return [
     startTime.format(dateFormat),
@@ -21,11 +27,12 @@ export default function DataTable5ListCalendar({ renderHeader }) {
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState("");
   const [dataList, setDataList] = useState([]);
+  const [monthDate, setMonthDate] = useState(currentMoment.format("YYYY-M"));
 
   useEffect(() => {
-    const [StartTime, EndTime] = makeDate(moment());
+    const [StartTime, EndTime] = makeDate(moment(monthDate));
     loadData({ StartTime, EndTime });
-  }, []);
+  }, [monthDate]);
 
   async function loadData(params) {
     setLoading(true);
@@ -40,6 +47,37 @@ export default function DataTable5ListCalendar({ renderHeader }) {
       setLoading(false);
       setDataList([]);
     }
+  }
+
+  function next(value) {
+    let [year, month] = monthDate.split("-");
+
+    if (value === "--1") {
+      year = year - 1;
+    } else if (value === "++1") {
+      year = year * 1 + 1;
+    } else if (value === "-1") {
+      if (month === "1") {
+        month = 12;
+        year = year - 1;
+      } else {
+        month = month - 1;
+      }
+    } else if (value === "+1") {
+      if (month === "12") {
+        month = 1;
+        year = year * 1 + 1;
+      } else {
+        month = month * 1 + 1;
+      }
+    }
+
+    return year + "-" + month;
+  }
+
+  function todo(date) {
+    const [year, month] = date.split("-");
+    return year + "-" + (month < 10 ? "0" + month : month);
   }
 
   function handleChange(value) {
@@ -69,6 +107,11 @@ export default function DataTable5ListCalendar({ renderHeader }) {
     }
 
     const date = e.date();
+    let isSpecial = false;
+    if (current && current.timeRanges) {
+      isSpecial = current.timeRanges.some((item) => item.isSpecial);
+    }
+
     return (
       <div
         className="calendar-cell"
@@ -79,37 +122,65 @@ export default function DataTable5ListCalendar({ renderHeader }) {
           {current &&
             (current.timeRanges || [])
               .filter((item, index) => index < 3)
-              .map((time) => (
-                <div
-                  key={time.id}
-                  style={{
-                    height: 18,
-                    overflow: "hidden",
-                    whiteSpace: "nowrap",
-                  }}
-                  title={`${time.startTimeRange}-${time.endTimeRange} ${time.remainTouristsQuantity}/${time.maxTouristsQuantity}`}
-                >
-                  <span style={{ paddingRight: 4 }}>
-                    {time.startTimeRange}-{time.endTimeRange}
-                  </span>
-                  <span>
-                    {time.remainTouristsQuantity}/{time.maxTouristsQuantity}
-                  </span>
-                </div>
-              ))}
+              .map((time) => {
+                return (
+                  <div
+                    key={time.id}
+                    style={{
+                      height: 18,
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                    }}
+                    title={`${time.startTimeRange}-${time.endTimeRange} ${time.remainTouristsQuantity}/${time.maxTouristsQuantity}`}
+                  >
+                    <span style={{ paddingRight: 4 }}>
+                      {time.startTimeRange}-{time.endTimeRange}
+                    </span>
+                    <span>
+                      {time.groupRemainTouristsQuantity +
+                        time.individualRemainTouristsQuantity}
+                      /{time.maxTouristsQuantity}
+                    </span>
+                  </div>
+                );
+              })}
         </div>
-        <div className="calendar-cell-value">
-          {current ? current.timeRanges[0].maxTouristsQuantity : "0"}
+        <div
+          className="calendar-cell-value"
+          style={isSpecial ? { color: "#ffe58f" } : null}
+        >
+          {current
+            ? (current.timeRanges || []).reduce((result, item) => {
+                return (result += item.maxTouristsQuantity);
+              }, 0)
+            : "0"}
         </div>
       </div>
     );
   }
 
-  function monthFullCellRender(e) {
+  function headerRender() {
     return (
-      <div className="calendar-cell">
-        <div className="calendar-cell-title">{e.month() + 1}月</div>
-        <div className="calendar-cell-year-value">1000</div>
+      <div className="calendar-heading">
+        <Button
+          icon={<DoubleLeftOutlined />}
+          onClick={(e) => setMonthDate(next("--1"))}
+        ></Button>
+        <Button
+          icon={<LeftOutlined />}
+          onClick={(e) => setMonthDate(next("-1"))}
+        ></Button>
+        <span style={{ height: 32, lineHeight: "32px", padding: "0 24px" }}>
+          {todo(monthDate)}
+        </span>
+        <Button
+          icon={<RightOutlined />}
+          onClick={(e) => setMonthDate(next("+1"))}
+        ></Button>
+        <Button
+          icon={<DoubleRightOutlined />}
+          onClick={(e) => setMonthDate(next("++1"))}
+        ></Button>
       </div>
     );
   }
@@ -137,7 +208,7 @@ export default function DataTable5ListCalendar({ renderHeader }) {
           <Calendar
             style={{ backgroundColor: "transparent" }}
             dateFullCellRender={dateFullCellRender}
-            monthFullCellRender={monthFullCellRender}
+            headerRender={headerRender}
             onPanelChange={handleChange}
           />
         </Spin>

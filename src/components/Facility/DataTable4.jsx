@@ -19,12 +19,13 @@ import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import UpdateDataForm from "./UpdateData4Form";
 import faciliyService from "../../services/faciliy.service";
-import { reviewOptions } from "../../shared/options";
+import dataService from "../../services/data.service";
+import { userStatusOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD hh:mm:ss";
+const secFormat = "YYYY-MM-DD HH:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -146,7 +147,12 @@ export default function DataTable() {
     }
   }
 
-  function openFile() {}
+  async function openFile() {
+    try {
+      const res = await dataService.exportStaffList(makeQuery(query));
+      window.open(res);
+    } catch (error) {}
+  }
 
   const columns = [
     {
@@ -183,11 +189,11 @@ export default function DataTable() {
     },
     {
       title: "剩余天数",
-      dataIndex: "staffType",
+      dataIndex: "dayToPermissionEnd",
     },
     {
       title: "更新时间",
-      dataIndex: "creationTime",
+      dataIndex: "lastModificationTime",
       render(text) {
         return text ? moment(text).format(secFormat) : "无";
       },
@@ -197,9 +203,9 @@ export default function DataTable() {
       dataIndex: "permissionDate",
       render(text, creds) {
         return (
-          moment(creds.startPermissionDate).format(dateFormat) +
+          moment(creds.startCardTime).format(dateFormat) +
           "至" +
-          moment(creds.endPermissionDate).format(dateFormat)
+          moment(creds.endCardTime).format(dateFormat)
         );
       },
     },
@@ -214,11 +220,11 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showEditModal.bind(this, creds)}
+              onClick={(e) => showEditModal(creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -271,9 +277,9 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
-          <Select size="small" placeholder="核销状态" allowClear>
-            {reviewOptions.map((o) => (
+        <Form.Item name="CardStatus" style={{ marginBottom: 6, width: 100 }}>
+          <Select size="small" placeholder="状态" allowClear>
+            {userStatusOptions.map((o) => (
               <Option key={o.value}>{o.label}</Option>
             ))}
           </Select>
@@ -289,7 +295,8 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, keyword: value, skipCount: "1" })
             }
@@ -304,7 +311,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        rowKey="creatorId"
+        rowKey="id"
         scroll={{ x: 1200 }}
       />
       <div className="page-container">

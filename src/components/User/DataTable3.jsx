@@ -25,7 +25,7 @@ const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD hh:mm:ss";
+const secFormat = "YYYY-MM-DD HH:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -139,7 +139,7 @@ export default function DataTable() {
   function showImportModal(creds) {
     const mod = modal({
       title: "导出",
-      width: 720,
+      width: 800,
       content: <ImportDataTable onOk={onOk} />,
       footer: null,
     });
@@ -157,7 +157,6 @@ export default function DataTable() {
     try {
       const res = await dataService.exportMerchantList(makeQuery(query));
       window.open(res);
-      console.log(res, "res");
     } catch (error) {}
   }
 
@@ -167,7 +166,7 @@ export default function DataTable() {
       dataIndex: "name",
     },
     {
-      title: "姓名",
+      title: "负责人姓名",
       dataIndex: "handlerName",
     },
     {
@@ -175,7 +174,7 @@ export default function DataTable() {
       dataIndex: "handlerPhone",
     },
     {
-      title: "类型",
+      title: "供应商类型",
       dataIndex: "merchantTypeName",
       render(text) {
         return text || "无";
@@ -189,20 +188,6 @@ export default function DataTable() {
       },
     },
     {
-      title: "预约时间",
-      dataIndex: "openingHours",
-      render(text) {
-        return text || "无";
-      },
-    },
-    {
-      title: "状态",
-      dataIndex: "status",
-      render(text, creds) {
-        return "正常";
-      },
-    },
-    {
       title: "操作",
       dataIndex: "options",
       fixed: "right",
@@ -213,11 +198,11 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showEditModal.bind(this, creds)}
+              onClick={e => showEditModal(creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+            <Button size="small" onClick={e => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -273,21 +258,6 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
-          <Select size="small" placeholder="核销状态" allowClear>
-            {reviewOptions.map((o) => (
-              <Option key={o.value}>{o.label}</Option>
-            ))}
-          </Select>
-        </Form.Item>
-        <Form.Item name="date">
-          <RangePicker size="small" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" size="small">
-            查询数据
-          </Button>
-        </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
@@ -307,7 +277,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        rowKey="creatorId"
+        rowKey="id"
         // scroll={{ x: 1200 }}
       />
       <div className="page-container">

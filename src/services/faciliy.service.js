@@ -135,7 +135,7 @@ class FaciliyService {
   getReservationTimeRangeList = async (creds) => {
     try {
       const res = await api.get(
-        `api/ReservationTimeRange/CalendarItems?${queryString.stringify(creds)}`
+        `api/ReservationTimeRange/RangeCalendarItems?${queryString.stringify(creds)}`
       );
       return res.data;
     } catch (error) {

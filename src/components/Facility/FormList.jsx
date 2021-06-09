@@ -7,8 +7,17 @@ function createId(name) {
   return name + "-uid" + (Math.random() + "").replace(".", "");
 }
 
-export default function FormList({ pickerOptions = [], name, onChange }) {
+export default function FormList({
+  pickerOptions = [],
+  name,
+  onChange,
+  value = [],
+}) {
   const [fields, setFields] = useState([createId(name)]);
+
+  useEffect(() => {
+    console.log(value, "useEffect");
+  }, [value.length]);
 
   function add() {
     setFields([...fields, createId(name)]);

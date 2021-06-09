@@ -10,6 +10,7 @@ import {
   Space,
   Pagination,
 } from "antd";
+import moment from "moment";
 import modal from "../../shared/modal";
 import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
@@ -26,6 +27,7 @@ export default function DataTable() {
     skipCount: "1",
     maxResultCount: "10",
     keyword: "",
+    date: [moment().startOf("month"), moment()],
   });
 
   useEffect(() => {
@@ -82,16 +84,16 @@ export default function DataTable() {
     {
       title: "省级",
       dataIndex: "sourceProvince",
-      render(text){
+      render(text) {
         return text || "无";
-      }
+      },
     },
     {
       title: "市级",
       dataIndex: "sourceCity",
-      render(text){
+      render(text) {
         return text || "无";
-      }
+      },
     },
     {
       title: "人数",
@@ -141,6 +143,7 @@ export default function DataTable() {
         layout="inline"
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
+        initialValues={query}
       >
         <Form.Item name="date">
           <RangePicker size="small" />
@@ -153,7 +156,8 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, skipCount: "1", keyword: value })
             }

@@ -74,7 +74,9 @@ export default function DataTable() {
   });
 
   useEffect(() => {
-    loadData();
+    if (dataList.length === 0) {
+      loadData();
+    }
   }, [JSON.stringify(query), counter]);
 
   async function loadData() {
@@ -236,7 +238,7 @@ export default function DataTable() {
               <Button
                 size="small"
                 style={{ marginRight: 4 }}
-                onClick={onSave.bind(this, creds.key)}
+                onClick={(e) => onSave(creds.key)}
               >
                 保存
               </Button>
@@ -244,13 +246,13 @@ export default function DataTable() {
               <Button
                 size="small"
                 style={{ marginRight: 4 }}
-                onClick={onEdit.bind(this, creds.key)}
+                onClick={(e) => onEdit(creds.key)}
                 disabled={editingKey !== ""}
               >
                 编辑
               </Button>
             )}
-            <Button size="small" onClick={onDelete.bind(this, creds)}>
+            <Button size="small" onClick={(e) => onDelete(creds)}>
               删除
             </Button>
           </div>

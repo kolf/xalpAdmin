@@ -4,11 +4,13 @@ import { createStore, applyMiddleware, compose } from "redux";
 import { Provider } from "react-redux";
 import ReduxThunk from "redux-thunk";
 import { ConfigProvider } from "antd";
-
 import zhCN from "antd/lib/locale/zh_CN";
+import moment from "moment";
 import "moment/locale/zh-cn";
 import App from "./App";
 import rootReducer from "./store/reducers";
+
+moment.locale('zh-cn');  
 
 const store = compose(applyMiddleware(ReduxThunk))(createStore)(
   rootReducer,
@@ -17,7 +19,7 @@ const store = compose(applyMiddleware(ReduxThunk))(createStore)(
 
 const app = (
   <Provider store={store}>
-    <ConfigProvider locale={zhCN}>
+    <ConfigProvider locale={zhCN} >
       <App />
     </ConfigProvider>
   </Provider>

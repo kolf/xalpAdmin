@@ -1,15 +1,13 @@
-import { message } from "antd";
-
 import moment from "moment";
+import message from "./message";
 
-let _timer = null;
 class Utils {
-  success = (msg, duration = 1) => {
-    message.success(msg, duration);
+  success = (msg) => {
+    message({ type: "success", content: msg });
   };
 
-  error = (msg, duration = 1) => {
-    message.error(msg, duration);
+  error = (msg) => {
+    message({ type: "error", content: msg });
   };
 
   dateTimeFormater = (datetime, formatString) => {
@@ -23,6 +21,10 @@ class Utils {
       }
       return (number / 10000).toFixed(2);
     }
+  };
+
+  todo = (number) => {
+    return number < 10 ? "0" + number : number;
   };
 }
 

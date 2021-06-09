@@ -9,8 +9,7 @@ import {
   Cascader,
   DatePicker,
   InputNumber,
-  TreeSelect,
-  Switch,
+  Skeleton,
   Space,
   message,
 } from "antd";
@@ -35,10 +34,13 @@ const tailLayout = {
 
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   const [form] = Form.useForm();
+  const [loading, setLoading] = useState(true);
   const [datePickerOptions, setDatePickerOptions] = useState([]);
   useEffect(() => {
-    loadData();
-  }, [JSON.stringify(datePickerOptions)]);
+    if (datePickerOptions.length === 0) {
+      loadData();
+    }
+  }, [defaultValues.id]);
 
   async function loadData() {
     try {
@@ -49,7 +51,10 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       }));
 
       setDatePickerOptions(options);
-    } catch (error) {}
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   }
 
   async function onFinish(values) {
@@ -126,7 +131,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     }
 
     return {
-      isSpecial: true,
+      isSpecial: defaultValues.isSpecial,
       startReserveDate,
       endReserveDate,
       items,
@@ -136,8 +141,39 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     };
   }
 
+  function splitTimeData(data) {
+    if (!data) {
+      return [[], []];
+    }
+    return data.reduce(
+      (result, item) => {
+        const {
+          individualMaxTouristsQuantity,
+          groupMaxTouristsQuantity,
+          timeItemId,
+        } = item;
+        if (individualMaxTouristsQuantity) {
+          result[0].push({
+            timeItemId,
+            maxTouristsQuantity: individualMaxTouristsQuantity,
+          });
+        }
+        if (groupMaxTouristsQuantity) {
+          result[1].push({
+            timeItemId,
+            maxTouristsQuantity: groupMaxTouristsQuantity,
+          });
+        }
+        return result;
+      },
+      [[], []]
+    );
+  }
+
   function makeDefaultValues(values) {
     const {
+      isSpecial,
+      dateTitle,
       maxTouristsQuantity,
       startReserveDate,
       endReserveDate,
@@ -148,38 +184,49 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     if (!id) {
       return {};
     }
+    const [_items1, _items2] = splitTimeData(timeItems);
+
     return {
+      _items1,
+      _items2,
       maxTouristsQuantity,
-      date: [
-        moment(startReserveDate, dateFormat),
-        moment(endReserveDate, dateFormat),
-      ],
+      date: isSpecial
+        ? [moment(dateTitle, dateFormat), moment(dateTitle, dateFormat)]
+        : [
+            moment(startReserveDate, dateFormat),
+            moment(endReserveDate, dateFormat),
+          ],
     };
+  }
+
+  if (loading) {
+    return <Skeleton></Skeleton>;
   }
 
   return (
     <>
       <Form
+        name="update-form"
         form={form}
         {...layout}
         size="small"
         onFinish={onFinish}
         initialValues={makeDefaultValues(defaultValues)}
       >
-        {!defaultValues.isSpecial && (
-          <Form.Item
-            label="开始/截至日期"
-            name="date"
-            rules={[{ required: true, message: "请选择日期" }]}
-          >
-            <RangePicker />
-          </Form.Item>
-        )}
+        <Form.Item
+          label="开始/截至日期"
+          name="date"
+          rules={[{ required: true, message: "请选择日期" }]}
+        >
+          <RangePicker disabled={defaultValues.id} />
+        </Form.Item>
+
         <Form.Item
           label="个人时间段票数"
           style={{ marginBottom: 12 }}
           name="_items1"
           className="form-item-list"
+          required
           rules={[{ validator: checkDateList1 }]}
         >
           <FormList name="items1" pickerOptions={datePickerOptions} />
@@ -188,6 +235,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           label="团体时间段票数"
           style={{ marginBottom: 12 }}
           name="_items2"
+          required
           className="form-item-list"
           rules={[{ validator: checkDateList2 }]}
         >

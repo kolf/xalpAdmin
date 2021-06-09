@@ -19,7 +19,7 @@ import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD hh:mm:ss";
+const secFormat = "YYYY-MM-DD HH:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -96,7 +96,7 @@ export default function DataTable() {
 
   async function openFile() {
     try {
-      const res = await dataService.exportProductList(makeQuery(query));
+      const res = await dataService.exportUserList(makeQuery(query));
       window.open(res);
     } catch (error) {
       utils.error(`下载失败！`);
@@ -127,11 +127,12 @@ export default function DataTable() {
     },
     {
       title: "操作",
+      fixed: "right",
       dataIndex: "options",
       render(text, creds) {
         return (
           <div className="text-center">
-            <Button size="small" onClick={showEditModal.bind(this, creds)}>
+            <Button size="small" onClick={e => showEditModal(creds)}>
               编辑角色
             </Button>
           </div>
@@ -181,14 +182,6 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item name="date">
-          <RangePicker size="small" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" size="small">
-            查询数据
-          </Button>
-        </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"

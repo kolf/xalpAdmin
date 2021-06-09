@@ -165,7 +165,6 @@ export default function AdmissionChart() {
       <canvas id="chart1" width="352" height="160"></canvas>
       <div style={{ display: "flex", padding: "6px 6px 0 0" }}>
         <a
-          href="javascript:;"
           style={{ marginLeft: "auto", marginTop: "-18px" }}
           onClick={openFile}
         >

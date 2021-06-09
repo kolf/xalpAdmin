@@ -90,7 +90,7 @@ class DataService {
   exportBlockAllowRecord = async (creds) => {
     try {
       const res = await api.get(
-        `api/BlockAllowRecord/Export?${queryString.stringify(creds)}`
+        `api/BlockAllowUser/Export?${queryString.stringify(creds)}`
       );
       return res.data;
     } catch (error) {
@@ -101,6 +101,36 @@ class DataService {
     try {
       const res = await api.get(
         `api/Merchant/Export?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  exportUserList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/identity/users/Export?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  exportOrderList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Order/ExportDetails?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  exportStaffList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Staff/Export?${queryString.stringify(creds)}`
       );
       return res.data;
     } catch (error) {

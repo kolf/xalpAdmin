@@ -4,8 +4,7 @@ import { Layout, Row, Col } from "antd";
 import "./AppFooter.less";
 
 export default function AppFooter({ onClick }) {
-  const handleClick = (key, e) => {
-    e.preventDefault();
+  const handleClick = (key) => {
     onClick && onClick(key);
   };
   return (
@@ -14,10 +13,7 @@ export default function AppFooter({ onClick }) {
       <div className="appFooter-body">
         <Row>
           <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-            <div
-              className="appFooter-item"
-              onClick={handleClick.bind(this, "1")}
-            >
+            <div className="appFooter-item" onClick={(e) => handleClick("1")}>
               <div
                 className="appFooter-item-cover"
                 style={{ background: "#4cd8fc" }}
@@ -26,10 +22,7 @@ export default function AppFooter({ onClick }) {
             </div>
           </Col>
           <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-            <div
-              className="appFooter-item"
-              onClick={handleClick.bind(this, "2")}
-            >
+            <div className="appFooter-item" onClick={(e) => handleClick("2")}>
               <div
                 className="appFooter-item-cover"
                 style={{ background: "#27fed4" }}
@@ -38,10 +31,7 @@ export default function AppFooter({ onClick }) {
             </div>
           </Col>
           <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-            <div
-              className="appFooter-item"
-              onClick={handleClick.bind(this, "3")}
-            >
+            <div className="appFooter-item" onClick={(e) => handleClick("3")}>
               <div
                 className="appFooter-item-cover"
                 style={{ background: "#929da0" }}
@@ -50,10 +40,7 @@ export default function AppFooter({ onClick }) {
             </div>
           </Col>
           <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-            <div
-              className="appFooter-item"
-              onClick={handleClick.bind(this, "4")}
-            >
+            <div className="appFooter-item" onClick={(e) => handleClick("4")}>
               <div
                 className="appFooter-item-cover"
                 style={{ background: "#e45456" }}

@@ -17,7 +17,7 @@ const onlineEnum = {
 
 const deviceActiveEnum = {
   1: "启用",
-  2: "停用",
+  0: "停用",
 };
 
 const reviewEnum = {
@@ -45,8 +45,8 @@ export const behaviorTypeEnum = {
 };
 
 export const enterEnum = {
-  1: "出口",
-  2: "入口",
+  0: "出口",
+  1: "入口",
 };
 
 export const activityEnum = {
@@ -58,6 +58,11 @@ export const orderChannelEnum = {
   5: "小程序",
   6: "官网",
   10: "小程序",
+};
+
+export const userStateEnum = {
+  2: "正常",
+  3: "过期",
 };
 
 export const checkModeEnum = {
@@ -78,6 +83,11 @@ export const colors = [
   "#F04864",
   "#8543E0",
 ];
+
+export const userStatusOptions = Object.keys(userStateEnum).map((key) => ({
+  value: key + "",
+  label: userStateEnum[key],
+}));
 
 export const activityOptions = Object.keys(activityEnum).map((key) => ({
   value: key + "",

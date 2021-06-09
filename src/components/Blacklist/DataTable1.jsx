@@ -22,7 +22,7 @@ import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD hh:mm:ss";
+const secFormat = "YYYY-MM-DD HH:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -125,7 +125,7 @@ export default function DataTable() {
   function showImportModal(creds) {
     const mod = modal({
       title: "批量导入",
-      width: 720,
+      width: 800,
       content: <ExportDataTable onOk={onOk} />,
       footer: null,
     });
@@ -159,7 +159,6 @@ export default function DataTable() {
     try {
       const res = await dataService.exportBlockAllowRecord(makeQuery(query));
       window.open(res);
-      console.log(res, "res");
     } catch (error) {}
   }
 
@@ -167,6 +166,7 @@ export default function DataTable() {
     {
       title: "序号",
       dataIndex: "index",
+      width: 60,
     },
     {
       title: "姓名",
@@ -187,6 +187,7 @@ export default function DataTable() {
     {
       title: "不文明行为发生时间",
       dataIndex: "startTime",
+      width: 170,
       render(text) {
         return text ? moment(text).format(secFormat) : "无";
       },
@@ -195,13 +196,13 @@ export default function DataTable() {
       title: "历史不文明行为",
       dataIndex: "historyBehaviorName",
       render(text) {
-        return text || '无'
-      }
+        return text || "无";
+      },
     },
-    // {
-    //   title: "距离处理到期天数",
-    //   dataIndex: "daysOfEndBlock",
-    // },
+    {
+      title: "距离处理到期天数",
+      dataIndex: "daysOfEndBlock",
+    },
     {
       title: "处罚",
       dataIndex: "behaviorDescription",
@@ -209,17 +210,18 @@ export default function DataTable() {
     {
       title: "操作",
       dataIndex: "options",
+      fixed: "right",
       render(text, creds) {
         return (
           <div className="text-center">
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showEditModal.bind(this, creds)}
+              onClick={(e) => showEditModal(creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -293,7 +295,8 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, skipCount: "1", keyword: value })
             }
@@ -309,6 +312,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
+        scroll={{ x: 1400 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

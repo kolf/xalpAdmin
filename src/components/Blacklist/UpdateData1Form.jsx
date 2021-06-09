@@ -56,27 +56,29 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           ...makeParams(values),
           id: defaultValues.id,
         });
+        onOk && onOk(res);
         utils.success(`更新成功！`);
       } catch (error) {
-
+        onOk && onOk(error);
       }
     } else {
       try {
         res = await blanklistService.addBlockAllowUser(makeParams(values));
+        onOk && onOk(res);
         utils.success(`添加成功！`);
       } catch (error) {
-   
+        onOk && onOk(error);
       }
     }
-
-    onOk && onOk(res);
   }
 
   function makeParams(values) {
     return Object.keys(values).reduce(
       (result, key) => {
         const value = values[key];
-        if (key === "date" && value) {
+        if (key === "startTime" && value) {
+
+          result.startTime = value.format(dateFormat);
         } else if (value !== undefined && value !== "-1") {
           result[key] = value;
         }
@@ -113,18 +115,34 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         onFinish={onFinish}
         initialValues={makeDefaultValues(defaultValues)}
       >
-        <Form.Item label="姓名" name="name">
+        <Form.Item
+          label="姓名"
+          name="name"
+          rules={[{ required: true, message: "请输入姓名!" }]}
+        >
           <Input placeholder="请输入" />
         </Form.Item>
 
-        <Form.Item label="身份证" name="certNumber">
+        <Form.Item
+          label="身份证"
+          name="certNumber"
+          rules={[{ required: true, message: "请输入身份证!" }]}
+        >
           <Input placeholder="请输入" />
         </Form.Item>
 
-        <Form.Item label="手机号" name="phone">
+        <Form.Item
+          label="手机号"
+          name="phone"
+          rules={[{ required: true, message: "请输入手机号!" }]}
+        >
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item label="当前不文明行为" name="behaviorId">
+        <Form.Item
+          label="当前不文明行为"
+          name="behaviorId"
+          rules={[{ required: true, message: "请选择当前不文明行为!" }]}
+        >
           <Select placeholder="请选择">
             {blockBehaviorOptions.map((o) => (
               <Option value={o.value} key={o.value}>
@@ -133,7 +151,11 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item label="发生时间" name="startTime">
+        <Form.Item
+          label="发生时间"
+          name="startTime"
+          rules={[{ required: true, message: "请输入!" }]}
+        >
           <DatePicker size="small" />
         </Form.Item>
         <Form.Item {...tailLayout}>

@@ -84,22 +84,27 @@ export default function DataTable() {
   }
 
   function makeQuery(query) {
-    return Object.keys(query).reduce((result, key) => {
-      const value = query[key];
-      if (key === "date" && value) {
-        const [start, end] = value;
-        result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
-        result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
-      } else if (key === "isActivityApply" && value) {
-        result.isActivityApplySuccess = value === "1";
-      } else if (value !== undefined && value !== "-1") {
-        result[key] = value;
+    return Object.keys(query).reduce(
+      (result, key) => {
+        const value = query[key];
+        if (key === "date" && value) {
+          const [start, end] = value;
+          result.StartTravelTime = start.format(dateFormat) + " 00:00:00";
+          result.EndTravelTime = end.format(dateFormat) + " 23:59:59";
+        } else if (key === "isActivityApply" && value) {
+          result.isActivityApplySuccess = value === "1";
+        } else if (value !== undefined && value !== "-1") {
+          result[key] = value;
+        }
+        if (query.skipCount) {
+          result.skipCount = (query.skipCount - 1) * query.maxResultCount;
+        }
+        return result;
+      },
+      {
+        ClientType: 1,
       }
-      if (query.skipCount) {
-        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
-      }
-      return result;
-    }, {});
+    );
   }
 
   function showDeleteModal(creds) {
@@ -139,7 +144,12 @@ export default function DataTable() {
     }
   }
 
-  function openFile() {}
+  async function openFile() {
+    try {
+      const res = await dataService.exportOrderList(makeQuery(query));
+      window.open(res);
+    } catch (error) {}
+  }
 
   function getRowClassName(creds, index) {
     if (creds.orderDetail.status !== 1) {
@@ -291,7 +301,7 @@ export default function DataTable() {
       title: "操作",
       dataIndex: "options",
       fixed: "right",
-      width: 120,
+      width: 150,
       render(text, creds) {
         const { orderDetail } = creds;
         return (
@@ -313,7 +323,7 @@ export default function DataTable() {
                 showDeleteModal(orderDetail);
               }}
             >
-              取消
+              取消预约
             </Button>
           </div>
         );
@@ -428,7 +438,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        scroll={{ x: 2000 }}
+        scroll={{ x: 2080 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

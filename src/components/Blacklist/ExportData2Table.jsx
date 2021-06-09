@@ -13,6 +13,7 @@ export default function DataTable({ id, onOk }) {
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [fileName, setFileName] = useState("");
+  const [error, setError] = useState("");
 
   function makeData(data) {
     return data.map((item, index) => {
@@ -25,12 +26,22 @@ export default function DataTable({ id, onOk }) {
   }
 
   async function onFinish() {
+    if (error) {
+      utils.error(error);
+      return;
+    }
     try {
       const res = await dataService.importBlockBehavior({ fileName });
       utils.success(`导入成功！`);
     } catch (error) {}
     console.log("onFinish");
     onOk && onOk();
+  }
+
+  function getRowClassName(creds, index) {
+    if (creds.exception) {
+      return "ant-table-row-error";
+    }
   }
 
   const columns = [
@@ -41,9 +52,9 @@ export default function DataTable({ id, onOk }) {
     {
       title: "程度",
       dataIndex: "behaviorType",
-      render(text){
-        return behaviorTypeEnum[text] || '无'
-      }
+      render(text) {
+        return behaviorTypeEnum[text] || "无";
+      },
     },
     {
       title: "行为",
@@ -52,6 +63,13 @@ export default function DataTable({ id, onOk }) {
     {
       title: "惩罚措施",
       dataIndex: "note",
+    },
+    {
+      title: "错误信息",
+      dataIndex: "exception",
+      render(text) {
+        return text || "无";
+      },
     },
   ];
 
@@ -67,9 +85,13 @@ export default function DataTable({ id, onOk }) {
         console.log(info.file, info.fileList);
       }
       if (info.file.status === "done") {
+        const res = info.file.response;
         try {
-          setDataList(info.file.response.blockBehaviors);
-          setFileName(info.file.response.tempExcelFileName);
+          setDataList(res.blockBehaviors);
+          setFileName(res.tempExcelFileName);
+          if (!res.isSuccess) {
+            setError(res.failMessage);
+          }
         } catch (error) {
           utils.error(`文件格式有误！`);
         }
@@ -98,6 +120,7 @@ export default function DataTable({ id, onOk }) {
         rowKey="id"
         dataSource={makeData(dataList)}
         columns={columns}
+        rowClassName={getRowClassName}
         pagination={false}
         size="small"
         bordered

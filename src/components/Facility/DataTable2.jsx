@@ -9,17 +9,12 @@ import {
   Col,
   Space,
   Select,
-  Pagination,
-  Avatar,
+  Pagination
 } from "antd";
-import DataTableDetailas from "./DataTable2Detailas";
+import DataTableDetailas from "./DataTable2Details";
 import moment from "moment";
 import modal from "../../shared/modal";
-import {
-  activityOptions,
-  checkModeEnum,
-  orderChannelEnum,
-} from "../../shared/options";
+import { activityOptions, orderChannelEnum } from "../../shared/options";
 import facilityService from "../../services/faciliy.service";
 import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
@@ -84,22 +79,27 @@ export default function DataTable() {
   }
 
   function makeQuery(query) {
-    return Object.keys(query).reduce((result, key) => {
-      const value = query[key];
-      if (key === "date" && value) {
-        const [start, end] = value;
-        result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
-        result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
-      } else if (key === "isActivityApply" && value) {
-        result.isActivityApplySuccess = value === "1";
-      } else if (value !== undefined && value !== "-1") {
-        result[key] = value;
+    return Object.keys(query).reduce(
+      (result, key) => {
+        const value = query[key];
+        if (key === "date" && value) {
+          const [start, end] = value;
+          result.StartTravelTime = start.format(dateFormat) + " 00:00:00";
+          result.EndTravelTime = end.format(dateFormat) + " 23:59:59";
+        } else if (key === "isActivityApply" && value) {
+          result.isActivityApplySuccess = value === "1";
+        } else if (value !== undefined && value !== "-1") {
+          result[key] = value;
+        }
+        if (query.skipCount) {
+          result.skipCount = (query.skipCount - 1) * query.maxResultCount;
+        }
+        return result;
+      },
+      {
+        ClientType: 2,
       }
-      if (query.skipCount) {
-        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
-      }
-      return result;
-    }, {});
+    );
   }
 
   function showDetailsModal(creds, type) {
@@ -111,7 +111,7 @@ export default function DataTable() {
     }
     const mod = modal({
       title,
-      width: 720,
+      width: 900,
       content: (
         <DataTableDetailas onOk={onOk} showType={type} dataSource={creds} />
       ),
@@ -120,9 +120,15 @@ export default function DataTable() {
     function onOk() {}
   }
 
-  function openFile() {}
+  async function openFile() {
+    try {
+      const res = await dataService.exportOrderList(makeQuery(query));
+      window.open(res);
+    } catch (error) {}
+  }
 
   function getRowClassName(creds, index) {
+    return "";
     if (creds.orderStatus !== 1) {
       return "ant-table-row-disabled";
     }
@@ -144,11 +150,14 @@ export default function DataTable() {
     },
     {
       title: "团队名称",
-      dataIndex: "phone",
+      dataIndex: "groupName",
     },
     {
-      title: "团队类型",
-      dataIndex: "phone",
+      title: "团体类型",
+      dataIndex: "groupTypeName",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "预约时段",
@@ -182,30 +191,33 @@ export default function DataTable() {
     },
     {
       title: "随行设备",
-      dataIndex: "checkMode",
+      dataIndex: "equipmentInfo",
       render(text) {
-        return checkModeEnum[text] || "无";
+        return text || "无";
       },
     },
     {
       title: "参与活动",
-      dataIndex: "checkMode",
+      dataIndex: "activityName",
       render(text) {
-        return activityName || "无";
+        return text || "无";
       },
     },
     {
       title: "已核销/总人数",
-      dataIndex: "checkMode",
-      render(text) {
-        return checkModeEnum[text] || "无";
+      dataIndex: "orderTicketCount",
+      width: 110,
+      render(text, creds) {
+        return `${creds.usedTicketCount || "0"}/${
+          creds.orderTicketCount || "0"
+        }`;
       },
     },
     {
       title: "操作",
       dataIndex: "options",
       fixed: "right",
-      width: 176,
+      width: 206,
       render(text, creds) {
         return (
           <div className="text-center">
@@ -219,17 +231,17 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              disabled={creds.orderStatus !== 1}
+              // disabled={creds.orderStatus !== 1}
               onClick={(e) => showDetailsModal(creds, "REVIEW")}
             >
               核销
             </Button>
             <Button
               size="small"
-              disabled={creds.orderStatus !== 1}
+              // disabled={creds.orderStatus !== 1}
               onClick={(e) => showDetailsModal(creds, "CANCEL")}
             >
-              取消
+              取消预约
             </Button>
           </div>
         );
@@ -344,7 +356,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        scroll={{ x: 1600 }}
+        scroll={{ x: 1700 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

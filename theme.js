@@ -5,7 +5,6 @@ module.exports = {
   "component-background": "#0F3360",
   "popover-background": "#0F3360",
   "background-color-light": "rgba(69, 190, 255, 0.1)",
-
   "table-header-bg": "transparent",
   "table-bg": "transparent",
   "table-border-color": "rgba(69, 190, 255, 0.3)",

@@ -19,7 +19,7 @@ import userService from "../../services/user.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD hh:mm:ss";
+const secFormat = "YYYY-MM-DD HH:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -135,6 +135,7 @@ export default function DataTable() {
     {
       title: "角色名称",
       dataIndex: "name",
+      width:100,
     },
     {
       title: "最后编辑时间",
@@ -145,22 +146,28 @@ export default function DataTable() {
     },
     {
       title: "权限详情",
-      dataIndex: "roleNames",
+      dataIndex: "permissions",
+      render(text) {
+        const str = (text || []).join(",");
+        return str || "无";
+      },
     },
     {
       title: "操作",
       dataIndex: "options",
+      fixed: "right",
+      width:120,
       render(text, creds) {
         return (
           <div className="text-center">
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showEditModal.bind(this, creds)}
+              onClick={(e) => showEditModal(creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -210,14 +217,6 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item name="date">
-          <RangePicker size="small" />
-        </Form.Item>
-        <Form.Item>
-          <Button type="primary" htmlType="submit" size="small">
-            查询数据
-          </Button>
-        </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"

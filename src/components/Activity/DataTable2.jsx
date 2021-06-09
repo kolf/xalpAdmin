@@ -22,7 +22,7 @@ import { behaviorTypeEnum } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD hh:mm:ss";
+const secFormat = "YYYY-MM-DD HH:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -174,11 +174,11 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={showEditModal.bind(this, creds)}
+              onClick={e => showEditModal(creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={showDeleteModal.bind(this, creds)}>
+            <Button size="small" onClick={e => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
