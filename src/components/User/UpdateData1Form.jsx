@@ -17,6 +17,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
   const [roleOptions, setRoleOptions] = useState([]);
 
   useEffect(() => {
+    let mounted = true;
     if (roleOptions.length === 0) {
       loadData();
     }
@@ -24,15 +25,20 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
     async function loadData() {
       try {
         const { items } = await userService.getAllRole();
-        setRoleOptions(
-          items.map((item) => ({
-            label: item.name,
-            value: item.id,
-            concurrencyStamp: item.concurrencyStamp,
-          }))
-        );
+        if(mounted){
+          setRoleOptions(
+            items.map((item) => ({
+              label: item.name,
+              value: item.id,
+              concurrencyStamp: item.concurrencyStamp,
+            }))
+          );
+        }
       } catch (error) {}
     }
+    return () => {
+      mounted = false;
+    };
   }, [JSON.stringify(roleOptions)]);
 
   async function onFinish(values) {

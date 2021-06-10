@@ -16,22 +16,30 @@ export default function DataTable({ id }) {
   });
 
   useEffect(() => {
-    loadData();;
-  }, [JSON.stringify(query),counter]);
-
-  async function loadData() {
-    setLoading(true);
-    try {
-      const { items, totalCount } = await policeService.getDeviceLogList(
-        makeQuery(query)
-      );
-      setLoading(false);
-      setDataList(items);
-      setTotal(totalCount);
-    } catch (error) {
-      setLoading(false);
+    let mounted = true;
+    loadData();
+    async function loadData() {
+      setLoading(true);
+      try {
+        const { items, totalCount } = await policeService.getDeviceLogList(
+          makeQuery(query)
+        );
+        if (mounted) {
+          setLoading(false);
+          setDataList(items);
+          setTotal(totalCount);
+        }
+      } catch (error) {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     }
-  }
+
+    return () => {
+      mounted = false;
+    };
+  }, [JSON.stringify(query), counter]);
 
   function makeData(data) {
     return data.map((item, index) => {
@@ -90,7 +98,7 @@ export default function DataTable({ id }) {
         name="form"
         layout="inline"
         style={{ paddingBottom: 12 }}
-        onFinish={values => setQuery({ ...query, ...values, skipCount: "1" })}
+        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
         <Form.Item name="date">
           <RangePicker size="small" />

@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter, Router, Route, Switch } from "react-router-dom";
-
+import { message } from "antd";
 import PublicLayout from "./components/Layouts/PublicLayout";
 import PrivateLayout from "./components/Layouts/PrivateLayout";
 
@@ -20,8 +20,11 @@ import Data from "./components/Data";
 import Activity from "./components/Activity";
 
 export default function Routes() {
+  const [api, contextHolder] = message.useMessage();
+
   return (
     <Router basename="/topark" history={history}>
+      {contextHolder}
       <Switch>
         <PrivateLayout path="/" exact component={Home} />
         <PrivateLayout path="/user" exact component={User} />

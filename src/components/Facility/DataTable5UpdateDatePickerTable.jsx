@@ -74,28 +74,36 @@ export default function DataTable() {
   });
 
   useEffect(() => {
+    let mounted = true;
     if (dataList.length === 0) {
       loadData();
     }
-  }, [JSON.stringify(query), counter]);
 
-  async function loadData() {
-    setLoading(true);
-    try {
-      const { items } = await faciliyService.getReservationTimeItemOptions(
-        makeQuery(query)
-      );
-      setLoading(false);
-      setDataList(
-        items.map((item) => {
-          const [startTime, endTime] = item.displayText.split("-");
-          return { ...item, startTime, endTime, key: item.id };
-        })
-      );
-    } catch (error) {
-      setLoading(false);
+    async function loadData() {
+      setLoading(true);
+      try {
+        const { items } = await faciliyService.getReservationTimeItemOptions(
+          makeQuery(query)
+        );
+        if (mounted) {
+          setLoading(false);
+          setDataList(
+            items.map((item) => {
+              const [startTime, endTime] = item.displayText.split("-");
+              return { ...item, startTime, endTime, key: item.id };
+            })
+          );
+        }
+      } catch (error) {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     }
-  }
+    return () => {
+      mounted = false;
+    };
+  }, [JSON.stringify(query), counter]);
 
   function makeData(data) {
     if (!data) {

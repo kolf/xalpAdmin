@@ -13,6 +13,7 @@ export default class UploadEditer extends React.Component {
 
   handleChange = (editorState) => {
     this.setState({ editorState });
+    this.props.onChange(editorState);
   };
 
   uploadHandler = (param) => {

@@ -20,30 +20,38 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
     if (merchantOptions.length === 0) {
       loadData();
     }
-  }, [JSON.stringify(setMerchantOptions)]);
+    async function loadData() {
+      try {
+        const res = await faciliyService.getMerchantList({
+          skipCount: "1",
+          maxResultCount: "1000",
+        });
+        const { items } = res;
 
-  async function loadData() {
-    try {
-      const res = await faciliyService.getMerchantList({
-        skipCount: "1",
-        maxResultCount: "1000",
-      });
-      const { items } = res;
-
-      setMerchantOptions(
-        items.map((item) => ({
-          label: item.name,
-          value: item.id,
-        }))
-      );
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
+        if (mounted) {
+          setMerchantOptions(
+            items.map((item) => ({
+              label: item.name,
+              value: item.id,
+            }))
+          );
+          setLoading(false);
+        }
+      } catch (error) {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     }
-  }
+
+    return () => {
+      mounted = false;
+    };
+  }, [JSON.stringify(setMerchantOptions)]);
 
   async function onFinish(values) {
     let res = null;

@@ -1,10 +1,21 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { Form, Input, Select, DatePicker, InputNumber, Row, Col } from "antd";
-import UploadImage from "../../components/UI/UploadImage";
+import {
+  Form,
+  Input,
+  Select,
+  DatePicker,
+  InputNumber,
+  Row,
+  Radio,
+  Col,
+} from "antd";
+import UploadImage from "../../components/UI/UploadImageUrl";
 import UploadImageList from "../../components/UI/UploadImageList";
 import UploadEditer from "../../components/UI/UploadEditer";
 import AreaSelect from "../../components/UI/AreaSelect";
+import InputGroup from "../../components/UI/InputGroup";
+import { activityActiveOptions } from "../../shared/options";
 import utils from "../../shared/utils";
 import activityService from "../../services/activity.service";
 const { RangePicker } = DatePicker;
@@ -17,13 +28,28 @@ const layout = {
   wrapperCol: { span: 16 },
 };
 
+const normFile = (e) => {
+  console.log("Upload event:", e);
+  if (Array.isArray(e)) {
+    return e;
+  }
+  return e && e.fileList;
+};
+
 export default function UpdateDataForm({
   defaultValues = {},
   areaOptions,
-  onOk,
+  saveRef,
+  disabled
 }) {
+  const [form] = Form.useForm();
+
   useEffect(() => {
     let mounted = true;
+
+    if (mounted && saveRef) {
+      saveRef(form);
+    }
 
     async function loadData() {
       try {
@@ -40,72 +66,38 @@ export default function UpdateDataForm({
     };
   }, []);
 
-  async function onFinish(values) {
-    let res = null;
-    if (defaultValues.id) {
-      try {
-        res = await activityService.updateBlockAllowUser({
-          ...makeParams(values),
-          id: defaultValues.id,
-        });
-        utils.success(`更新成功！`);
-      } catch (error) {}
-    } else {
-      try {
-        res = await activityService.addBlockAllowUser(makeParams(values));
-        utils.success(`添加成功！`);
-      } catch (error) {}
-    }
-
-    onOk && onOk(res);
-  }
-
-  function makeParams(values) {
-    return Object.keys(values).reduce(
-      (result, key) => {
-        const value = values[key];
-        if (key === "date" && value) {
-        } else if (value !== undefined && value !== "-1") {
-          result[key] = value;
-        }
-        return result;
-      },
-      {
-        userType: 1,
-        certType: "身份证",
-      }
-    );
-  }
-
-  function makeDefaultValues() {
-    const { id, name, certNumber, phone, behaviorId, startTime } =
-      defaultValues;
-
-    if (!id) {
+  function makeDefaultValues(values) {
+    if (!values.id) {
       return {};
     }
-    return {
-      name,
-      certNumber,
-      phone,
-      behaviorId,
-      startTime: moment(startTime, dateFormat),
-    };
+    return Object.keys(values).reduce((result, key) => {
+      const value = values[key];
+      if (key === "isActive") {
+        result.isActive = value ? "1" : "0";
+      } else if (key === "isDirectionEnter") {
+        result.isDirectionEnter = value ? "1" : "0";
+      } else if (/^(checkDeviceType)$/.test(key)) {
+        result[key] = value + "";
+      } else if (value !== undefined && value !== "-1") {
+        result[key] = value;
+      }
+      return result;
+    }, {});
   }
 
   return (
     <>
       <Form
         {...layout}
+        form={form}
         size="small"
-        onFinish={onFinish}
         initialValues={makeDefaultValues(defaultValues)}
       >
         <Row>
           <Col span={12}>
             <Form.Item
               label="所属地址"
-              name="–address"
+              name="provinceLevel"
               rules={[{ required: true, message: "请输入所属地址!" }]}
             >
               <AreaSelect defaultOptions={areaOptions} />
@@ -125,21 +117,21 @@ export default function UpdateDataForm({
 
             <Form.Item
               label="举办地址"
-              name="address1"
+              name="address"
               rules={[{ required: true, message: "请输入举办地址!" }]}
             >
               <Input placeholder="请选择" />
             </Form.Item>
             <Form.Item
               label="举办方"
-              name="-split1"
+              name="organizers"
               rules={[{ required: true, message: "请输入举办方!" }]}
             >
               <Input placeholder="请选择" />
             </Form.Item>
             <Form.Item
               label="报名名额"
-              name="maxApplyUserCount"
+              name="maxUserCount"
               rules={[{ required: true, message: "请输入报名名额!" }]}
             >
               <InputNumber style={{ width: "100%" }} placeholder="请输入" />
@@ -175,7 +167,7 @@ export default function UpdateDataForm({
             </Form.Item>
             <Form.Item
               label="承办方"
-              name="——behaviorId"
+              name="undertaker"
               rules={[{ required: true, message: "请输入承办方!" }]}
             >
               <Input placeholder="请输入" />
@@ -195,7 +187,7 @@ export default function UpdateDataForm({
               labelCol={{ span: 4 }}
               label="封面图"
               name="tempCoverPicture"
-              rules={[{ required: true, message: "请输入!" }]}
+              rules={[{ required: true, message: "请上传封面图!" }]}
             >
               <UploadImage />
             </Form.Item>
@@ -203,9 +195,12 @@ export default function UpdateDataForm({
           <Col span={24}>
             <Form.Item
               labelCol={{ span: 4 }}
+              wrapperCol={{ span: 20 }}
               label="图集"
               name="tempPictureItems"
-              rules={[{ required: true, message: "请输入!" }]}
+              valuePropName="fileList"
+              getValueFromEvent={normFile}
+              rules={[{ required: true, message: "请至少上传一张图集!" }]}
             >
               <UploadImageList />
             </Form.Item>
@@ -223,10 +218,10 @@ export default function UpdateDataForm({
 
             <Form.Item
               label="报名人数"
-              name="maxUserCount"
+              name="applyUserCount"
               rules={[{ required: true, message: "请输入报名人数!" }]}
             >
-              <InputNumber style={{ width: "100%" }} placeholder="请输入" />
+              <InputGroup />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -243,7 +238,13 @@ export default function UpdateDataForm({
               name="isActive"
               rules={[{ required: true, message: "请输入身份证!" }]}
             >
-              <Input placeholder="请输入" />
+              <Radio.Group>
+                {activityActiveOptions.map((o) => (
+                  <Radio key={o.value} value={o.value}>
+                    {o.label}
+                  </Radio>
+                ))}
+              </Radio.Group>
             </Form.Item>
           </Col>
         </Row>

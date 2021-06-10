@@ -19,17 +19,22 @@ const tailLayout = {
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   const [merchantOptions, setMerchantOptions] = useState([]);
   useEffect(() => {
+    let mounted = true;
     if (merchantOptions.length === 0) {
       loadData();
     }
+    async function loadData() {
+      try {
+        const { items } = await commonService.getOptions({ id: 40 });
+        if (mounted) {
+          setMerchantOptions(items);
+        }
+      } catch (error) {}
+    }
+    return () => {
+      mounted = false;
+    };
   }, [JSON.stringify(merchantOptions)]);
-
-  async function loadData() {
-    try {
-      const { items } = await commonService.getOptions({ id: 40 });
-      setMerchantOptions(items);
-    } catch (error) {}
-  }
 
   function makeData(data) {
     if (!data) {

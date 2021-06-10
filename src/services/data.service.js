@@ -7,7 +7,7 @@ class DataService {
       const res = await api.get(
         `api/Region/Items?${queryString.stringify(creds)}`
       );
-      return res.data;
+      return res.data.items || [];
     } catch (error) {
       return Promise.reject(error);
     }

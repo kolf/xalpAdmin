@@ -37,25 +37,34 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   const [loading, setLoading] = useState(true);
   const [datePickerOptions, setDatePickerOptions] = useState([]);
   useEffect(() => {
+    let mounted = true;
     if (datePickerOptions.length === 0) {
       loadData();
     }
-  }, [defaultValues.id]);
 
-  async function loadData() {
-    try {
-      const { items } = await faciliyService.getReservationTimeItemOptions();
-      const options = items.map((item) => ({
-        label: item.displayText,
-        value: item.id,
-      }));
+    async function loadData() {
+      try {
+        const { items } = await faciliyService.getReservationTimeItemOptions();
+        const options = items.map((item) => ({
+          label: item.displayText,
+          value: item.id,
+        }));
 
-      setDatePickerOptions(options);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
+        if (mounted) {
+          setDatePickerOptions(options);
+          setLoading(false);
+        }
+      } catch (error) {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     }
-  }
+
+    return () => {
+      mounted = false;
+    };
+  }, [defaultValues.id]);
 
   async function onFinish(values) {
     let res = null;

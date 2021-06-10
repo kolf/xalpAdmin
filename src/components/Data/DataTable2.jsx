@@ -44,7 +44,9 @@ export default function DataTable() {
           setTotal(items.length);
         }
       } catch (error) {
-        setLoading(false);
+        if(mounted){
+          setLoading(false);
+        }
       }
     }
     return () => {

@@ -7,6 +7,6 @@ export default class PublicLayout extends React.Component {
   render() {
     const { component: Component, ...rest } = this.props;
 
-    return <Route {...rest} render={(props) => <Component {...props} />} />;
+    return <div className="public-layout-root"><Route {...rest} render={(props) => <Component {...props} />} /></div>;
   }
 }

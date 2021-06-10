@@ -42,13 +42,14 @@ export default class PrivateLayout extends React.Component {
                   style={{
                     backgroundColor: "transparent",
                     padding: "12px",
+                    height: "32px"
                   }}
                 >
                   <Menu />
                 </Sider>
                 <AppFooter />
               </Layout>
-              <AliMap />
+       
             </Layout>
           ) : (
             <Redirect

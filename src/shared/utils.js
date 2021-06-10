@@ -1,13 +1,15 @@
 import moment from "moment";
-import message from "./message";
+import { message } from "antd";
 
 class Utils {
   success = (msg) => {
-    message({ type: "success", content: msg });
+    message.success(msg);
+    // message({ type: "success", content: msg });
   };
 
   error = (msg) => {
-    message({ type: "error", content: msg });
+    message.error(msg);
+    // message({ type: "error", content: msg });
   };
 
   dateTimeFormater = (datetime, formatString) => {

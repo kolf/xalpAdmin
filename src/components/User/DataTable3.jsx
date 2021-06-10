@@ -40,22 +40,31 @@ export default function DataTable() {
   });
 
   useEffect(() => {
+    let mounted = true;
     loadData();
+    async function loadData() {
+      setLoading(true);
+      try {
+        const { items, totalCount } = await faciliyService.getMerchantList(
+          makeQuery(query)
+        );
+        if(mounted) {
+          setLoading(false);
+        setDataList(items);
+        setTotal(totalCount);
+        }
+      } catch (error) {
+        if(mounted) {
+          setLoading(false);
+        }
+      }
+    }
+    return () => {
+      mounted = false;
+    };
   }, [JSON.stringify(query), counter]);
 
-  async function loadData() {
-    setLoading(true);
-    try {
-      const { items, totalCount } = await faciliyService.getMerchantList(
-        makeQuery(query)
-      );
-      setLoading(false);
-      setDataList(items);
-      setTotal(totalCount);
-    } catch (error) {
-      setLoading(false);
-    }
-  }
+
 
   function makeData(data) {
     if (!data) {

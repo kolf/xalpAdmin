@@ -276,13 +276,6 @@ export default function DataTable() {
       },
     },
     {
-      title: "闸机位置",
-      dataIndex: "checkDeviceName",
-      render(text) {
-        return text || "无";
-      },
-    },
-    {
       title: "核销设备ID",
       dataIndex: "checkDeviceCode",
       render(text) {
@@ -301,8 +294,18 @@ export default function DataTable() {
       title: "核销设备（核销方式）",
       dataIndex: "checkMode",
       width: 158,
+      render(text, creds) {
+        return creds.checkDeviceName
+          ? `${creds.checkDeviceName}(${text})`
+          : "无";
+      },
+    },
+    {
+      title: "人工操作",
+      dataIndex: "cancelUserName",
+      width: 120,
       render(text) {
-        return checkModeEnum[text] || "无";
+        return text ? `人工取消/${text}` : "无";
       },
     },
     {
@@ -446,7 +449,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        scroll={{ x: 2080 }}
+        scroll={{ x: 2120 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

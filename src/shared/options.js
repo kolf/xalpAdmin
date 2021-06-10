@@ -5,6 +5,11 @@ const areaEnum = {
   4: "北部园区",
 };
 
+const activityActiveEnum = {
+  1: "是",
+  2: "否",
+}
+
 const deviceEnum = {
   1: "闸机",
   2: "手持机",
@@ -99,6 +104,14 @@ const activityApplyStatusEnum = {
   2: "报名中",
   3: "已结束",
 };
+
+export const activityActiveOptions = Object.keys(
+  activityActiveEnum
+).map((key) => ({
+  value: key + "",
+  label: activityActiveEnum[key],
+}));
+
 
 export const activityOrderStatusOptions = Object.keys(
   activityOrderStatusEnum

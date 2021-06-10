@@ -22,6 +22,7 @@ import activityService from "../../services/activity.service";
 import dataService from "../../services/data.service";
 const { Search } = Input;
 const { Option } = Select;
+const dateFormat = "YYYY-MM-DD";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -63,7 +64,15 @@ export default function DataTable() {
     }
 
     async function loadAreaOptions() {
-      const res = await dataService.getAreaOptions({ leval: 4});
+      const res = await dataService.getAreaOptions({ level: 4 });
+      const options = res.map((item) => ({
+        value: item.code,
+        label: item.name,
+        isLeaf: false,
+      }));
+      if (mounted) {
+        setAreaOptions(options);
+      }
     }
 
     return () => {
@@ -97,16 +106,25 @@ export default function DataTable() {
   }
 
   function showAddModal() {
+    let modRef = null;
     const mod = modal({
       title: "新增",
       width: 960,
       style: { top: 20 },
-      bodyStyle: { paddingBottom: 0, paddingRight: 24 },
-      content: <UpdateDataForm onOk={onOk} areaOptions={areaOptions} />,
-      // footer: null,
+      bodyStyle: { paddingBottom: 0, paddingLeft: 0 },
+      content: (
+        <UpdateDataForm
+          areaOptions={areaOptions}
+          saveRef={(r) => (modRef = r)}
+        />
+      ),
+      onOk,
     });
 
-    function onOk() {
+    async function onOk() {
+      const values = await modRef.validateFields();
+      const res = await activityService.addActivity(makeParams(values));
+      console.log(res, "res");
       mod.close();
       setCounter(counter + 1);
       setQuery({
@@ -117,22 +135,26 @@ export default function DataTable() {
   }
 
   function showEditModal(creds) {
+    let modRef = null;
     const mod = modal({
       title: "编辑",
       width: 960,
       style: { top: 20 },
-      bodyStyle: { paddingBottom: 0, paddingRight: 24 },
+      bodyStyle: { paddingBottom: 0, paddingLeft: 0 },
       content: (
         <UpdateDataForm
-          onOk={onOk}
           areaOptions={areaOptions}
+          saveRef={(r) => (modRef = r)}
           defaultValues={creds}
         />
       ),
-      // footer: null,
+      onOk,
     });
 
-    function onOk() {
+    async function onOk() {
+      const values = await modRef.validateFields();
+      const res = await activityService.addActivity(makeParams(values));
+      console.log(res, "res");
       mod.close();
       setCounter(counter + 1);
       setQuery({
@@ -140,6 +162,23 @@ export default function DataTable() {
         skipCount: "1",
       });
     }
+  }
+
+  function showViewModal(creds) {
+    const mod = modal({
+      title: "查看",
+      width: 960,
+      style: { top: 20 },
+      bodyStyle: { paddingBottom: 0, paddingLeft: 0 },
+      content: (
+        <UpdateDataForm
+          areaOptions={areaOptions}
+          disabled
+          defaultValues={creds}
+        />
+      ),
+      footer: null,
+    });
   }
 
   function showDeleteModal(creds) {
@@ -162,6 +201,66 @@ export default function DataTable() {
     }
   }
 
+  function showUpdateStatusModal(creds, value) {
+    const mod = confirm({
+      content: `确认${value ? "上架" : "下架"}此条活动, 是否继续?`,
+      onOk,
+    });
+    async function onOk() {
+      try {
+        const res = await activityService.updateActivityStatus({
+          id: creds.id,
+          changeToActive: value,
+        });
+        mod.close();
+        utils.success(`${value ? "上架" : "下架"}成功！`);
+        setCounter(counter + 1);
+        setQuery({ ...query, skipCount: "1" });
+      } catch (error) {
+        mod.close();
+      }
+    }
+  }
+
+  function makeParams(values) {
+    return Object.keys(values).reduce((result, key) => {
+      const value = values[key];
+      if (key === "date1" && value) {
+        const [start, end] = value;
+        result.startDate = start.format(dateFormat);
+        result.endDate = end.format(dateFormat);
+      } else if (key === "date2" && value) {
+        const [start, end] = value;
+        result.applyStartDate = start.format(dateFormat);
+        result.applyDeadlineDate = end.format(dateFormat);
+      } else if (key === "applyUserCount" && value) {
+        const [min, max] = value;
+        result.minApplyUserCount = min;
+        result.maxApplyUserCount = max;
+      } else if (key === "tude") {
+        const [x, y] = value.split(/,，/);
+        result.longitude = x;
+        result.latitude = y;
+      } else if (key === "provinceLevel" && value) {
+        const [p, c, a] = value;
+        result.regionProvinceName = p.label;
+        result.regionProvinceCode = p.value;
+        result.regionCityName = c.label;
+        result.regionCityCode = c.value;
+        result.regionAreaName = a.label;
+        result.regionAreaCode = a.value;
+      } else if (key === "tempPictureItems") {
+        result.tempPictureItems = value.map((v) => v.response);
+      } else if (/note|description/.test(key)) {
+        // result[key] = value.toRAW();
+        result[key] = "sdfsd";
+      } else if (value !== undefined && value !== "-1") {
+        result[key] = value;
+      }
+      return result;
+    }, {});
+  }
+
   const columns = [
     {
       title: "活动名称",
@@ -174,6 +273,9 @@ export default function DataTable() {
     {
       title: "活动状态",
       dataIndex: "isActive",
+      render(text) {
+        return text || "未知";
+      },
     },
     {
       title: "活动举办时间",
@@ -181,7 +283,10 @@ export default function DataTable() {
     },
     {
       title: "报名状态",
-      dataIndex: "111111",
+      dataIndex: "stateName",
+      render(text) {
+        return text || "未知";
+      },
     },
     {
       title: "报名起止时间",
@@ -192,7 +297,7 @@ export default function DataTable() {
     },
     {
       title: "最后操作人",
-      dataIndex: "111111111",
+      dataIndex: "lastModifyUserName",
     },
     {
       title: "操作",
@@ -205,7 +310,7 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={(e) => showEditModal(creds)}
+              onClick={(e) => showViewModal(creds)}
             >
               查看
             </Button>
@@ -216,13 +321,24 @@ export default function DataTable() {
             >
               编辑
             </Button>
-            <Button
-              size="small"
-              style={{ marginRight: 4 }}
-              onClick={(e) => showEditModal(creds)}
-            >
-              下架
-            </Button>
+            {creds.isActive ? (
+              <Button
+                size="small"
+                style={{ marginRight: 4 }}
+                onClick={(e) => showUpdateStatusModal(creds, false)}
+              >
+                下架
+              </Button>
+            ) : (
+              <Button
+                size="small"
+                style={{ marginRight: 4 }}
+                onClick={(e) => showUpdateStatusModal(creds, false)}
+              >
+                上架
+              </Button>
+            )}
+
             <Button size="small" onClick={(e) => showDeleteModal(creds)}>
               删除
             </Button>
@@ -316,7 +432,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        scroll={{ x: 1200 }}
+        scroll={{ x: 1600 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

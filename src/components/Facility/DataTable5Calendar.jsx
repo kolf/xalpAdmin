@@ -36,7 +36,6 @@ export default function DataTable5ListCalendar({ renderHeader }) {
           setDataList(items);
         }
       } catch (error) {
-        console.log(error, "error");
         if (mounted) {
           setLoading(false);
           setDataList([]);

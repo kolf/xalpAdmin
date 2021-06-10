@@ -16,38 +16,46 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
     if (providerOptions.length === 0) {
       loadData();
     }
-  }, [JSON.stringify(providerOptions)]);
 
-  async function loadData() {
-    try {
-      let res = null;
-      if (defaultValues.name) {
-        res = await userService.getAllPermissions({
-          providerName: "R",
-          providerKey: defaultValues.name,
-        });
-      } else {
-        res = await userService.getAllPermissions({ providerName: "R" });
+    async function loadData() {
+      try {
+        let res = null;
+        if (defaultValues.name) {
+          res = await userService.getAllPermissions({
+            providerName: "R",
+            providerKey: defaultValues.name,
+          });
+        } else {
+          res = await userService.getAllPermissions({ providerName: "R" });
+        }
+
+        const options = res.groups
+          .find((item) => item.name === "SmartTicketing")
+          .permissions.map((item) => {
+            return {
+              label: item.displayName,
+              value: item.name,
+            };
+          });
+
+        if(mounted){
+          setProviderOptions(options);
+        setLoading(false);
+        }
+      } catch (error) {
+        if(mounted){
+          setLoading(false);
+        }
       }
-
-      const options = res.groups
-        .find((item) => item.name === "SmartTicketing")
-        .permissions.map((item) => {
-          return {
-            label: item.displayName,
-            value: item.name,
-          };
-        });
-
-      setProviderOptions(options);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
     }
-  }
+    return () => {
+      mounted = false;
+    };
+  }, [JSON.stringify(providerOptions)]);
 
   async function onFinish(values) {
     let res = null;

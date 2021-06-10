@@ -32,6 +32,15 @@ class ActivityService {
     }
   };
 
+  updateActivityStatus = async (creds) => {
+    try {
+      const res = await api.post(`api/ParkActivity/Change/${creds.id}`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   deleteActivity = async (creds) => {
     try {
       const res = await api.delete(
@@ -42,7 +51,7 @@ class ActivityService {
       return Promise.reject(error);
     }
   };
-  
+
   getActivityOrderList = async (creds) => {
     try {
       const res = await api.get(

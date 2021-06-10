@@ -22,22 +22,28 @@ export default function DataTable() {
   });
 
   useEffect(() => {
+    let mounted = true;
     loadData();
-  }, [JSON.stringify(query), counter]);
-
-  async function loadData() {
-    setLoading(true);
-    try {
-      const { items, totalCount } = await ticketCategoryService.getProductList(
-        makeQuery(query)
-      );
-      setLoading(false);
-      setDataList(items);
-      setTotal(totalCount);
-    } catch (error) {
-      setLoading(false);
+    async function loadData() {
+      setLoading(true);
+      try {
+        const { items, totalCount } =
+          await ticketCategoryService.getProductList(makeQuery(query));
+        if (mounted) {
+          setLoading(false);
+          setDataList(items);
+          setTotal(totalCount);
+        }
+      } catch (error) {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     }
-  }
+    return () => {
+      mounted = false;
+    };
+  }, [JSON.stringify(query), counter]);
 
   function makeData(data) {
     if (!data) {
@@ -77,7 +83,8 @@ export default function DataTable() {
         mod.close();
         utils.success(`删除成功！`);
         setCounter(counter + 1);
-        loadData({
+        setQuery({
+          ...query,
           skipCount: "1",
         });
       } catch (error) {
@@ -123,7 +130,7 @@ export default function DataTable() {
       const res = await ticketCategoryService.exportProductList(
         makeQuery(query)
       );
-      window.open(res)
+      window.open(res);
     } catch (error) {
       utils.error(`下载失败！`);
     }
@@ -152,11 +159,11 @@ export default function DataTable() {
             <Button
               size="small"
               style={{ marginRight: 4 }}
-              onClick={e => showEditModal(creds)}
+              onClick={(e) => showEditModal(creds)}
             >
               编辑
             </Button>
-            <Button size="small" onClick={e => showDeleteModal(creds)}>
+            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -212,7 +219,8 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"  allowClear
+            placeholder="模糊搜索"
+            allowClear
             onSearch={(value) =>
               setQuery({ ...query, skipCount: "1", keyword: value })
             }

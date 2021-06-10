@@ -34,8 +34,8 @@ export default function DataTable() {
   });
 
   useEffect(() => {
+    let mounted = true;
     loadData();
-  }, [JSON.stringify(query), counter]);
 
   async function loadData() {
     setLoading(true);
@@ -43,13 +43,22 @@ export default function DataTable() {
       const { items, totalCount } = await userService.getRoleList(
         makeQuery(query)
       );
-      setLoading(false);
+      if(mounted){
+        setLoading(false);
       setDataList(items);
       setTotal(totalCount);
+      }
     } catch (error) {
-      setLoading(false);
+      if(mounted){
+        setLoading(false);
+      }
     }
   }
+
+    return () => {
+      mounted = false;
+    };
+  }, [JSON.stringify(query), counter]);
 
   function makeData(data) {
     if (!data) {

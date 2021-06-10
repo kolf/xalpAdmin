@@ -30,15 +30,6 @@ const tailLayout = {
 };
 
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  async function loadData() {
-    try {
-    } catch (error) {}
-  }
-
   async function onFinish(values) {
     let res = null;
     if (defaultValues.id) {

@@ -54,7 +54,7 @@ export default function DataTable() {
       return [];
     }
     return data.map((item, index) => {
-      return { ...item, index: index + 1 };
+      return { ...item, ...item.activityOrder, index: index + 1 };
     });
   }
 
@@ -97,26 +97,26 @@ export default function DataTable() {
     },
     {
       title: "活动名称",
-      dataIndex: "behaviorType",
+      dataIndex: "activityName",
     },
     {
       title: "订单状态",
-      dataIndex: "name",
+      dataIndex: "orderStatus",
     },
     {
       title: "下单时间",
-      dataIndex: "creationTime",
+      dataIndex: "applyTime",
       render(text) {
         return text ? moment(text).format(secFormat) : "无";
       },
     },
     {
       title: "团队负责人",
-      dataIndex: "note",
+      dataIndex: "name",
     },
     {
-      title: "报名",
-      dataIndex: "note",
+      title: "报名状态",
+      dataIndex: "auditStatus",
     },
     {
       title: "操作",
@@ -171,7 +171,7 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item name="Status1" style={{ marginBottom: 6, width: 100 }}>
+        <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="订单状态" allowClear>
             {activityOrderStatusOptions.map((o) => (
               <Option key={o.value} value={o.value}>

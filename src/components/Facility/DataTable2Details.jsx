@@ -18,23 +18,30 @@ export default function DataTable({ dataSource, showType }) {
   });
 
   useEffect(() => {
+    let mounted = true;
     loadData();
-  }, [JSON.stringify(query), counter]);
 
-  async function loadData() {
-    setLoading(true);
-    try {
-      const { items, totalCount } = await facilityService.getOrderDetailList(
-        makeQuery(query)
-      );
-      setLoading(false);
-      setDataList(items);
-      setTotal(totalCount);
-    } catch (error) {
-      console.log(error, "error");
-      setLoading(false);
+    async function loadData() {
+      setLoading(true);
+      try {
+        const { items, totalCount } = await facilityService.getOrderDetailList(
+          makeQuery(query)
+        );
+        if (mounted) {
+          setLoading(false);
+          setDataList(items);
+          setTotal(totalCount);
+        }
+      } catch (error) {
+        if (mounted) {
+          setLoading(false);
+        }
+      }
     }
-  }
+    return () => {
+      mounted = false;
+    };
+  }, [JSON.stringify(query), counter]);
 
   function makeData(data) {
     if (!data) {
@@ -148,14 +155,6 @@ export default function DataTable({ dataSource, showType }) {
         },
       },
       {
-        title: "核销设备（核销方式）",
-        dataIndex: "checkMode",
-        width: 158,
-        render(text) {
-          return checkModeEnum[text] || "无";
-        },
-      },
-      {
         title: "核销设备ID",
         dataIndex: "checkDeviceCode",
         render(text) {
@@ -163,10 +162,21 @@ export default function DataTable({ dataSource, showType }) {
         },
       },
       {
-        title: "闸机位置",
-        dataIndex: "checkDeviceName",
+        title: "核销设备（核销方式）",
+        dataIndex: "checkMode",
+        width: 158,
+        render(text, creds) {
+          return creds.checkDeviceName
+            ? `${creds.checkDeviceName}(${text})`
+            : "无";
+        },
+      },
+      {
+        title: "人工操作",
+        dataIndex: "cancelUserName",
+        width: 120,
         render(text) {
-          return text || "无";
+          return text ? `人工取消/${text}` : "无";
         },
       },
     ];
