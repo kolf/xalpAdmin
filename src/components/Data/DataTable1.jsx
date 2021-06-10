@@ -138,7 +138,8 @@ export default function DataTable() {
   return (
     <div>
       <Row style={{ paddingBottom: 12 }}>
-        <Col flex="auto">
+        <Col flex="auto"></Col>
+        <Col flex="120px" style={{ textAlign: "right" }}>
           <Button
             size="small"
             type="primary"
