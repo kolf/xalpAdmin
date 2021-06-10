@@ -74,9 +74,9 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         </Form.Item>
 
         <Form.Item
-          label="程度"
+          label="程度(惩罚措施)"
           name="behaviorType"
-          rules={[{ required: true, message: "请选择程度!" }]}
+          rules={[{ required: true, message: "请选择程度(惩罚措施)!" }]}
         >
           <Select placeholder="请选择">
             {behaviorTypeOptions.map((o) => (
@@ -85,14 +85,6 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
               </Option>
             ))}
           </Select>
-        </Form.Item>
-
-        <Form.Item
-          label="惩罚措施"
-          name="note"
-          rules={[{ required: true, message: "请输入惩罚措施!" }]}
-        >
-          <Input placeholder="请输入" />
         </Form.Item>
 
         <Form.Item {...tailLayout}>

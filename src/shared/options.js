@@ -38,10 +38,10 @@ export const checkDeviceTypeEnum = {
 };
 
 export const behaviorTypeEnum = {
-  1: "A类：轻微",
-  2: "B类：中度",
-  3: "C类：严重",
-  4: "D类：恶劣",
+  1: "A类（轻微，口头警告并记录）",
+  2: "B类（中度，一个月禁止入园）",
+  3: "C类（严重，三个月禁止入园）",
+  4: "D类（恶劣，永久禁止入园）",
 };
 
 export const enterEnum = {

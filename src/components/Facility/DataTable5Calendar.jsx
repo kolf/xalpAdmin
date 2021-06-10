@@ -14,15 +14,6 @@ import faciliyService from "../../services/faciliy.service";
 const monthFormat = "YYYY-MM";
 const dateFormat = "YYYY-MM-DD";
 const currentMoment = moment();
-function makeDate(date) {
-  const currentDate = date.startOf("month");
-  const startTime = currentDate.date(-currentDate.day() + 1);
-
-  return [
-    startTime.format(dateFormat),
-    startTime.add(6, "w").format(dateFormat),
-  ];
-}
 
 export default function DataTable5ListCalendar({ renderHeader }) {
   const [loading, setLoading] = useState(true);
@@ -31,33 +22,49 @@ export default function DataTable5ListCalendar({ renderHeader }) {
   const [monthDate, setMonthDate] = useState(currentMoment.format(monthFormat));
 
   useEffect(() => {
-    const [StartTime, EndTime] = makeDate(moment(monthDate));
-    loadData({ StartTime, EndTime });
+    let mounted = true;
+    loadData();
+
+    async function loadData() {
+      setLoading(true);
+      try {
+        const { items } = await faciliyService.getReservationTimeRangeList(
+          makeQuery(monthDate)
+        );
+        if (mounted) {
+          setLoading(false);
+          setDataList(items);
+        }
+      } catch (error) {
+        console.log(error, "error");
+        if (mounted) {
+          setLoading(false);
+          setDataList([]);
+        }
+      }
+    }
+    return () => {
+      mounted = false;
+    };
   }, [monthDate]);
 
-  async function loadData(params) {
-    setLoading(true);
-    try {
-      const { items } = await faciliyService.getReservationTimeRangeList(
-        params
-      );
-      setLoading(false);
-      setDataList(items);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-      setDataList([]);
-    }
-  }
+  function makeQuery(date) {
+    const currentDate = moment(date).startOf("month");
+    const startTime = currentDate.date(-currentDate.day() + 1);
 
-  function todo(date) {
-    const [year, month] = date.split("-");
-    return year + "-" + (month < 10 ? "0" + month : month);
+    return {
+      StartTime: startTime.format(dateFormat),
+      EndTime: startTime.add(6, "w").format(dateFormat),
+    };
   }
 
   function handleChange(value) {
-    const [StartTime, EndTime] = makeDate(value.add(1, "M"));
-    loadData({ StartTime, EndTime });
+    const nextMonthDate = value.format(monthFormat);
+    console.log(nextMonthDate, "nextMonthDate");
+    setMonthDate(nextMonthDate);
+    // console.log(value, "value");
+    // const [StartTime, EndTime] = makeDate(value.add(1, "M"));
+    // loadData({ StartTime, EndTime });
   }
 
   function showAddModal() {
@@ -142,9 +149,8 @@ export default function DataTable5ListCalendar({ renderHeader }) {
           icon={<DoubleLeftOutlined />}
           onClick={(e) => {
             const nextValue = value.clone();
-            nextValue.year(nextValue.year() - 1);
+            nextValue.year(year - 1);
             onChange(nextValue);
-            console.log(nextValue, "nextValue");
             setMonthDate(nextValue.format(monthFormat));
           }}
         ></Button>

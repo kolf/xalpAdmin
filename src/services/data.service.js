@@ -12,7 +12,18 @@ class DataService {
       return Promise.reject(error);
     }
   };
-  // 黑名单列表
+
+  getAreaTopProvince = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Order/AreaTopProvince?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   getOrderAreaList = async (creds) => {
     try {
       const res = await api.get(
@@ -23,7 +34,7 @@ class DataService {
       return Promise.reject(error);
     }
   };
-  // 黑名单列表
+
   getOrderAgeList = async (creds) => {
     try {
       const res = await api.get(
@@ -141,6 +152,26 @@ class DataService {
     try {
       const res = await api.get(
         `api/Staff/Export?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  exportAgeList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Order/ExportAgeRange?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  exportAreaList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Order/ExportAreaRange?${queryString.stringify(creds)}`
       );
       return res.data;
     } catch (error) {

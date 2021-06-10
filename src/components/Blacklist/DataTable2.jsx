@@ -180,21 +180,17 @@ export default function DataTable() {
       width: 60,
     },
     {
-      title: "程度",
-      dataIndex: "behaviorType",
-      width: 100,
-      render(text) {
-        return behaviorTypeEnum[text] || "无";
-      },
-    },
-    {
       title: "行为",
       dataIndex: "name",
       width: 160,
     },
     {
-      title: "惩罚措施",
-      dataIndex: "note",
+      title: "程度(惩罚措施)",
+      dataIndex: "behaviorType",
+      width: 200,
+      render(text) {
+        return behaviorTypeEnum[text] || "无";
+      },
     },
     {
       title: "创建时间",

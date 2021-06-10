@@ -49,19 +49,15 @@ export default function DataTable({ id, onOk }) {
       dataIndex: "index",
     },
     {
-      title: "程度",
-      dataIndex: "behaviorType",
-      render(text) {
-        return behaviorTypeEnum[text] || "无";
-      },
-    },
-    {
       title: "行为",
       dataIndex: "name",
     },
     {
-      title: "惩罚措施",
-      dataIndex: "note",
+      title: "程度(惩罚措施)",
+      dataIndex: "behaviorType",
+      render(text) {
+        return behaviorTypeEnum[text] || "无";
+      },
     },
     {
       title: "错误信息",

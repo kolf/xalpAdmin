@@ -27,7 +27,7 @@ export default function TouristChart() {
           endDate,
         });
 
-        res2 = await dataService.getOrderAreaList({
+        res2 = await dataService.getAreaTopProvince({
           startDate,
           endDate,
         });
@@ -37,8 +37,7 @@ export default function TouristChart() {
         }
 
         setAreaData(
-          res2.items
-            .filter((item, index) => index < 3)
+          res2.filter((item, index) => index < 3)
             .map((item) => ({
               ...item,
               value: item.ticketCount,

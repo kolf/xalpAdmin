@@ -29,7 +29,7 @@ export default function DataTable() {
   const [dataList, setDataList] = useState([]);
   const [total, setTotal] = useState(0);
   const [counter, setCounter] = useState(0);
-  const [areaOptions, setareaOptions] = useState([]);
+  const [areaOptions, setAreaOptions] = useState([]);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
@@ -63,7 +63,7 @@ export default function DataTable() {
     }
 
     async function loadAreaOptions() {
-      const res = await dataService.getAreaOptions({ leval: 4, parentCode: 0 });
+      const res = await dataService.getAreaOptions({ leval: 4});
     }
 
     return () => {

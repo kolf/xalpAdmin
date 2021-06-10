@@ -78,7 +78,12 @@ export default function DataTable() {
     }, {});
   }
 
-  function openFile() {}
+  async function openFile() {
+    try {
+      const res = await dataService.exportAgeList(makeQuery(query));
+      window.open(res);
+    } catch (error) {}
+  }
 
   const columns = [
     {
