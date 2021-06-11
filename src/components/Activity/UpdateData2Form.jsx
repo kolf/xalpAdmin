@@ -92,7 +92,7 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
           </p>
           <p>
             <Space>
-              <span>团队名称</span>
+              <span>团队名称：</span>
               <span>{data.applyTime}</span>
             </Space>
           </p>
@@ -136,13 +136,14 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
           </p>
         </Col>
       </Row>
-      <div className="panel-title">订单审核</div>
+      <div className="panel-title">人员信息</div>
       <Table
         pagination={false}
         size="small"
         bordered
         columns={columns}
         dataSource={data.detailItems}
+        scroll={{ y: 240 }}
       />
       <div className="panel-title">订单审核</div>
       {saveRef ? (
