@@ -1,57 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Select } from "antd";
+import { Form, Input, Radio, Table, Row, Col, Space, Spin } from "antd";
 import utils from "../../shared/utils";
-import { behaviorTypeOptions } from "../../shared/options";
-import blanklistService from "../../services/blanklist.service";
-
-const { Option } = Select;
+import moment from "moment";
+import { activityReviewOptions } from "../../shared/options";
+import activityService from "../../services/activity.service";
+const secFormat = "YYYY-MM-DD HH:mm:ss";
 
 const layout = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 },
-};
-const tailLayout = {
-  wrapperCol: { offset: 8, span: 16 },
+  labelCol: { span: 4 },
+  wrapperCol: { span: 18 },
 };
 
-export default function UpdateDataForm({ defaultValues = {}, onOk }) {
-  async function onFinish(values) {
-    let res = null;
-    if (defaultValues.id) {
-      try {
-        res = await blanklistService.updateBlockBehavior({
-          ...makeParams(values),
-          id: defaultValues.id,
-        });
-        utils.success(`更新成功！`);
-      } catch (error) {
+export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({});
+  const [form] = Form.useForm();
 
-      }
-    } else {
-      try {
-        res = await blanklistService.addBlockBehavior(makeParams(values));
-        utils.success(`添加成功！`);
-      } catch (error) {
+  useEffect(() => {
+    let mounted = true;
+    loadData();
 
+    if (mounted && saveRef) {
+      saveRef(form);
+    }
+
+    async function loadData() {
+      try {
+        const res = await activityService.getActivityOrderDetails();
+        if (mounted) {
+          setData({ ...res, ...res.activityOrder });
+          setLoading(false);
+        }
+      } catch (error) {
+        if (mounted) {
+          setLoading(false);
+        }
       }
     }
 
-    onOk && onOk(res);
-  }
-
-  function makeParams(values) {
-    return Object.keys(values).reduce(
-      (result, key) => {
-        const value = values[key];
-        result[key] = value;
-        return result;
-      },
-      {
-        userType: 1,
-        certType: "身份证",
-      }
-    );
-  }
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   function makeDefaultValues() {
     const { name, note, behaviorType, id } = defaultValues;
@@ -61,38 +51,150 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     return { name, note, behaviorType: behaviorType + "" };
   }
 
+  const columns = [
+    {
+      title: "姓名",
+      dataIndex: "name",
+    },
+    {
+      title: "手机号",
+      dataIndex: "phone",
+    },
+    {
+      title: "身份证号",
+      dataIndex: "certNumber",
+    },
+  ];
+
+  if (loading) {
+    return (
+      <Spin>
+        <div className="loading-placeholder"></div>
+      </Spin>
+    );
+  }
+
   return (
     <>
-      <Form
-        {...layout}
+      <Row>
+        <Col span={12}>
+          <p>
+            <Space>
+              <span>订单号：</span>
+              <span>{data.orderNO}</span>
+            </Space>
+          </p>
+          <p>
+            <Space>
+              <span>提交时间：</span>
+              <span>{data.applyTime}</span>
+            </Space>
+          </p>
+          <p>
+            <Space>
+              <span>团队名称</span>
+              <span>{data.applyTime}</span>
+            </Space>
+          </p>
+          <p>
+            <Space>
+              <span>手机号：</span>
+              <span>{data.phone}</span>
+            </Space>
+          </p>
+          <p>
+            <Space>
+              <span>备注：</span>
+              <span>{data.note}</span>
+            </Space>
+          </p>
+        </Col>
+        <Col span={12}>
+          <p>
+            <Space>
+              <span>订单状态：</span>
+              <span>{data.orderStatus}</span>
+            </Space>
+          </p>
+          <p>
+            <Space>
+              <span>活动名称：</span>
+              <span>{data.orderStatus}</span>
+            </Space>
+          </p>
+          <p>
+            <Space>
+              <span>团队负责人：</span>
+              <span>{data.name}</span>
+            </Space>
+          </p>
+          <p>
+            <Space>
+              <span>活动参与人数：</span>
+              <span>{data.touristsCount}</span>
+            </Space>
+          </p>
+        </Col>
+      </Row>
+      <div className="panel-title">订单审核</div>
+      <Table
+        pagination={false}
         size="small"
-        onFinish={onFinish}
-        initialValues={makeDefaultValues(defaultValues)}
-      >
-        <Form.Item label="不文明行为名称" name="name">
-          <Input placeholder="请输入" />
-        </Form.Item>
+        bordered
+        columns={columns}
+        dataSource={data.detailItems}
+      />
+      <div className="panel-title">订单审核</div>
+      {saveRef ? (
+        <Form {...layout} size="small" form={form}>
+          <Form.Item label="审核" name="name">
+            <Radio.Group>
+              {activityReviewOptions.map((o) => (
+                <Radio key={o.value} value={o.value}>
+                  {o.label}
+                </Radio>
+              ))}
+            </Radio.Group>
+          </Form.Item>
 
-        <Form.Item label="程度" name="behaviorType">
-          <Select placeholder="请选择">
-            {behaviorTypeOptions.map((o) => (
-              <Option value={o.value} key={o.value}>
-                {o.label}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
-
-        <Form.Item label="惩罚措施" name="note">
-          <Input placeholder="请输入" />
-        </Form.Item>
-
-        <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
-            确定
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item label="不通过原因" name="note">
+            <Input.TextArea rows="4" placeholder="请输入" />
+          </Form.Item>
+        </Form>
+      ) : (
+        <Row>
+          <Col span={12}>
+            <p>
+              <Space>
+                <span>审核人：</span>
+                <span>{data.auditorName}</span>
+              </Space>
+            </p>
+            <p>
+              <Space>
+                <span>审核结果：</span>
+                <span>{data.stateName}</span>
+              </Space>
+            </p>
+          </Col>
+          <Col span={12}>
+            <p>
+              <Space>
+                <span>审核时间：</span>
+                <span>{data.auditTime}</span>
+              </Space>
+            </p>
+            {data.refuseReason && (
+              <p>
+                <Space>
+                  <span>不通过原因：</span>
+                  <span>{data.refuseReason}</span>
+                </Space>
+              </p>
+            )}
+          </Col>
+        </Row>
+      )}
     </>
   );
 }

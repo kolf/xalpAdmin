@@ -89,6 +89,11 @@ export const colors = [
   "#8543E0",
 ];
 
+const activityReviewEnum = {
+  1: "通过",
+  2: "不通过",
+}
+
 const activityOrderStatusEnum = {
   1: "审核通过",
   2: "待审核",
@@ -184,6 +189,11 @@ export const onlineOptions = Object.keys(onlineEnum).map((key) => ({
 export const reviewOptions = Object.keys(reviewEnum).map((key) => ({
   value: key + "",
   label: reviewEnum[key],
+}));
+
+export const activityReviewOptions = Object.keys(activityReviewEnum).map((key) => ({
+  value: key + "",
+  label: activityReviewEnum[key],
 }));
 
 export const merchantOptions = Object.keys(merchantEnum).map((key) => ({

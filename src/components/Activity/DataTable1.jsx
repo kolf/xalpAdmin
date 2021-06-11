@@ -123,14 +123,19 @@ export default function DataTable() {
 
     async function onOk() {
       const values = await modRef.validateFields();
-      const res = await activityService.addActivity(makeParams(values));
-      console.log(res, "res");
-      mod.close();
-      setCounter(counter + 1);
-      setQuery({
-        ...query,
-        skipCount: "1",
-      });
+      try {
+        mod.confirmLoading();
+        const res = await activityService.addActivity(makeParams(values));
+        utils.success(`编辑活动成功！`);
+        mod.close();
+        setCounter(counter + 1);
+        setQuery({
+          ...query,
+          skipCount: "1",
+        });
+      } catch (error) {
+        utils.error(`编辑活动失败！`);
+      }
     }
   }
 
@@ -153,14 +158,20 @@ export default function DataTable() {
 
     async function onOk() {
       const values = await modRef.validateFields();
-      const res = await activityService.addActivity(makeParams(values));
-      console.log(res, "res");
-      mod.close();
-      setCounter(counter + 1);
-      setQuery({
-        ...query,
-        skipCount: "1",
-      });
+      try {
+        mod.confirmLoading();
+        const res = await activityService.addActivity(makeParams(values));
+        utils.success(`添加活动成功！`);
+        console.log(res, "res");
+        mod.close();
+        setCounter(counter + 1);
+        setQuery({
+          ...query,
+          skipCount: "1",
+        });
+      } catch (error) {
+        utils.error(`添加活动失败！`);
+      }
     }
   }
 
@@ -183,7 +194,7 @@ export default function DataTable() {
 
   function showDeleteModal(creds) {
     const mod = confirm({
-      content: `确认删除此条内容, 是否继续?`,
+      content: `确认删除此条活动, 是否继续?`,
       onOk,
     });
     async function onOk() {
@@ -238,7 +249,7 @@ export default function DataTable() {
         result.minApplyUserCount = min;
         result.maxApplyUserCount = max;
       } else if (key === "tude") {
-        const [x, y] = value.split(/,，/);
+        const [x, y] = value.split(/,|，/g);
         result.longitude = x;
         result.latitude = y;
       } else if (key === "provinceLevel" && value) {
@@ -252,8 +263,8 @@ export default function DataTable() {
       } else if (key === "tempPictureItems") {
         result.tempPictureItems = value.map((v) => v.response);
       } else if (/note|description/.test(key)) {
-        // result[key] = value.toRAW();
-        result[key] = "sdfsd";
+        result[key] = value.toRAW();
+        // result[key] = "sdfsd";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }

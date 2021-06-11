@@ -66,7 +66,7 @@ class ActivityService {
   getActivityOrderDetails = async (creds) => {
     try {
       const res = await api.get(
-        `api/ActivityOrder/ActivityOrderList?${queryString.stringify(creds)}`
+        `api​/ActivityOrder​/Detail?${queryString.stringify(creds)}`
       );
       return res.data;
     } catch (error) {
@@ -74,9 +74,12 @@ class ActivityService {
     }
   };
 
-  updateActivityOrder = async (creds) => {
+  updateActivityOrderStatus = async (creds) => {
     try {
-      const res = await api.put(`api/ActivityOrder/${creds.id}`, creds);
+      const res = await api.post(
+        `api​/ActivityOrder​/Audit​/${creds.id}`,
+        creds
+      );
       return res.data;
     } catch (error) {
       return Promise.reject(error);

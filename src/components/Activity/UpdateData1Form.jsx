@@ -1,27 +1,13 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import {
-  Form,
-  Input,
-  Select,
-  DatePicker,
-  InputNumber,
-  Row,
-  Radio,
-  Col,
-} from "antd";
+import { Form, Input, DatePicker, InputNumber, Row, Radio, Col } from "antd";
 import UploadImage from "../../components/UI/UploadImageUrl";
 import UploadImageList from "../../components/UI/UploadImageList";
 import UploadEditer from "../../components/UI/UploadEditer";
 import AreaSelect from "../../components/UI/AreaSelect";
 import InputGroup from "../../components/UI/InputGroup";
 import { activityActiveOptions } from "../../shared/options";
-import utils from "../../shared/utils";
-import activityService from "../../services/activity.service";
 const { RangePicker } = DatePicker;
-
-const { Option } = Select;
-const dateFormat = "YYYY-MM-DD";
 
 const layout = {
   labelCol: { span: 8 },
@@ -29,7 +15,6 @@ const layout = {
 };
 
 const normFile = (e) => {
-  console.log("Upload event:", e);
   if (Array.isArray(e)) {
     return e;
   }
@@ -40,7 +25,6 @@ export default function UpdateDataForm({
   defaultValues = {},
   areaOptions,
   saveRef,
-  disabled
 }) {
   const [form] = Form.useForm();
 
@@ -49,16 +33,6 @@ export default function UpdateDataForm({
 
     if (mounted && saveRef) {
       saveRef(form);
-    }
-
-    async function loadData() {
-      try {
-        const res = await activityService.getBlockAllowUserOptions();
-        const options = res.items.map((item) => ({
-          value: item.id,
-          label: item.displayText,
-        }));
-      } catch (error) {}
     }
 
     return () => {

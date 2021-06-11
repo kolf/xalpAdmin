@@ -37,6 +37,7 @@ export default function DataTable() {
           setLoading(false);
           setDataList(items);
           setTotal(totalCount);
+          // showEditModal({});
         }
       } catch (error) {
         if (mounted) {
@@ -71,24 +72,53 @@ export default function DataTable() {
     }, {});
   }
 
+  function makeParams(values) {
+    return Object.keys(values).reduce((result, key) => {
+      const value = values[key];
+      result[key] = value;
+      return result;
+    }, {});
+  }
+
   function showEditModal(creds) {
+    let modRef = null;
     const mod = modal({
       title: "审核订单",
-      content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
-      footer: null,
+      width: 720,
+      content: (
+        <UpdateDataForm defaultValues={creds} saveRef={(r) => (modRef = r)} />
+      ),
+      onOk,
     });
 
-    function onOk() {
-      mod.close();
-      setCounter(counter + 1);
-      setQuery({
-        ...query,
-        skipCount: "1",
-      });
+    async function onOk() {
+      const values = await modRef.validateFields();
+      try {
+        mod.confirmLoading();
+        const res = await activityService.updateActivityOrderStatus(
+          makeParams(values)
+        );
+        utils.success(`审核活动订单成功！`);
+        console.log(res, "res");
+        mod.close();
+        setCounter(counter + 1);
+        setQuery({
+          ...query,
+          skipCount: "1",
+        });
+      } catch (error) {
+        utils.error(`审核活动订单失败！`);
+      }
     }
   }
 
-  function showDetailsModal(creds) {}
+  function showDetailsModal(creds) {
+    const mod = modal({
+      title: "查看订单",
+      width: 720,
+      content: <UpdateDataForm defaultValues={creds} />,
+    });
+  }
 
   const columns = [
     {
