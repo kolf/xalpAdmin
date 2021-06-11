@@ -201,6 +201,7 @@ export default function UpdateDataForm({
           <Col span={12}>
             <Form.Item
               label="参与要求"
+              // notesForAttend
               name="qualificationGuidelines"
               rules={[{ required: true, message: "请输入姓名!" }]}
             >

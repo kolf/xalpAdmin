@@ -35,7 +35,9 @@ export default function DataTable() {
           await activityService.getActivityOrderList(makeQuery(query));
         if (mounted) {
           setLoading(false);
-          setDataList(items);
+          setDataList(
+            items.map((item) => ({ ...item, ...item.activityOrder }))
+          );
           setTotal(totalCount);
           // showEditModal({});
         }
@@ -80,6 +82,12 @@ export default function DataTable() {
     }, {});
   }
 
+  function getRowClassName(creds, index) {
+    if (creds.status !== 1) {
+      return "ant-table-row-disabled";
+    }
+  }
+
   function showEditModal(creds) {
     let modRef = null;
     const mod = modal({
@@ -107,12 +115,13 @@ export default function DataTable() {
           skipCount: "1",
         });
       } catch (error) {
-        utils.error(`审核活动订单失败！`);
+        mod.close();
       }
     }
   }
 
   function showDetailsModal(creds) {
+    console.log(creds, "creds")
     const mod = modal({
       title: "查看订单",
       width: 720,
@@ -229,6 +238,7 @@ export default function DataTable() {
 
       <Table
         rowKey="id"
+        rowClassName={getRowClassName}
         dataSource={makeData(dataList)}
         columns={columns}
         pagination={false}

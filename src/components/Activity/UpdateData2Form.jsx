@@ -26,7 +26,9 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
 
     async function loadData() {
       try {
-        const res = await activityService.getActivityOrderDetails();
+        const res = await activityService.getActivityOrderDetails({
+          id: defaultValues.id,
+        });
         if (mounted) {
           setData({ ...res, ...res.activityOrder });
           setLoading(false);
@@ -168,13 +170,13 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
             <p>
               <Space>
                 <span>审核人：</span>
-                <span>{data.auditorName}</span>
+                <span>{data.auditorName || "无"}</span>
               </Space>
             </p>
             <p>
               <Space>
                 <span>审核结果：</span>
-                <span>{data.stateName}</span>
+                <span>{data.stateName || "无"}</span>
               </Space>
             </p>
           </Col>
@@ -182,14 +184,14 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
             <p>
               <Space>
                 <span>审核时间：</span>
-                <span>{data.auditTime}</span>
+                <span>{data.auditTime || "无"}</span>
               </Space>
             </p>
             {data.refuseReason && (
               <p>
                 <Space>
                   <span>不通过原因：</span>
-                  <span>{data.refuseReason}</span>
+                  <span>{data.refuseReason || "无"}</span>
                 </Space>
               </p>
             )}

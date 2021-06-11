@@ -134,7 +134,7 @@ export default function DataTable() {
           skipCount: "1",
         });
       } catch (error) {
-        utils.error(`编辑活动失败！`);
+        mod.close();
       }
     }
   }
@@ -170,7 +170,7 @@ export default function DataTable() {
           skipCount: "1",
         });
       } catch (error) {
-        utils.error(`添加活动失败！`);
+        mod.close();
       }
     }
   }
@@ -233,6 +233,12 @@ export default function DataTable() {
     }
   }
 
+  function getRowClassName(creds, index) {
+    if (!creds.isActive) {
+      return "ant-table-row-disabled";
+    }
+  }
+
   function makeParams(values) {
     return Object.keys(values).reduce((result, key) => {
       const value = values[key];
@@ -264,7 +270,8 @@ export default function DataTable() {
         result.tempPictureItems = value.map((v) => v.response);
       } else if (/note|description/.test(key)) {
         result[key] = value.toRAW();
-        // result[key] = "sdfsd";
+      } else if (/isActive/.test(key)) {
+        result[key] = value === "1";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
@@ -329,6 +336,7 @@ export default function DataTable() {
               size="small"
               style={{ marginRight: 4 }}
               onClick={(e) => showEditModal(creds)}
+              disabled={!creds.isActive}
             >
               编辑
             </Button>
@@ -344,7 +352,7 @@ export default function DataTable() {
               <Button
                 size="small"
                 style={{ marginRight: 4 }}
-                onClick={(e) => showUpdateStatusModal(creds, false)}
+                onClick={(e) => showUpdateStatusModal(creds, true)}
               >
                 上架
               </Button>
@@ -437,6 +445,7 @@ export default function DataTable() {
 
       <Table
         rowKey="id"
+        rowClassName={getRowClassName}
         dataSource={makeData(dataList)}
         columns={columns}
         pagination={false}

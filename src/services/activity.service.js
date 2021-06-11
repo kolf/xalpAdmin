@@ -66,7 +66,7 @@ class ActivityService {
   getActivityOrderDetails = async (creds) => {
     try {
       const res = await api.get(
-        `api​/ActivityOrder​/Detail?${queryString.stringify(creds)}`
+        `api/ActivityOrder/Detail?${queryString.stringify(creds)}`
       );
       return res.data;
     } catch (error) {
