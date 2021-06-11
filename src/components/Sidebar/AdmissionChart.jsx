@@ -160,8 +160,6 @@ export default function AdmissionChart() {
         });
         window.open(res2);
       }
-
-      console.log(res1, res2, "res");
     } catch (error) {
       utils.error(`下载失败！`);
     }

@@ -8,7 +8,7 @@ import AreaSelect from "../../components/UI/AreaSelect";
 import InputGroup from "../../components/UI/InputGroup";
 import { activityActiveOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
-
+const dateFormat = "YYYY-MM-DD";
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -44,17 +44,73 @@ export default function UpdateDataForm({
     if (!values.id) {
       return {};
     }
-    return Object.keys(values).reduce((result, key) => {
+    let result = Object.keys(values).reduce((result, key) => {
       const value = values[key];
       if (key === "isActive") {
         result.isActive = value ? "1" : "0";
-      } else if (/^(checkDeviceType)$/.test(key)) {
-        result[key] = value + "";
+      } else if (key === "pictureItems") {
+        result.tempPictureItems = value.map((item, index) => ({
+          uid: "upload-" + index,
+          status: "done",
+          thumbUrl: item,
+          url: item,
+        }));
+      } else if (key === "coverPicture") {
+        result.tempCoverPicture = value;
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
       return result;
     }, {});
+
+    const {
+      applyStartDate,
+      applyDeadlineDate,
+      startDate,
+      endDate,
+      regionAreaCode,
+      regionAreaName,
+      regionCityCode,
+      regionCityName,
+      regionProvinceCode,
+      regionProvinceName,
+      longitude,
+      latitude,
+      minApplyUserCount,
+      maxApplyUserCount,
+    } = values;
+
+    result.date1 = [moment(startDate, dateFormat), moment(endDate, dateFormat)];
+    result.date2 = [
+      moment(applyStartDate, dateFormat),
+      moment(applyDeadlineDate, dateFormat),
+    ];
+    const tude = [longitude || "", latitude || ""];
+    result.tude = tude.join(",");
+    result.applyUserCount = [minApplyUserCount || 0, maxApplyUserCount || 0];
+
+    try {
+      result.provinceLevel = [
+        { label: regionProvinceName, value: regionProvinceCode },
+        { label: regionCityName, value: regionCityCode },
+        { label: regionAreaName, value: regionAreaCode },
+      ];
+
+      const targetOption = areaOptions.find(
+        (o) => o.value === regionProvinceCode
+      );
+      targetOption.children = [
+        {
+          ...result.provinceLevel[1],
+          level: false,
+          children: [{ ...result.provinceLevel[2] }],
+        },
+      ];
+    } catch (error) {}
+
+    
+
+    return result;
   }
 
   return (
@@ -80,11 +136,7 @@ export default function UpdateDataForm({
               name="date1"
               rules={[{ required: true, message: "请选择活动起止日期!" }]}
             >
-              <RangePicker
-                size="small"
-                format="YYYY-MM-DD HH:mm"
-                showTime={{ format: "HH:mm" }}
-              />
+              <RangePicker size="small" />
             </Form.Item>
 
             <Form.Item
@@ -123,11 +175,7 @@ export default function UpdateDataForm({
               name="date2"
               rules={[{ required: true, message: "选择报名起止日期!" }]}
             >
-              <RangePicker
-                size="small"
-                format="YYYY-MM-DD HH:mm"
-                showTime={{ format: "HH:mm" }}
-              />
+              <RangePicker size="small" />
             </Form.Item>
 
             <Form.Item
@@ -170,7 +218,6 @@ export default function UpdateDataForm({
               wrapperCol={{ span: 20 }}
               label="图集"
               name="tempPictureItems"
-              valuePropName="fileList"
               getValueFromEvent={normFile}
               rules={[{ required: true, message: "请至少上传一张图集!" }]}
             >

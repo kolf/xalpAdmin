@@ -103,7 +103,7 @@ export default function TouristChart() {
         });
         chart.render();
       } catch (error) {
-        console.log(error, "error");
+
       }
     }
     return () => {

@@ -10,6 +10,7 @@ import {
   Pagination,
   Select,
 } from "antd";
+import moment from "moment";
 import UpdateDataForm from "./UpdateData1Form";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
@@ -22,7 +23,7 @@ import activityService from "../../services/activity.service";
 import dataService from "../../services/data.service";
 const { Search } = Input;
 const { Option } = Select;
-const dateFormat = "YYYY-MM-DDTHH:mm:ss";
+const dateFormat = "YYYY-MM-DD";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -95,7 +96,9 @@ export default function DataTable() {
   function makeQuery(query) {
     return Object.keys(query).reduce((result, key) => {
       const value = query[key];
-      if (value !== undefined && value !== "-1") {
+      if (key === "isActive") {
+        result[key] = value === "1";
+      } else if (value !== undefined && value !== "-1") {
         result[key] = value;
       }
       if (query.skipCount) {
@@ -126,7 +129,7 @@ export default function DataTable() {
       try {
         mod.confirmLoading();
         const res = await activityService.addActivity(makeParams(values));
-        utils.success(`编辑活动成功！`);
+        utils.success(`新增活动成功！`);
         mod.close();
         setCounter(counter + 1);
         setQuery({
@@ -160,9 +163,12 @@ export default function DataTable() {
       const values = await modRef.validateFields();
       try {
         mod.confirmLoading();
-        const res = await activityService.addActivity(makeParams(values));
-        utils.success(`添加活动成功！`);
-        console.log(res, "res");
+        const res = await activityService.updateActivity({
+          ...makeParams(values),
+          id: creds.id,
+        });
+        utils.success(`编辑活动成功！`);
+        
         mod.close();
         setCounter(counter + 1);
         setQuery({
@@ -182,10 +188,7 @@ export default function DataTable() {
       style: { top: 20 },
       bodyStyle: { paddingBottom: 0, paddingLeft: 0 },
       content: (
-        <UpdateDataForm
-          areaOptions={areaOptions}
-          defaultValues={creds}
-        />
+        <UpdateDataForm areaOptions={areaOptions} defaultValues={creds} />
       ),
       footer: null,
     });
@@ -233,7 +236,7 @@ export default function DataTable() {
   }
 
   function getRowClassName(creds, index) {
-    if (!creds.isActive) {
+    if (!creds.isActive || creds.stateName !== "未开始") {
       return "ant-table-row-disabled";
     }
   }
@@ -266,9 +269,9 @@ export default function DataTable() {
         result.regionAreaName = a.label;
         result.regionAreaCode = a.value;
       } else if (key === "tempPictureItems") {
-        result.tempPictureItems = value.map((v) => v.response);
+        result.tempPictureItems = value.map((v) => v.response || v.url);
       } else if (/note|description/.test(key)) {
-        result[key] = value.toRAW();
+        result[key] = value;
       } else if (/isActive/.test(key)) {
         result[key] = value === "1";
       } else if (value !== undefined && value !== "-1") {
@@ -290,17 +293,26 @@ export default function DataTable() {
     {
       title: "活动状态",
       dataIndex: "isActive",
+      width: 100,
       render(text) {
-        return text || "未知";
+        return text ? "已上架" : "已下架";
       },
     },
     {
       title: "活动举办时间",
       dataIndex: "startDate",
+      render(text, creds) {
+        return (
+          moment(creds.startDate).format(dateFormat) +
+          "至" +
+          moment(creds.endDate).format(dateFormat)
+        );
+      },
     },
     {
       title: "报名状态",
       dataIndex: "stateName",
+      width: 100,
       render(text) {
         return text || "未知";
       },
@@ -308,13 +320,18 @@ export default function DataTable() {
     {
       title: "报名起止时间",
       dataIndex: "applyStartDate",
-      render(text) {
-        return text || "无";
+      render(text, creds) {
+        return (
+          moment(creds.applyStartDate).format(dateFormat) +
+          "至" +
+          moment(creds.applyEndDate).format(dateFormat)
+        );
       },
     },
     {
       title: "最后操作人",
       dataIndex: "lastModifyUserName",
+      width: 100,
     },
     {
       title: "操作",
@@ -335,7 +352,7 @@ export default function DataTable() {
               size="small"
               style={{ marginRight: 4 }}
               onClick={(e) => showEditModal(creds)}
-              disabled={!creds.isActive}
+              disabled={!creds.isActive || creds.stateName !== "未开始"}
             >
               编辑
             </Button>
@@ -343,6 +360,7 @@ export default function DataTable() {
               <Button
                 size="small"
                 style={{ marginRight: 4 }}
+                disabled={creds.stateName === "报名中"}
                 onClick={(e) => showUpdateStatusModal(creds, false)}
               >
                 下架
@@ -351,13 +369,18 @@ export default function DataTable() {
               <Button
                 size="small"
                 style={{ marginRight: 4 }}
+                disabled={creds.stateName !== "未开始"}
                 onClick={(e) => showUpdateStatusModal(creds, true)}
               >
                 上架
               </Button>
             )}
 
-            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
+            <Button
+              size="small"
+              disabled={creds.stateName === "报名中"}
+              onClick={(e) => showDeleteModal(creds)}
+            >
               删除
             </Button>
           </div>
@@ -407,7 +430,7 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item name="Status1" style={{ marginBottom: 6, width: 100 }}>
+        <Form.Item name="isActive" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="活动状态" allowClear>
             {activityStatusOptions.map((o) => (
               <Option key={o.value} value={o.value}>
@@ -416,7 +439,7 @@ export default function DataTable() {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item name="Status2" style={{ marginBottom: 6, width: 100 }}>
+        <Form.Item name="stateName" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="报名状态" allowClear>
             {activityApplyStatusOptions.map((o) => (
               <Option key={o.value} value={o.value}>
@@ -451,7 +474,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        scroll={{ x: 1600 }}
+        scroll={{ x: 1400 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

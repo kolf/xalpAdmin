@@ -11,10 +11,10 @@ const layout = {
   wrapperCol: { span: 18 },
 };
 
-export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
+export default function UpdateDataForm({ defaultValues = {}, saveRef }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({});
-  const [isApplySuccess, setIsApplySuccess] = useState("-1");
+  const [isApplySuccess, setIsApplySuccess] = useState("");
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -50,14 +50,23 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
     {
       title: "姓名",
       dataIndex: "name",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "手机号",
       dataIndex: "phone",
+      render(text) {
+        return text || "无";
+      },
     },
     {
       title: "身份证号",
       dataIndex: "certNumber",
+      render(text) {
+        return text || "无";
+      },
     },
   ];
 
@@ -73,62 +82,66 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
     <>
       <Row>
         <Col span={12}>
-          <p>
+          <div className="pad-bottom">
             <Space>
               <span>订单号：</span>
               <span>{data.orderNO}</span>
             </Space>
-          </p>
-          <p>
+          </div>
+          <div className="pad-bottom">
             <Space>
               <span>提交时间：</span>
-              <span>{data.applyTime}</span>
+              <span>
+                {data.creationTime
+                  ? moment(data.creationTime).format(secFormat)
+                  : "无"}
+              </span>
             </Space>
-          </p>
-          <p>
+          </div>
+          <div className="pad-bottom">
             <Space>
               <span>团队名称：</span>
-              <span>{data.applyTime}</span>
+              <span>{data.groupName}</span>
             </Space>
-          </p>
-          <p>
+          </div>
+          <div className="pad-bottom">
             <Space>
               <span>手机号：</span>
               <span>{data.phone}</span>
             </Space>
-          </p>
-          <p>
+          </div>
+          <div className="pad-bottom">
             <Space>
               <span>备注：</span>
               <span>{data.note}</span>
             </Space>
-          </p>
+          </div>
         </Col>
         <Col span={12}>
-          <p>
+          <div className="pad-bottom">
             <Space>
               <span>订单状态：</span>
               <span>{data.orderStatus}</span>
             </Space>
-          </p>
-          <p>
+          </div>
+          <div className="pad-bottom">
             <Space>
               <span>活动名称：</span>
-              <span>{data.orderStatus}</span>
+              <span>{data.activityName}</span>
             </Space>
-          </p>
-          <p>
+          </div>
+          <div className="pad-bottom">
             <Space>
               <span>团队负责人：</span>
               <span>{data.name}</span>
             </Space>
-          </p>
-          <p>
+          </div>
+          <div className="pad-bottom">
             <Space>
               <span>活动参与人数：</span>
               <span>{data.touristsCount}</span>
             </Space>
-          </p>
+          </div>
         </Col>
       </Row>
       <div className="panel-title">人员信息</div>
@@ -136,6 +149,7 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
         pagination={false}
         size="small"
         bordered
+        rowKey="tenantId"
         columns={columns}
         dataSource={data.detailItems}
         scroll={{ y: 240 }}
@@ -163,45 +177,45 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
           </Form.Item>
 
           {isApplySuccess === "2" && (
-            <Form.Item label="不通过原因" name="reson">
-              <Input.TextArea
-                rules={[{ required: true, message: "请输入不通过原因!" }]}
-                rows="4"
-                placeholder="请输入"
-              />
+            <Form.Item
+              label="不通过原因"
+              name="reson"
+              rules={[{ required: true, message: "请输入不通过原因!" }]}
+            >
+              <Input.TextArea rows="4" placeholder="请输入" />
             </Form.Item>
           )}
         </Form>
       ) : (
         <Row>
           <Col span={12}>
-            <p>
+            <div className="pad-bottom">
               <Space>
                 <span>审核人：</span>
                 <span>{data.auditorName || "无"}</span>
               </Space>
-            </p>
-            <p>
+            </div>
+            <div className="pad-bottom">
               <Space>
                 <span>审核结果：</span>
                 <span>{data.stateName || "无"}</span>
               </Space>
-            </p>
+            </div>
           </Col>
           <Col span={12}>
-            <p>
+            <div className="pad-bottom">
               <Space>
                 <span>审核时间：</span>
                 <span>{data.auditTime || "无"}</span>
               </Space>
-            </p>
+            </div>
             {data.refuseReason && (
-              <p>
+              <div className="pad-bottom">
                 <Space>
                   <span>不通过原因：</span>
                   <span>{data.refuseReason || "无"}</span>
                 </Space>
-              </p>
+              </div>
             )}
           </Col>
         </Row>

@@ -7,7 +7,11 @@ import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 
 import activityService from "../../services/activity.service";
-import { activityOrderStatusOptions } from "../../shared/options";
+import {
+  activityOrderReviewOptions,
+  activityOrderAuditStatusEnum,
+  activityOrderStatusEnum,
+} from "../../shared/options";
 const { Search } = Input;
 const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
@@ -88,7 +92,7 @@ export default function DataTable() {
   }
 
   function getRowClassName(creds, index) {
-    if (creds.status !== 1) {
+    if (creds.orderStatus !== 0) {
       return "ant-table-row-disabled";
     }
   }
@@ -112,7 +116,7 @@ export default function DataTable() {
           makeParams({ ...values, id: creds.id })
         );
         utils.success(`审核活动订单成功！`);
-        console.log(res, "res");
+        
         mod.close();
         setCounter(counter + 1);
         setQuery({
@@ -126,7 +130,6 @@ export default function DataTable() {
   }
 
   function showDetailsModal(creds) {
-    console.log(creds, "creds");
     const mod = modal({
       title: "查看订单",
       width: 720,
@@ -147,6 +150,9 @@ export default function DataTable() {
     {
       title: "订单状态",
       dataIndex: "orderStatus",
+      render(text) {
+        return activityOrderStatusEnum[text] || "未知";
+      },
     },
     {
       title: "下单时间",
@@ -162,11 +168,16 @@ export default function DataTable() {
     {
       title: "报名状态",
       dataIndex: "auditStatus",
+      width: 80,
+      render(text) {
+        return activityOrderAuditStatusEnum[text] || "未知";
+      },
     },
     {
       title: "操作",
       dataIndex: "options",
       fixed: "right",
+      width: 120,
       render(text, creds) {
         return (
           <div className="text-center">
@@ -177,7 +188,7 @@ export default function DataTable() {
             >
               查看
             </Button>
-            <Button size="small" onClick={(e) => showEditModal(creds)}>
+            <Button disabled={creds.orderStatus !== 0} size="small" onClick={(e) => showEditModal(creds)}>
               审核
             </Button>
           </div>
@@ -218,7 +229,7 @@ export default function DataTable() {
       >
         <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="订单状态" allowClear>
-            {activityOrderStatusOptions.map((o) => (
+            {activityOrderReviewOptions.map((o) => (
               <Option key={o.value} value={o.value}>
                 {o.label}
               </Option>

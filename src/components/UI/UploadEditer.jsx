@@ -6,14 +6,14 @@ import { Upload } from "antd";
 import { FileImageOutlined } from "@ant-design/icons";
 import "./UploadEditer.less";
 
-export default class UploadEditer extends React.Component {
+export default class UploadEditer extends React.PureComponent {
   state = {
-    editorState: BraftEditor.createEditorState(null),
+    editorState: BraftEditor.createEditorState(this.props.value),
   };
 
   handleChange = (editorState) => {
     this.setState({ editorState });
-    this.props.onChange(editorState);
+    this.props.onChange(editorState.toHTML());
   };
 
   uploadHandler = (param) => {

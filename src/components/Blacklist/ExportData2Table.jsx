@@ -77,7 +77,7 @@ export default function DataTable({ id, onOk }) {
     },
     onChange(info) {
       if (info.file.status !== "uploading") {
-        console.log(info.file, info.fileList);
+        
       }
       if (info.file.status === "done") {
         const res = info.file.response;

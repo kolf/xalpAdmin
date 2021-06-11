@@ -7,7 +7,6 @@ export default function UploadImage({ onChange, value: propsValue }) {
   const [loading, setLoading] = useState(false);
 
   function handleChange(e) {
-    console.log(e.file);
     if (e.file.status === "uploading") {
       setLoading(true);
     } else if (e.file.status === "done") {
@@ -33,9 +32,11 @@ export default function UploadImage({ onChange, value: propsValue }) {
       onChange={handleChange}
     >
       {value ? (
-        <img src={value} style={{ width: "100%" }} />
+        <div className="upload-file">
+          <img src={value} />
+        </div>
       ) : (
-        <div className="ant-upload-text">上传照片</div>
+        <div className="ant-upload-text">上传图片</div>
       )}
     </Upload>
   );

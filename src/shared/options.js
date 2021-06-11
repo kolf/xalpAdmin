@@ -94,9 +94,23 @@ const activityReviewEnum = {
   2: "不通过",
 };
 
-const activityOrderStatusEnum = {
+const activityOrderReviewEnum = {
   1: "审核通过",
   2: "待审核",
+};
+
+export const activityOrderStatusEnum = {
+  0: "待审核",
+  1: "审核通过",
+  2: "审核拒绝",
+  3: "已出票",
+  4: "已取消",
+};
+
+export const activityOrderAuditStatusEnum = {
+  0: "审核中",
+  1: "报名成功",
+  2: "报名失败",
 };
 
 const activityStatusEnum = {
@@ -117,11 +131,11 @@ export const activityActiveOptions = Object.keys(activityActiveEnum).map(
   })
 );
 
-export const activityOrderStatusOptions = Object.keys(
-  activityOrderStatusEnum
+export const activityOrderReviewOptions = Object.keys(
+  activityOrderReviewEnum
 ).map((key) => ({
   value: key + "",
-  label: activityOrderStatusEnum[key],
+  label: activityOrderReviewEnum[key],
 }));
 
 export const activityStatusOptions = Object.keys(activityStatusEnum).map(

@@ -169,7 +169,7 @@ export default function DataTable() {
     try {
       const res = await dataService.exportBlockBehavior(makeQuery(query));
       window.open(res);
-      console.log(res, "res");
+      
     } catch (error) {}
   }
 

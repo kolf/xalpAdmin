@@ -4,20 +4,20 @@ import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
 const { Option } = Select;
 
 function createId(name) {
-  return name + "-uid" + (Math.random() + "").replace(".", "");
+  return (
+    name + "-uid" + Date.now() + "" + (Math.random() + "").replace(".", "")
+  );
 }
 
-export default function FormList({
-  pickerOptions = [],
-  name,
-  onChange,
-  value = [],
-}) {
-  const [fields, setFields] = useState([createId(name)]);
+function createFields(name, value) {
+  if (value && value.length === 0) {
+    return [createId(name)];
+  }
+  return value.map((v) => createId(name));
+}
 
-  useEffect(() => {
-    console.log(value, "useEffect");
-  }, [value.length]);
+function FormList({ pickerOptions = [], name, onChange, value = [] }) {
+  const [fields, setFields] = useState(createFields(name, value));
 
   function add() {
     setFields([...fields, createId(name)]);
@@ -30,43 +30,57 @@ export default function FormList({
     setFields(nextFields);
   }
 
-  function onFieldsChange(field, allField) {
-    const propValues = allField.reduce((result, item) => {
-      const { name: names, value } = item;
-      const [uid, index] = names[0].split("_");
-      if (result[uid]) {
-        result[uid][index] = value;
-      } else {
-        result[uid] = [value];
-      }
-      return result;
-    }, {});
-    onChange(propValues);
+  function handleChange(field, name, newValue) {
+    const index = fields.findIndex((f) => f === field);
+    value[index] = value[index]
+      ? {
+          ...value[index],
+          [name]: newValue,
+        }
+      : { [name]: newValue };
+    onChange(value);
+  }
+
+  if (fields.length === 0) {
+    return null;
   }
 
   return (
-    <Form onFieldsChange={onFieldsChange}>
+    <div>
       {fields.map((field, index) => {
         return (
           <Space
+            key={field}
             style={{
               display: "flex",
               marginBottom: index + 1 === fields.length ? 12 : 6,
             }}
             align="baseline"
           >
-            <Form.Item name={field + "_0"}>
-              <Select style={{ width: 160 }} placeholder="请选择时间段">
+            <div>
+              <Select
+                style={{ width: 160 }}
+                placeholder="请选择时间段"
+                value={value[index] ? value[index].timeItemId : undefined}
+                onChange={(v) => handleChange(field, "timeItemId", v)}
+              >
                 {pickerOptions.map((o) => (
                   <Option key={o.value} value={o.value}>
                     {o.label}
                   </Option>
                 ))}
               </Select>
-            </Form.Item>
-            <Form.Item name={field + "_1"}>
-              <InputNumber placeholder="0" min="0" />
-            </Form.Item>
+            </div>
+            <div>
+              <InputNumber
+                placeholder="0"
+                value={
+                  value[index] ? value[index].maxTouristsQuantity : undefined
+                }
+                min="0"
+                onChange={(v) => handleChange(field, "maxTouristsQuantity", v)}
+              />
+            </div>
             {index === 0 ? (
               <PlusCircleOutlined
                 onClick={(e) => (fields.length < 3 ? add() : null)}
@@ -77,72 +91,8 @@ export default function FormList({
           </Space>
         );
       })}
-    </Form>
+    </div>
   );
-  //   return (
-  //     <Form.List name="_list">
-  //       {(fields, { add, remove }) => (
-  //         <>
-  //           <Space
-  //             style={{
-  //               display: "flex",
-  //               marginBottom: fields.length === 0 ? 12 : 6,
-  //             }}
-  //             align="baseline"
-  //           >
-  //             <Form.Item name="timeItemId-add">
-  //               <Select style={{ width: 160 }} placeholder="请选择时间段">
-  //                 {pickerOptions.map((o) => (
-  //                   <Option key={o.value} value={o.value}>
-  //                     {o.label}
-  //                   </Option>
-  //                 ))}
-  //               </Select>
-  //             </Form.Item>
-  //             <Form.Item name="maxTouristsQuantity-add">
-  //               <InputNumber placeholder="0" min="0" />
-  //             </Form.Item>
-  //             <PlusCircleOutlined
-  //               onClick={(e) => (fields.length < 2 ? add() : null)}
-  //             />
-  //           </Space>
-  //           {fields.map(({ key, name, fieldKey, ...restField }, index) => {
-  //             console.log(key, name, fieldKey, restField, "items1");
-  //             return (
-  //               <Space
-  //                 key={key}
-  //                 style={{
-  //                   display: "flex",
-  //                   marginBottom: index + 1 === fields.length ? 12 : 6,
-  //                 }}
-  //                 align="baseline"
-  //               >
-  //                 <Form.Item
-  //                   {...restField}
-  //                   name={[name, "timeItemId"]}
-  //                   fieldKey={[fieldKey, "timeItemId"]}
-  //                 >
-  //                   <Select style={{ width: 160 }} placeholder="请选择时间段">
-  //                     {pickerOptions.map((o) => (
-  //                       <Option key={o.value} value={o.value}>
-  //                         {o.label}
-  //                       </Option>
-  //                     ))}
-  //                   </Select>
-  //                 </Form.Item>
-  //                 <Form.Item
-  //                   {...restField}
-  //                   name={[name, "maxTouristsQuantity"]}
-  //                   fieldKey={[fieldKey, "maxTouristsQuantity"]}
-  //                 >
-  //                   <InputNumber placeholder="0" min="0" />
-  //                 </Form.Item>
-  //                 <MinusCircleOutlined onClick={() => remove(name)} />
-  //               </Space>
-  //             );
-  //           })}
-  //         </>
-  //       )}
-  //     </Form.List>
-  //   );
 }
+
+export default React.memo(FormList);

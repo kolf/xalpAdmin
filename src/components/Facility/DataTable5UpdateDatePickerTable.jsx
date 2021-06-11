@@ -133,7 +133,7 @@ export default function DataTable() {
   }
 
   async function onSave(key) {
-    console.log(key, "key");
+    
     try {
       const row = await form.validateFields();
       const [startTime, endTime] = [

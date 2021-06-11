@@ -37,7 +37,6 @@ class UserService {
       );
       return res.data;
     } catch (error) {
-      console.log(error, "error")
       return Promise.reject(error);
     }
   };

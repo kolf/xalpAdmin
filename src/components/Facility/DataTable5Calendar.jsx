@@ -59,11 +59,7 @@ export default function DataTable5ListCalendar({ renderHeader }) {
 
   function handleChange(value) {
     const nextMonthDate = value.format(monthFormat);
-    console.log(nextMonthDate, "nextMonthDate");
     setMonthDate(nextMonthDate);
-    // console.log(value, "value");
-    // const [StartTime, EndTime] = makeDate(value.add(1, "M"));
-    // loadData({ StartTime, EndTime });
   }
 
   function showAddModal() {

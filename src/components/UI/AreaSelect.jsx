@@ -33,6 +33,7 @@ export default function AreaSelect({ defaultOptions, value, onChange }) {
   return (
     <Cascader
       options={options}
+      value={value.map((v) => v.value)}
       onChange={handleChange}
       loadData={loadData}
       changeOnSelect
