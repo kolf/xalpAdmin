@@ -9,7 +9,7 @@ import utils from "../../shared/utils";
 import "./Sidebar.less";
 import headerImageUrl from "../../assets/img/header1.png";
 
-export default function Sidebar() {
+const Sidebar = () => {
   const [height, setHeight] = useState(640);
   const [orderRealTimeData, setOrderRealTimeData] = useState({
     todayTicketCount: 0,
@@ -124,4 +124,6 @@ export default function Sidebar() {
       </div>
     </div>
   );
-}
+};
+
+export default React.memo(Sidebar);

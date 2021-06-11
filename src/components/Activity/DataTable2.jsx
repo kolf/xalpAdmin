@@ -77,7 +77,12 @@ export default function DataTable() {
   function makeParams(values) {
     return Object.keys(values).reduce((result, key) => {
       const value = values[key];
-      result[key] = value;
+      if (key === "isApplySuccess") {
+        result[key] = value === "1";
+      } else {
+        result[key] = value;
+      }
+
       return result;
     }, {});
   }
@@ -104,7 +109,7 @@ export default function DataTable() {
       try {
         mod.confirmLoading();
         const res = await activityService.updateActivityOrderStatus(
-          makeParams(values)
+          makeParams({ ...values, id: creds.id })
         );
         utils.success(`审核活动订单成功！`);
         console.log(res, "res");
@@ -121,11 +126,12 @@ export default function DataTable() {
   }
 
   function showDetailsModal(creds) {
-    console.log(creds, "creds")
+    console.log(creds, "creds");
     const mod = modal({
       title: "查看订单",
       width: 720,
       content: <UpdateDataForm defaultValues={creds} />,
+      footer: null,
     });
   }
 

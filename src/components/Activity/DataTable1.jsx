@@ -22,7 +22,7 @@ import activityService from "../../services/activity.service";
 import dataService from "../../services/data.service";
 const { Search } = Input;
 const { Option } = Select;
-const dateFormat = "YYYY-MM-DD";
+const dateFormat = "YYYY-MM-DDTHH:mm:ss";
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -184,7 +184,6 @@ export default function DataTable() {
       content: (
         <UpdateDataForm
           areaOptions={areaOptions}
-          disabled
           defaultValues={creds}
         />
       ),

@@ -1,15 +1,16 @@
-import React, { Component } from "react";
-import Routes from "./routes";
+import React, { Suspense } from "react";
+import { Spin } from "antd";
+import { RootRouter } from "./routes";
 import AliMap from "./components/UI/AliMap";
 import "./App.less";
 
-export default class App extends Component {
-  render() {
-    return (
-      <>
-        <AliMap />
-        <Routes />
-      </>
-    );
-  }
+function App() {
+  return (
+    <Suspense fallback={<Spin size="large" />}>
+      <AliMap />
+      <RootRouter />
+    </Suspense>
+  );
 }
+
+export default App;

@@ -1,6 +1,6 @@
 import React from "react";
 
 import "./style.less";
-export default function Home() {
-  return null
+export default function Home({ children }) {
+  return null;
 }

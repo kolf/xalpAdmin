@@ -48,8 +48,6 @@ export default function UpdateDataForm({
       const value = values[key];
       if (key === "isActive") {
         result.isActive = value ? "1" : "0";
-      } else if (key === "isDirectionEnter") {
-        result.isDirectionEnter = value ? "1" : "0";
       } else if (/^(checkDeviceType)$/.test(key)) {
         result[key] = value + "";
       } else if (value !== undefined && value !== "-1") {

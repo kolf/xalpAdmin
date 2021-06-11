@@ -8,7 +8,7 @@ const areaEnum = {
 const activityActiveEnum = {
   1: "是",
   2: "否",
-}
+};
 
 const deviceEnum = {
   1: "闸机",
@@ -22,7 +22,7 @@ const onlineEnum = {
 
 const deviceActiveEnum = {
   1: "启用",
-  0: "停用",
+  2: "停用",
 };
 
 const reviewEnum = {
@@ -50,13 +50,13 @@ export const behaviorTypeEnum = {
 };
 
 export const enterEnum = {
-  0: "出口",
+  2: "出口",
   1: "入口",
 };
 
 export const activityEnum = {
   1: "有",
-  0: "无",
+  2: "无",
 };
 
 export const orderChannelEnum = {
@@ -92,7 +92,7 @@ export const colors = [
 const activityReviewEnum = {
   1: "通过",
   2: "不通过",
-}
+};
 
 const activityOrderStatusEnum = {
   1: "审核通过",
@@ -110,13 +110,12 @@ const activityApplyStatusEnum = {
   3: "已结束",
 };
 
-export const activityActiveOptions = Object.keys(
-  activityActiveEnum
-).map((key) => ({
-  value: key + "",
-  label: activityActiveEnum[key],
-}));
-
+export const activityActiveOptions = Object.keys(activityActiveEnum).map(
+  (key) => ({
+    value: key + "",
+    label: activityActiveEnum[key],
+  })
+);
 
 export const activityOrderStatusOptions = Object.keys(
   activityOrderStatusEnum
@@ -191,10 +190,12 @@ export const reviewOptions = Object.keys(reviewEnum).map((key) => ({
   label: reviewEnum[key],
 }));
 
-export const activityReviewOptions = Object.keys(activityReviewEnum).map((key) => ({
-  value: key + "",
-  label: activityReviewEnum[key],
-}));
+export const activityReviewOptions = Object.keys(activityReviewEnum).map(
+  (key) => ({
+    value: key + "",
+    label: activityReviewEnum[key],
+  })
+);
 
 export const merchantOptions = Object.keys(merchantEnum).map((key) => ({
   value: key + "",

@@ -11,10 +11,9 @@ const layout = {
   wrapperCol: { span: 18 },
 };
 
-export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
+export default function DataTable1Details({ defaultValues = {}, saveRef, onOk }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({});
-  const [isApplySuccess, setIsApplySuccess] = useState("-1");
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -45,6 +44,14 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
       mounted = false;
     };
   }, []);
+
+  function makeDefaultValues() {
+    const { name, note, behaviorType, id } = defaultValues;
+    if (!id) {
+      return {};
+    }
+    return { name, note, behaviorType: behaviorType + "" };
+  }
 
   const columns = [
     {
@@ -143,17 +150,8 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
       <div className="panel-title">订单审核</div>
       {saveRef ? (
         <Form {...layout} size="small" form={form}>
-          <Form.Item
-            label="审核"
-            name="isApplySuccess"
-            rules={[{ required: true, message: "请选择审核状态!" }]}
-          >
-            <Radio.Group
-              onChange={(e) => {
-                const vlaue = e.target.value;
-                setIsApplySuccess(vlaue);
-              }}
-            >
+          <Form.Item label="审核" name="name">
+            <Radio.Group>
               {activityReviewOptions.map((o) => (
                 <Radio key={o.value} value={o.value}>
                   {o.label}
@@ -162,15 +160,9 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef, onOk }) {
             </Radio.Group>
           </Form.Item>
 
-          {isApplySuccess === "2" && (
-            <Form.Item label="不通过原因" name="reson">
-              <Input.TextArea
-                rules={[{ required: true, message: "请输入不通过原因!" }]}
-                rows="4"
-                placeholder="请输入"
-              />
-            </Form.Item>
-          )}
+          <Form.Item label="不通过原因" name="note">
+            <Input.TextArea rows="4" placeholder="请输入" />
+          </Form.Item>
         </Form>
       ) : (
         <Row>

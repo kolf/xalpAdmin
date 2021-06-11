@@ -19,12 +19,9 @@ import TicketCategory from "./components/TicketCategory";
 import Data from "./components/Data";
 import Activity from "./components/Activity";
 
-export default function Routes() {
-  const [api, contextHolder] = message.useMessage();
-
+export const RootRouter = React.memo(() => {
   return (
     <Router basename="/topark" history={history}>
-      {contextHolder}
       <Switch>
         <PrivateLayout path="/" exact component={Home} />
         <PrivateLayout path="/user" exact component={User} />
@@ -45,4 +42,4 @@ export default function Routes() {
       </Switch>
     </Router>
   );
-}
+});

@@ -77,7 +77,7 @@ class ActivityService {
   updateActivityOrderStatus = async (creds) => {
     try {
       const res = await api.post(
-        `api​/ActivityOrder​/Audit​/${creds.id}`,
+        `api/ActivityOrder/Audit/${creds.id}`,
         creds
       );
       return res.data;
