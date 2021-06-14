@@ -138,6 +138,7 @@ export default function DataTable({ renderHeader }) {
   }
 
   function showEditModal(creds) {
+    console.log(creds,'creds')
     const mod = modal({
       content: <UpdateDataForm defaultValues={creds} onOk={onOk} />,
       footer: null,
@@ -243,7 +244,7 @@ export default function DataTable({ renderHeader }) {
     size: "small",
     onChange(pageNum, pageSize) {
       let nextPageNum = pageNum;
-      if (pageSize != query.maxResultCount * 1) {
+      if (pageSize !== query.maxResultCount * 1) {
         nextPageNum = 1;
       }
       setQuery({

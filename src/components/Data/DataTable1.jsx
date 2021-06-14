@@ -57,7 +57,7 @@ export default function DataTable() {
     return () => {
       mounted = false;
     };
-  }, [JSON.stringify(query), counter]);
+  }, [query, counter]);
 
   function makeData(data) {
     if (!data) {
@@ -127,7 +127,7 @@ export default function DataTable() {
     size: "small",
     onChange(pageNum, pageSize) {
       let nextPageNum = pageNum;
-      if (pageSize != query.maxResultCount * 1) {
+      if (pageSize !== query.maxResultCount * 1) {
         nextPageNum = 1;
       }
 

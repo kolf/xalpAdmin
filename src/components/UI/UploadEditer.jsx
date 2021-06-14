@@ -16,19 +16,28 @@ export default class UploadEditer extends React.PureComponent {
     this.props.onChange(editorState.toHTML());
   };
 
-  uploadHandler = (param) => {
-    if (!param.file) {
-      return false;
-    }
-
-    this.setState({
-      editorState: ContentUtils.insertMedias(this.state.editorState, [
+  uploadHandler = (e) => {
+    if (e.file.status === "uploading") {
+    } else if (e.file.status === "done") {
+      const nextValue = e.file.response;
+      this.setState(
         {
-          type: "IMAGE",
-          url: URL.createObjectURL,
+          editorState: ContentUtils.insertMedias(this.state.editorState, [
+            {
+              type: "IMAGE",
+              url: nextValue,
+            },
+          ]),
         },
-      ]),
-    });
+        () => {
+          this.props.onChange(this.state.editorState.toHTML());
+        }
+      );
+    } else if (e.file.status === "error") {
+      // const errorMessage =
+      //   e.file.response.error.message || "上传失败，请稍候再试！";
+      // utils.error(errorMessage);
+    }
   };
 
   render() {
@@ -64,8 +73,9 @@ export default class UploadEditer extends React.PureComponent {
         component: (
           <Upload
             accept="image/*"
+            action="api/UploadFile/UploadPicture"
             showUploadList={false}
-            customRequest={this.uploadHandler}
+            onChange={this.uploadHandler}
           >
             <button
               type="button"

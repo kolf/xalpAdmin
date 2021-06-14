@@ -9,7 +9,6 @@ const startDate = moment().startOf("month").format(dateFormat) + " 00:00:00";
 const endDate = moment().endOf("month").format(dateFormat) + " 23:59:59";
 
 export default function TouristChart() {
-  const [ageData, setAgeData] = useState([]);
   const [areaData, setAreaData] = useState([]);
 
   useEffect(() => {

@@ -9,7 +9,7 @@ import DataTable5 from "./DataTable5";
 import "./style.less";
 const { TabPane } = Tabs;
 
-export default function Home() {
+function Facility() {
   const [show, setShow] = useState(true);
   const [tabKey, setTabKey] = useState("1");
   if (!show) {
@@ -39,3 +39,4 @@ export default function Home() {
     </Main>
   );
 }
+export default React.memo(Facility)

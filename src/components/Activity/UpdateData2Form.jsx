@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Radio, Table, Row, Col, Space, Spin } from "antd";
 import utils from "../../shared/utils";
 import moment from "moment";
-import { activityReviewOptions } from "../../shared/options";
+import { activityReviewOptions,activityOrderStatusEnum } from "../../shared/options";
 import activityService from "../../services/activity.service";
 const secFormat = "YYYY-MM-DD HH:mm:ss";
 
@@ -121,7 +121,7 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef }) {
           <div className="pad-bottom">
             <Space>
               <span>订单状态：</span>
-              <span>{data.orderStatus}</span>
+              <span>{activityOrderStatusEnum[data.orderStatus]}</span>
             </Space>
           </div>
           <div className="pad-bottom">

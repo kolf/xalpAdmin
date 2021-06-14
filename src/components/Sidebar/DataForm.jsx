@@ -14,7 +14,7 @@ const { Option } = Select;
 
 export default function HorizontalLoginForm({ onChange }) {
   const [form] = Form.useForm();
-  const [timeRangeType, setTimeRangeType] = useState("");
+  const [timeRangeType, setTimeRangeType] = useState("2");
 
   useEffect(() => {
     let mounted = true;

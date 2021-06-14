@@ -11,16 +11,22 @@ const days = [
   "星期四",
   "星期五",
   "星期六",
-
 ];
 
-export default function DateWidget() {
+export default React.memo(function DateWidget() {
   const [date, setDate] = useState(moment());
   useEffect(() => {
-    const timer = setInterval(() => {
-      setDate(moment());
+    let timer = setInterval(() => {
+      if (timer) {
+        setDate(moment());
+      }
     }, 1000);
-  });
+
+    return () => {
+      clearInterval(timer);
+      timer = null;
+    };
+  }, []);
 
   return (
     <div className="date-widget-root">
@@ -33,4 +39,4 @@ export default function DateWidget() {
       </Space>
     </div>
   );
-}
+});

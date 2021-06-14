@@ -22,7 +22,7 @@ const onlineEnum = {
 
 const deviceActiveEnum = {
   1: "启用",
-  2: "停用",
+  0: "停用",
 };
 
 const reviewEnum = {
@@ -50,7 +50,7 @@ export const behaviorTypeEnum = {
 };
 
 export const enterEnum = {
-  2: "出口",
+  0: "出口",
   1: "入口",
 };
 
@@ -95,14 +95,15 @@ const activityReviewEnum = {
 };
 
 const activityOrderReviewEnum = {
+  0: "待审核",
   1: "审核通过",
-  2: "待审核",
+  2: "审核不通过",
 };
 
 export const activityOrderStatusEnum = {
   0: "待审核",
   1: "审核通过",
-  2: "审核拒绝",
+  2: "审核不通过",
   3: "已出票",
   4: "已取消",
 };

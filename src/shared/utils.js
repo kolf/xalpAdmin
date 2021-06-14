@@ -1,15 +1,28 @@
 import moment from "moment";
 import { message } from "antd";
 
+let timer = null;
 class Utils {
   success = (msg) => {
-    message.success(msg);
-    // message({ type: "success", content: msg });
+    if (timer) {
+      message.destroy()
+      clearTimeout(timer);
+      timer = null;
+    }
+    timer = setTimeout(() => {
+      message.success(msg);
+    }, 120);
   };
 
   error = (msg) => {
-    message.error(msg);
-    // message({ type: "error", content: msg });
+    if (timer) {
+      message.destroy()
+      clearTimeout(timer);
+      timer = null;
+    }
+    timer = setTimeout(() => {
+      message.error(msg);
+    }, 120);
   };
 
   dateTimeFormater = (datetime, formatString) => {

@@ -96,7 +96,7 @@ export default function DataTable() {
   function makeQuery(query) {
     return Object.keys(query).reduce((result, key) => {
       const value = query[key];
-      if (key === "isActive") {
+      if (key === "isActive" && value !== undefined) {
         result[key] = value === "1";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
@@ -168,7 +168,7 @@ export default function DataTable() {
           id: creds.id,
         });
         utils.success(`编辑活动成功！`);
-        
+
         mod.close();
         setCounter(counter + 1);
         setQuery({
@@ -230,6 +230,7 @@ export default function DataTable() {
         setCounter(counter + 1);
         setQuery({ ...query, skipCount: "1" });
       } catch (error) {
+        utils.error(error);
         mod.close();
       }
     }
@@ -324,7 +325,7 @@ export default function DataTable() {
         return (
           moment(creds.applyStartDate).format(dateFormat) +
           "至" +
-          moment(creds.applyEndDate).format(dateFormat)
+          moment(creds.applyDeadlineDate).format(dateFormat)
         );
       },
     },
@@ -399,7 +400,7 @@ export default function DataTable() {
     size: "small",
     onChange(pageNum, pageSize) {
       let nextPageNum = pageNum;
-      if (pageSize != query.maxResultCount * 1) {
+      if (pageSize !== query.maxResultCount * 1) {
         nextPageNum = 1;
       }
 

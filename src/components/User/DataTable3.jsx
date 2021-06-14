@@ -62,7 +62,7 @@ export default function DataTable() {
     return () => {
       mounted = false;
     };
-  }, [JSON.stringify(query), counter]);
+  }, [query, counter]);
 
 
 
@@ -230,7 +230,7 @@ export default function DataTable() {
     size: "small",
     onChange(pageNum, pageSize) {
       let nextPageNum = pageNum;
-      if (pageSize != query.maxResultCount * 1) {
+      if (pageSize !== query.maxResultCount * 1) {
         nextPageNum = 1;
       }
 

@@ -34,9 +34,8 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   const [datePickerOptions, setDatePickerOptions] = useState([]);
   useEffect(() => {
     let mounted = true;
-    if (datePickerOptions.length === 0) {
-      loadData();
-    }
+
+    loadData();
 
     async function loadData() {
       try {
@@ -117,9 +116,8 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
 
     if (_items1) {
       items = Object.values(_items1).map((item) => ({
+        ...item,
         clientType: 1,
-        timeItemId: item[0],
-        maxTouristsQuantity: item[1],
         warningLeftQuantity,
       }));
     }
@@ -127,9 +125,8 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       items = [
         ...items,
         ...Object.values(_items2).map((item) => ({
+          ...item,
           clientType: 2,
-          timeItemId: item[0],
-          maxTouristsQuantity: item[1],
           warningLeftQuantity,
         })),
       ];
@@ -176,6 +173,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   }
 
   function makeDefaultValues(values) {
+    console.log(values, "values");
     const {
       isSpecial,
       dateTitle,
@@ -183,13 +181,14 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       startReserveDate,
       endReserveDate,
       timeItems,
+      timeRanges,
       id,
     } = values;
 
     if (!id) {
       return {};
     }
-    const [_items1, _items2] = splitTimeData(timeItems);
+    const [_items1, _items2] = splitTimeData(timeItems || timeRanges);
 
     return {
       _items1,

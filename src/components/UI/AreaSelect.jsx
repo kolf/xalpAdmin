@@ -7,7 +7,7 @@ const levelMap = {
   2: 2,
 };
 
-export default function AreaSelect({ defaultOptions, value, onChange }) {
+export default function AreaSelect({ defaultOptions, value=[], onChange }) {
   const [options, setOptions] = useState(defaultOptions);
   function handleChange(selected, selectedOptions) {
     onChange(selectedOptions);

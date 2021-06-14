@@ -59,7 +59,7 @@ export default function DataTable({ dataSource, showType }) {
         if (value !== undefined && value !== "-1") {
           result[key] = value;
         }
-        if (key === "isOnline") {
+        if (key === "isOnline" && value !== undefined) {
           result[key] = value === "1";
         }
         if (query.skipCount) {
@@ -224,7 +224,7 @@ export default function DataTable({ dataSource, showType }) {
     size: "small",
     onChange(pageNum, pageSize) {
       let nextPageNum = pageNum;
-      if (pageSize != query.maxResultCount * 1) {
+      if (pageSize !== query.maxResultCount * 1) {
         nextPageNum = 1;
       }
 

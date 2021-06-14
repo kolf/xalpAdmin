@@ -99,7 +99,7 @@ export default function DataTable() {
           const [start, end] = value;
           result.StartTravelTime = start.format(dateFormat) + " 00:00:00";
           result.EndTravelTime = end.format(dateFormat) + " 23:59:59";
-        } else if (key === "isActivityApply" && value) {
+        } else if (key === "isActivityApply" && value !== undefined) {
           result.isActivityApplySuccess = value === "1";
         } else if (value !== undefined && value !== "-1") {
           result[key] = value;
@@ -352,7 +352,7 @@ export default function DataTable() {
     size: "small",
     onChange(pageNum, pageSize) {
       let nextPageNum = pageNum;
-      if (pageSize != query.maxResultCount * 1) {
+      if (pageSize !== query.maxResultCount * 1) {
         nextPageNum = 1;
       }
       setQuery({

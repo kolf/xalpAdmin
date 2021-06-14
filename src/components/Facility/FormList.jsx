@@ -61,7 +61,7 @@ function FormList({ pickerOptions = [], name, onChange, value = [] }) {
               <Select
                 style={{ width: 160 }}
                 placeholder="请选择时间段"
-                value={value[index] ? value[index].timeItemId : undefined}
+                defaultValue={value[index] ? value[index].timeItemId : undefined}
                 onChange={(v) => handleChange(field, "timeItemId", v)}
               >
                 {pickerOptions.map((o) => (
@@ -74,7 +74,7 @@ function FormList({ pickerOptions = [], name, onChange, value = [] }) {
             <div>
               <InputNumber
                 placeholder="0"
-                value={
+                defaultValue={
                   value[index] ? value[index].maxTouristsQuantity : undefined
                 }
                 min="0"

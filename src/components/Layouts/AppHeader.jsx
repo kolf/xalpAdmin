@@ -47,7 +47,7 @@ class AppHeader extends React.Component {
           </Menu.Item>
         </Menu>
         <div style={{ padding: "0 12px" }}>
-          <a href="/login">退出</a>
+          <Link to="/login">退出</Link>
         </div>
         <div style={{ display: "flex" }}>
           <DateWidget />

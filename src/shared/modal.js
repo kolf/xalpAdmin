@@ -4,7 +4,7 @@ import { Modal, ConfigProvider } from "antd";
 import zhCN from "antd/lib/locale/zh_CN";
 const IS_REACT_16 = !!ReactDOM.createPortal;
 
-class Mod extends React.Component {
+class Mod extends React.PureComponent {
   static defaultProps = {
     width: 520,
   };

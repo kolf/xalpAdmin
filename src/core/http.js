@@ -47,7 +47,7 @@ axios.interceptors.response.use(
     return res;
   },
   (error) => {
-    if (error.response && error.response.status === 401) {
+    if (error.response && /^(401|403)&/.test(error.response.status)) {
       sessionService.logout();
       return;
     }

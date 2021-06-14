@@ -18,6 +18,7 @@ export default function DataTable({ id, dataSource, onClose }) {
   }
 
   function showDeleteModal(creds) {
+    console.log(creds, "index");
     const mod = confirm({
       content: `此操作将删除这条数据, 是否继续?`,
       onOk,
@@ -26,7 +27,7 @@ export default function DataTable({ id, dataSource, onClose }) {
       try {
         const res = await faciliyService.deleteReservationTimeSetting({
           isSpecial: true,
-          id: creds.id,
+          id: creds.timeSettingId,
         });
         mod.close();
         onClose();
@@ -41,7 +42,12 @@ export default function DataTable({ id, dataSource, onClose }) {
     const mod = modal({
       content: (
         <UpdateDataForm
-          defaultValues={{ ...creds, isSpecial: true, dateTitle: id }}
+          defaultValues={{
+            ...dataSource,
+            isSpecial: true,
+            dateTitle: id,
+            id: dataSource.timeSettingId,
+          }}
           onOk={onOk}
         />
       ),
@@ -120,7 +126,7 @@ export default function DataTable({ id, dataSource, onClose }) {
               >
                 编辑
               </Button>
-              <Button size="small" onClick={(e) => showDeleteModal(creds)}>
+              <Button size="small" onClick={(e) => showDeleteModal(dataSource)}>
                 删除
               </Button>
             </div>
