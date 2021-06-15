@@ -143,40 +143,65 @@ export default function DataTable() {
   }
 
   function showEditModal(creds) {
-    let modRef = null;
-    const mod = modal({
-      title: "编辑",
-      width: 960,
-      style: { top: 20 },
-      bodyStyle: { paddingBottom: 0, paddingLeft: 0 },
-      content: (
-        <UpdateDataForm
-          areaOptions={areaOptions}
-          saveRef={(r) => (modRef = r)}
-          defaultValues={creds}
-        />
-      ),
-      onOk,
-    });
+    if (!creds.isActive || creds.stateName !== "未开始") {
+      let stateName = creds.stateName;
+      if (!creds.isActive) {
+        stateName = "未上架";
+      }
+      const mod = confirm({
+        content: (
+          <div>
+            此条活动 <span style={{ color: "#ff0000" }}>{stateName}</span>
+            确认后将打开编辑, 是否继续?
+          </div>
+        ),
+        onOk() {
+          mod.close();
+          show();
+        },
+      });
+      return;
+    }
 
-    async function onOk() {
-      const values = await modRef.validateFields();
-      try {
-        mod.confirmLoading();
-        const res = await activityService.updateActivity({
-          ...makeParams(values),
-          id: creds.id,
-        });
-        utils.success(`编辑活动成功！`);
+    show();
+    // !creds.isActive || creds.stateName !== "未开始"
 
-        mod.close();
-        setCounter(counter + 1);
-        setQuery({
-          ...query,
-          skipCount: "1",
-        });
-      } catch (error) {
-        mod.close();
+    function show() {
+      let modRef = null;
+      const mod = modal({
+        title: "编辑",
+        width: 960,
+        style: { top: 20 },
+        bodyStyle: { paddingBottom: 0, paddingLeft: 0 },
+        content: (
+          <UpdateDataForm
+            areaOptions={areaOptions}
+            saveRef={(r) => (modRef = r)}
+            defaultValues={creds}
+          />
+        ),
+        onOk,
+      });
+
+      async function onOk() {
+        const values = await modRef.validateFields();
+        try {
+          mod.confirmLoading();
+          const res = await activityService.updateActivity({
+            ...makeParams(values),
+            id: creds.id,
+          });
+          utils.success(`编辑活动成功！`);
+
+          mod.close();
+          setCounter(counter + 1);
+          setQuery({
+            ...query,
+            skipCount: "1",
+          });
+        } catch (error) {
+          mod.close();
+        }
       }
     }
   }
@@ -196,7 +221,12 @@ export default function DataTable() {
 
   function showDeleteModal(creds) {
     const mod = confirm({
-      content: `确认删除此条活动, 是否继续?`,
+      content: (
+        <div>
+          此条活动 <span style={{ color: "#ff0000" }}>{creds.stateName}</span>
+          确认后将被删除, 是否继续?
+        </div>
+      ),
       onOk,
     });
     async function onOk() {
@@ -216,7 +246,12 @@ export default function DataTable() {
 
   function showUpdateStatusModal(creds, value) {
     const mod = confirm({
-      content: `确认${value ? "上架" : "下架"}此条活动, 是否继续?`,
+      content: (
+        <div>
+          此条活动 <span style={{ color: "#ff0000" }}>{creds.stateName}</span>
+          确认后将被{value ? "上架" : "下架"}, 是否继续?
+        </div>
+      ),
       onOk,
     });
     async function onOk() {
@@ -237,7 +272,7 @@ export default function DataTable() {
   }
 
   function getRowClassName(creds, index) {
-    if (!creds.isActive || creds.stateName !== "未开始") {
+    if (!creds.isActive) {
       return "ant-table-row-disabled";
     }
   }
@@ -353,7 +388,7 @@ export default function DataTable() {
               size="small"
               style={{ marginRight: 4 }}
               onClick={(e) => showEditModal(creds)}
-              disabled={!creds.isActive || creds.stateName !== "未开始"}
+              // disabled={!creds.isActive || creds.stateName !== "未开始"}
             >
               编辑
             </Button>
@@ -361,7 +396,7 @@ export default function DataTable() {
               <Button
                 size="small"
                 style={{ marginRight: 4 }}
-                disabled={creds.stateName === "报名中"}
+                // disabled={creds.stateName === "报名中"}
                 onClick={(e) => showUpdateStatusModal(creds, false)}
               >
                 下架
@@ -370,7 +405,7 @@ export default function DataTable() {
               <Button
                 size="small"
                 style={{ marginRight: 4 }}
-                disabled={creds.stateName !== "未开始"}
+                // disabled={creds.stateName !== "未开始"}
                 onClick={(e) => showUpdateStatusModal(creds, true)}
               >
                 上架
@@ -379,7 +414,7 @@ export default function DataTable() {
 
             <Button
               size="small"
-              disabled={creds.stateName === "报名中"}
+              // disabled={creds.stateName === "报名中"}
               onClick={(e) => showDeleteModal(creds)}
             >
               删除

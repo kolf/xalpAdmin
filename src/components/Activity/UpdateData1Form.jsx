@@ -108,8 +108,6 @@ export default function UpdateDataForm({
       ];
     } catch (error) {}
 
-    
-
     return result;
   }
 
