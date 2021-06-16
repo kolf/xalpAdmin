@@ -26,7 +26,7 @@ class Login extends React.Component {
           history.push("/");
         }
       } catch (error) {
-        window.location.href = `${host}/#/login?redirectUrl=${host}/topark/login&appCode=ENTERPARKnL4gX4cG8tJ2zW4r`;
+        window.location.href = `//${host}/#/login?redirectUrl=//${host}/topark/login&appCode=ENTERPARKnL4gX4cG8tJ2zW4r`;
       }
     } else {
       this.setState({

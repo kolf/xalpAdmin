@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Radio } from "antd";
-import DataTableCalendar from "./DataTable5Calendar";
-import DataTableList from "./DataTable5List";
+import DataTableCalendar from "./DataTableCalendar";
+import DataTableList from "./DataTableList";
 
 export default function DataTable() {
   const [showType, setShowType] = useState("1");

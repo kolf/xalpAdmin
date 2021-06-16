@@ -75,7 +75,7 @@ const Sidebar = () => {
                 orderRealTimeData.todayUsedTicketCount > 9999 ? "万人" : "人",
               title: (
                 <>
-                  <div>今日已核销</div>
+                  <div>今日入园</div>
                   <div>人数</div>
                 </>
               ),
@@ -101,7 +101,7 @@ const Sidebar = () => {
                 orderRealTimeData.quarterUsedTicketCount > 9999 ? "万人" : "人",
               title: (
                 <>
-                  <div>当季已核销</div>
+                  <div>当季入园</div>
                   <div>人数</div>
                 </>
               ),

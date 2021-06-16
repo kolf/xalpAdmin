@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Tabs } from "antd";
-import TabPane1 from "./DataTable5UpdateDateForm";
-import TabPane2 from "./DataTable5UpdateDatePickerTable";
+import TabPane1 from "./DataTableUpdateDateForm";
+import TabPane2 from "./DataTableUpdateDatePickerTable";
 import "./style.less";
 const { TabPane } = Tabs;
 
-export default function DataTable5UpdateTabs({ defaultValues = {}, onOk }) {
+export default function DataTableUpdateTabs({ defaultValues = {}, onOk }) {
   const [tabKey, setTabKey] = useState("1");
 
   return (

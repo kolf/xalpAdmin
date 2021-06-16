@@ -28,15 +28,15 @@ export default function DeviceTotal() {
     <Row>
       <Col span={8}>
         <div className="sidebar-heading-num">{data.totalCount}</div>
-        <div>设备总数</div>
+        <div>闸机总数</div>
       </Col>
       <Col span={8}>
         <div className="sidebar-heading-num">{data.onlineCount}</div>
-        <div>在线设备</div>
+        <div>在线闸机</div>
       </Col>
       <Col span={8}>
         <div className="sidebar-heading-num">{data.offlineCount}</div>
-        <div>离线设备</div>
+        <div>离线闸机</div>
       </Col>
     </Row>
   );

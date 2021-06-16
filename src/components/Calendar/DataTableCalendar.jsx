@@ -7,15 +7,15 @@ import {
   DoubleRightOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import DataTable5CalendarDetails from "./DataTable5CalendarDetails";
-import UpdateDataForm from "./DataTable5UpdateTabs";
+import DataTableCalendarDetails from "./DataTableCalendarDetails";
+import UpdateDataForm from "./DataTableUpdateTabs";
 import modal from "../../shared/modal";
 import faciliyService from "../../services/faciliy.service";
 const monthFormat = "YYYY-MM";
 const dateFormat = "YYYY-MM-DD";
 const currentMoment = moment();
 
-export default function DataTable5ListCalendar({ renderHeader }) {
+export default function DataTableListCalendar({ renderHeader }) {
   const [loading, setLoading] = useState(true);
   const [selectedDate, setSelectedDate] = useState("");
   const [dataList, setDataList] = useState([]);
@@ -196,7 +196,7 @@ export default function DataTable5ListCalendar({ renderHeader }) {
         </Col>
       </Row>
       {selectedDate ? (
-        <DataTable5CalendarDetails
+        <DataTableCalendarDetails
           id={selectedDate}
           dataSource={getDayData(selectedDate)}
           onClose={(e) => setSelectedDate("")}

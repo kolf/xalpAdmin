@@ -18,6 +18,7 @@ import Facility from "./components/Facility";
 import TicketCategory from "./components/TicketCategory";
 import Data from "./components/Data";
 import Activity from "./components/Activity";
+import Calendar from "./components/Calendar";
 
 export const RootRouter = React.memo(() => {
   return (
@@ -30,6 +31,7 @@ export const RootRouter = React.memo(() => {
         <PrivateLayout path="/blacklist" exact component={Blacklist} />
         <PrivateLayout path="/police" exact component={Police} />
         <PrivateLayout path="/facility" exact component={Facility} />
+        <PrivateLayout path="/calendar" exact component={Calendar} />
         <PrivateLayout
           path="/ticket-category"
           exact

@@ -211,6 +211,9 @@ export default function DataTable() {
     {
       title: "距离处理到期天数",
       dataIndex: "daysOfEndBlock",
+      render(text) {
+        return text < 0 ? "0" : text;
+      },
     },
     {
       title: "处罚",

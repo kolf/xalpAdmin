@@ -11,7 +11,7 @@ import {
   Col,
   Space,
 } from "antd";
-import UpdateDataForm from "./DataTable5UpdateTabs";
+import UpdateDataForm from "./DataTableUpdateTabs";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
