@@ -115,11 +115,11 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         initialValues={makeDefaultValues(defaultValues)}
       >
         <Form.Item
-          label="供应商名称"
+          label="服务商名称"
           name="name"
-          rules={[{ required: true, message: "请输入供应商名称！" }]}
+          rules={[{ required: true, message: "请输入服务商名称！" }]}
         >
-          <Input placeholder="请输入供应商名称" />
+          <Input placeholder="请输入服务商名称" />
         </Form.Item>
         <Form.Item
           label="负责人姓名"
@@ -137,9 +137,9 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         </Form.Item>
 
         <Form.Item
-          label="供应商类型"
+          label="服务商类型"
           name="merchantTypeId"
-          rules={[{ required: true, message: "请选择供应商类型！" }]}
+          rules={[{ required: true, message: "请选择服务商类型！" }]}
         >
           <Select placeholder="请选择">
             {makeData(merchantOptions).map((o) => (

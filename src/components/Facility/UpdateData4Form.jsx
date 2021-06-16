@@ -140,9 +140,9 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         initialValues={makeDefaultValues(defaultValues)}
       >
         <Form.Item
-          label="供应商"
+          label="服务商"
           name="merchantId"
-          rules={[{ required: true, message: "请选择供应商！" }]}
+          rules={[{ required: true, message: "请选择服务商！" }]}
         >
           <Select placeholder="请选择">
             {merchantOptions.map((o) => (

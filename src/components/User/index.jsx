@@ -23,7 +23,7 @@ export default function Home() {
         <Tabs activeKey={tabKey} onChange={setTabKey}>
           <TabPane tab="用户管理" key="1" />
           <TabPane tab="角色管理" key="2" />
-          <TabPane tab="供应商管理" key="3" />
+          <TabPane tab="服务商管理" key="3" />
         </Tabs>
       }
     >

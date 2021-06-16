@@ -4,6 +4,7 @@ import { Map, APILoader, Marker } from "@uiw/react-amap";
 import MapIcon from "./MapIcon";
 import imgUrl from "../../assets/img/cad-01.bb6c9874.png";
 import update from "./alimapScript";
+import "./AliMap.less";
 
 const AliMap = () => {
   return (

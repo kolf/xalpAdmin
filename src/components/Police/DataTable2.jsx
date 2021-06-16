@@ -72,19 +72,24 @@ export default function DataTable() {
   }
 
   function makeQuery(query) {
-    return Object.keys(query).reduce((result, key) => {
-      const value = query[key];
-      if (value !== undefined && value !== "-1") {
-        result[key] = value;
+    return Object.keys(query).reduce(
+      (result, key) => {
+        const value = query[key];
+        if (value !== undefined && value !== "-1") {
+          result[key] = value;
+        }
+        if (key === "isOnline" && value !== undefined) {
+          result[key] = value === "1";
+        }
+        if (query.skipCount) {
+          result.skipCount = (query.skipCount - 1) * query.maxResultCount;
+        }
+        return result;
+      },
+      {
+        CheckDeviceType: 2,
       }
-      if (key === "isOnline" && value !== undefined) {
-        result[key] = value === "1";
-      }
-      if (query.skipCount) {
-        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
-      }
-      return result;
-    }, {});
+    );
   }
 
   function showEditModal(creds) {
@@ -150,13 +155,6 @@ export default function DataTable() {
       dataIndex: "code",
     },
     {
-      title: "设备类型",
-      dataIndex: "checkDeviceType",
-      render(text) {
-        return checkDeviceTypeEnum[text] || "未知";
-      },
-    },
-    {
       title: "录入人姓名",
       dataIndex: "creatorName",
       render(text) {
@@ -173,6 +171,7 @@ export default function DataTable() {
     {
       title: "录入人员电话",
       dataIndex: "creatorPhone",
+      width: 116,
       render(text) {
         return text || "无";
       },
@@ -181,12 +180,14 @@ export default function DataTable() {
     {
       title: "在线状态",
       dataIndex: "isOnline",
+      width:80,
       render(text) {
         return text ? "在线" : "离线";
       },
     },
     {
       title: "出入口状态",
+      width:90,
       dataIndex: "isDirectionEnter",
       render(text) {
         return text ? "入口" : "出口";
@@ -195,6 +196,7 @@ export default function DataTable() {
     {
       title: "设备状态",
       dataIndex: "isActive",
+      width:80,
       render(text) {
         return text ? "启用" : "停用";
       },
@@ -264,16 +266,6 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
       >
-        <Form.Item
-          name="CheckDeviceType"
-          style={{ marginBottom: 6, width: 100 }}
-        >
-          <Select size="small" placeholder="选择设备" allowClear>
-            {deviceOptions.map((o) => (
-              <Option key={o.value}>{o.label}</Option>
-            ))}
-          </Select>
-        </Form.Item>
         <Form.Item name="isOnline" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="设备状态" allowClear>
             {onlineOptions.map((o) => (
@@ -306,7 +298,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        scroll={{ x: 1200 }}
+        scroll={{ x: 1100 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

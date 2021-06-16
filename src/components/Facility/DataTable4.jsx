@@ -165,7 +165,7 @@ export default function DataTable() {
 
   const columns = [
     {
-      title: "供应商名称",
+      title: "服务商名称",
       dataIndex: "merchantName",
     },
     {
