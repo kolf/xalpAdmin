@@ -2,7 +2,7 @@ import queryString from "query-string";
 import api from "../core/http";
 
 class ActivityService {
-  // 预约管理-供应商
+  // 预约管理-服务商
   getActivityList = async (creds) => {
     try {
       const res = await api.get(

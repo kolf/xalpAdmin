@@ -40,6 +40,7 @@ class AppHeader extends React.Component {
             textAlign: "center",
             borderBottom: "none",
             flex: 1,
+            justifyContent: "center",
           }}
         >
           <Menu.Item key="3">

@@ -3,12 +3,10 @@ import { Route, Redirect } from "react-router-dom";
 import AppHeader from "./AppHeader";
 import Sidebar from "../Sidebar/Sidebar";
 import Menu from "../Sidebar/Menu";
-import "./PrivateLayout.less";
 import sessionService from "../../services/session.service";
 
 import { Layout } from "antd";
 import AppFooter from "./AppFooter";
-import AliMap from "../UI/AliMap";
 const { Content, Sider } = Layout;
 
 export default class PrivateLayout extends React.Component {
@@ -42,14 +40,13 @@ export default class PrivateLayout extends React.Component {
                   style={{
                     backgroundColor: "transparent",
                     padding: "12px",
-                    height: "32px"
+                    height: "32px",
                   }}
                 >
                   <Menu />
                 </Sider>
                 <AppFooter />
               </Layout>
-       
             </Layout>
           ) : (
             <Redirect

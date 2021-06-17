@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Tabs } from "antd";
 import Main from "../Layouts/AppMain";
-import DataTable from "./DataTable";
+import DataTable1 from "./DataTable1";
+import DataTable2 from "./DataTable2";
 import "./style.less";
 const { TabPane } = Tabs;
 
@@ -19,11 +20,13 @@ export default function Home() {
       }}
       header={
         <Tabs activeKey={tabKey} onChange={setTabKey}>
-          <TabPane tab="设备信息" key="1" />
+          <TabPane tab="闸机" key="1" />
+          <TabPane tab="手持机" key="2" />
         </Tabs>
       }
     >
-      {tabKey === "1" && <DataTable />}
+      {tabKey === "1" && <DataTable1 />}
+      {tabKey === "2" && <DataTable2 />}
     </Main>
   );
 }
