@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Table,
   Button,
@@ -12,62 +12,54 @@ import {
 } from "antd";
 import Chart from "./DataTable1Chart";
 import moment from "moment";
+import { useRequest } from "ahooks";
 import modal from "../../shared/modal";
 import dataService from "../../services/data.service";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
 
-export default function DataTable() {
+export default React.memo(function DataTable() {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [dataList, setDataList] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [counter, setCounter] = useState(0);
+  const [chartWidth, setChartWidth] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
     keyword: "",
     date: [moment().startOf("month"), moment()],
   });
+  const { data, run, loading } = useRequest(dataService.getAreaTopProvince, {
+    manual: true,
+    initialData: [],
+  });
+  const {
+    data: areaData,
+    run: fetchArea,
+    loading: areaLoading,
+  } = useRequest(dataService.getOrderAreaList, {
+    debounceInterval: 600,
+    manual: true,
+    initialData: {
+      items: [],
+    },
+  });
 
   useEffect(() => {
-    let mounted = true;
-    if (mounted) {
-      loadData();
-    }
-
-    async function loadData() {
-      setLoading(true);
-      try {
-        const { items, totalCount } = await dataService.getOrderAreaList(
-          makeQuery(query)
-        );
-        if (mounted) {
-          setLoading(false);
-          setDataList(items);
-          setTotal(totalCount);
-        }
-      } catch (error) {
-        if (mounted) {
-          setLoading(false);
-        }
+    console.log(query, "query");
+    run(makeQuery(query)).then((res) => {
+      if (res.length > 0) {
+        // setAreaKeyword(res[0].sourceProvince);
+        fetchArea({
+          ...makeQuery(query),
+          maxResultCount: 1000,
+          keyword: res[0].sourceProvince,
+        });
       }
-    }
-
-    return () => {
-      mounted = false;
-    };
-  }, [query, counter]);
-
-  function makeData(data) {
-    if (!data) {
-      return [];
-    }
-    return data.map((item, index) => {
-      return { ...item, index: index + 1 };
     });
-  }
+    if (!chartWidth) {
+      setChartWidth(window.innerWidth - 600);
+    }
+  }, [JSON.stringify(query)]);
 
   function makeQuery(query) {
     return Object.keys(query).reduce((result, key) => {
@@ -93,68 +85,16 @@ export default function DataTable() {
     } catch (error) {}
   }
 
-  const columns = [
-    {
-      title: "排名",
-      dataIndex: "rankNumber",
-    },
-    {
-      title: "省级",
-      dataIndex: "sourceProvince",
-      render(text) {
-        return text || "无";
-      },
-    },
-    {
-      title: "市级",
-      dataIndex: "sourceCity",
-      render(text) {
-        return text || "无";
-      },
-    },
-    {
-      title: "人数",
-      dataIndex: "ticketCount",
-    },
-  ];
-
-  const paginationProps = {
-    showQuickJumper: true,
-    showSizeChanger: true,
-    current: query.skipCount * 1,
-    pageSize: query.maxResultCount * 1,
-    total,
-    position: ["", "bottomCenter"],
-    size: "small",
-    onChange(pageNum, pageSize) {
-      let nextPageNum = pageNum;
-      if (pageSize !== query.maxResultCount * 1) {
-        nextPageNum = 1;
-      }
-
-      setQuery({
-        ...query,
-        skipCount: nextPageNum + "",
-        maxResultCount: pageSize + "",
-      });
-    },
-  };
+  function handleClick(data) {
+    fetchArea({
+      ...makeQuery(query),
+      maxResultCount: 1000,
+      keyword: data.label,
+    });
+  }
 
   return (
     <div>
-      <Row style={{ paddingBottom: 12 }}>
-        <Col flex="auto"></Col>
-        <Col flex="120px" style={{ textAlign: "right" }}>
-          <Button
-            size="small"
-            type="primary"
-            onClick={openFile}
-            disabled={dataList.length === 0}
-          >
-            下载数据
-          </Button>
-        </Col>
-      </Row>
       <Form
         form={form}
         name="form"
@@ -182,12 +122,33 @@ export default function DataTable() {
           />
         </Form.Item>
       </Form>
-      <div>
-        <Chart dataSource={[]} id="province" />
+      <div className="panel-title">省排行</div>
+      <div style={{ height: 320 }}>
+        {chartWidth && data.length > 0 && (
+          <Chart
+            dataSource={data.map((item) => ({
+              label: item.sourceProvince,
+              value: item.ticketCount,
+            }))}
+            id="province"
+            width={chartWidth}
+            onClick={handleClick}
+          />
+        )}
       </div>
-      <div>
-        <Chart dataSource={[]} id="city" />
+      <div className="panel-title">市排行</div>
+      <div style={{ paddingBottom: 12, height: 320 }}>
+        {chartWidth && areaData.items.length > 0 && (
+          <Chart
+            dataSource={areaData.items.map((item) => ({
+              label: item.sourceCity,
+              value: item.ticketCount,
+            }))}
+            id="city"
+            width={chartWidth}
+          />
+        )}
       </div>
     </div>
   );
-}
+});

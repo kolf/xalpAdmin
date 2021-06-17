@@ -44,7 +44,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       },
       {
         userType: 1,
-        certType: "身份证",
+        certType: "证件号码",
       }
     );
   }

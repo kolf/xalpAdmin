@@ -139,9 +139,9 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           <Input placeholder="请输入" />
         </Form.Item>
         <Form.Item
-          label="身份证号"
+          label="证件号码"
           name="certNumber"
-          rules={[{ required: true, message: "请输入身份证号!" }]}
+          rules={[{ required: true, message: "请输入证件号码!" }]}
         >
           <Input placeholder="请输入" />
         </Form.Item>

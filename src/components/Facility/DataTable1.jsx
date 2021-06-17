@@ -212,7 +212,7 @@ export default function DataTable() {
       },
     },
     {
-      title: "身份证",
+      title: "证件号码",
       dataIndex: "certNumber",
       width: 174,
       render(text, creds) {

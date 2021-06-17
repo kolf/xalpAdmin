@@ -109,7 +109,7 @@ const Sidebar = () => {
           ]}
         />
       </div>
-      <div className="panel-heading">入园数据</div>
+      <div className="panel-heading">当日各时段入园数据</div>
       <div className="panel-body">
         <AdmissionChart />
       </div>

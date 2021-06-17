@@ -92,14 +92,22 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       },
       {
         userType: 1,
-        certType: "身份证",
+        certType: "证件号码",
       }
     );
   }
 
   function makeDefaultValues() {
-    const { id, name, certNumber, phone, behaviorId, startTime } =
-      defaultValues;
+    const {
+      id,
+      name,
+      certNumber,
+      phone,
+      behaviorId,
+      startTime,
+      address,
+      reason,
+    } = defaultValues;
 
     if (!id) {
       return {};
@@ -109,6 +117,8 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       certNumber,
       phone,
       behaviorId,
+      address,
+      reason,
       startTime: moment(startTime, dateFormat),
     };
   }
@@ -130,9 +140,9 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         </Form.Item>
 
         <Form.Item
-          label="身份证"
+          label="证件号码"
           name="certNumber"
-          rules={[{ required: true, message: "请输入身份证!" }]}
+          rules={[{ required: true, message: "请输入证件号码!" }]}
         >
           <Input placeholder="请输入" />
         </Form.Item>

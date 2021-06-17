@@ -63,7 +63,7 @@ export default function DataTable1Details({ defaultValues = {}, saveRef, onOk })
       dataIndex: "phone",
     },
     {
-      title: "身份证号",
+      title: "证件号码",
       dataIndex: "certNumber",
     },
   ];

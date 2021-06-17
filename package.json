@@ -10,7 +10,6 @@
     "antd": "^4.16.1",
     "axios": "^0.19.2",
     "braft-editor": "^2.3.9",
-    "cogo-toast": "^4.2.3",
     "craco": "0.0.3",
     "craco-less": "^1.17.0",
     "enquire-js": "^0.2.1",

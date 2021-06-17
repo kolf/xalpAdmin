@@ -18,9 +18,10 @@
 ::-webkit-scrollbar-track {
   border-radius: 0.01042rem;
 }
-#root{
-  .amap-copyright,.amap-logo{
-    display:none !important
+#root {
+  .amap-copyright,
+  .amap-logo {
+    display: none !important;
   }
 }
 
@@ -105,6 +106,17 @@
   height: 100%;
 }
 
+.alimap {
+  &-root {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 0;
+  }
+}
+
 .text {
   &-center {
     text-align: center;
@@ -117,8 +129,8 @@
   }
 }
 
-.hide{
-  display: none
+.hide {
+  display: none;
 }
 
 .bg-primary {
