@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { renderToString } from "react-dom/server";
 import { Map, APILoader, Marker } from "@uiw/react-amap";
 import MapIcon from "./MapIcon";
-import imgUrl from "../../assets/img/cad-01.bb6c9874.png";
+import imgUrl from "../../assets/img/cad-01.5a2c39ae.png";
 import update from "./alimapScript";
 
 const AliMap = () => {
@@ -12,15 +12,15 @@ const AliMap = () => {
         <Map
           mapStyle="amap://styles/darkblue"
           center={[115.9425, 39.08746]}
-          zoom={10}
-          zooms={[16.5, 18]}
+          zoom={17}
+          zooms={[14.5, 18]}
         >
           {({ AMap, map, container }) => {
             if (map) {
               const marker = new AMap.ImageLayer({
                 bounds: new AMap.Bounds(
-                  [115.927712, 39.098682],
-                  [115.959986, 39.07465]
+                  [115.866331, 39.112493],
+                  [115.959888, 39.067592]
                 ),
                 zIndex: 2,
                 url: imgUrl, // 图片 Url

@@ -164,6 +164,20 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         >
           <DatePicker size="small" />
         </Form.Item>
+        <Form.Item
+          label="发生地点"
+          name="address"
+          rules={[{ required: true, message: "请输入!" }]}
+        >
+          <Input size="small" placeholder="请输入" />
+        </Form.Item>
+        <Form.Item
+          label="详情描述"
+          name="reason"
+          rules={[{ required: true, message: "请输入!" }]}
+        >
+          <Input size="small" placeholder="请输入" />
+        </Form.Item>
         <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit">
             确定

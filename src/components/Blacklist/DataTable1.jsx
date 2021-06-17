@@ -194,7 +194,7 @@ export default function DataTable() {
       dataIndex: "behaviorName",
     },
     {
-      title: "不文明行为发生时间",
+      title: "发生时间",
       dataIndex: "startTime",
       width: 170,
       render(text) {
@@ -202,8 +202,16 @@ export default function DataTable() {
       },
     },
     {
+      title: "发生地点",
+      dataIndex: "address",
+    },
+    {
+      title: "详情描述",
+      dataIndex: "reason",
+    },
+    {
       title: "历史不文明行为",
-      dataIndex: "historyBehaviorName",
+      dataIndex: "historyBehaviorNames",
       render(text) {
         return text || "无";
       },
@@ -211,6 +219,7 @@ export default function DataTable() {
     {
       title: "距离处理到期天数",
       dataIndex: "daysOfEndBlock",
+      width:130,
       render(text) {
         return text < 0 ? "0" : text;
       },
@@ -324,7 +333,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        scroll={{ x: 1400 }}
+        scroll={{ x: 1500 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

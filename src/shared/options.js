@@ -59,6 +59,11 @@ export const activityEnum = {
   2: "无",
 };
 
+export const isFireModeOpenEnum = {
+  1: "开启",
+  0: "关闭",
+};
+
 export const orderChannelEnum = {
   5: "小程序",
   6: "官网",
@@ -124,6 +129,11 @@ const activityApplyStatusEnum = {
   2: "报名中",
   3: "已结束",
 };
+
+export const isFireModeOpenOptions = Object.keys(isFireModeOpenEnum).map((key) => ({
+  value: key + "",
+  label: isFireModeOpenEnum[key],
+}));
 
 export const activityActiveOptions = Object.keys(activityActiveEnum).map(
   (key) => ({

@@ -4,6 +4,7 @@ import {
   deviceActiveOptions,
   deviceOptions,
   enterOptions,
+  isFireModeOpenOptions,
 } from "../../shared/options";
 import utils from "../../shared/utils";
 import policeService from "../../services/police.service";
@@ -42,6 +43,8 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
           result.isActive = value === "1";
         } else if (key === "isDirectionEnter") {
           result.isDirectionEnter = value === "1";
+        } else if (key === "isFireModeOpen") {
+          result.isFireModeOpen = value === "1";
         } else if (value !== undefined && value !== "-1") {
           result[key] = value;
         }
@@ -63,6 +66,8 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         result.isActive = value ? "1" : "0";
       } else if (key === "isDirectionEnter") {
         result.isDirectionEnter = value ? "1" : "0";
+      } else if (key === "isFireModeOpen") {
+        result.isFireModeOpen = value ? "1" : "0";
       } else if (/^(checkDeviceType)$/.test(key)) {
         result[key] = value + "";
       } else if (value !== undefined && value !== "-1") {
@@ -161,6 +166,19 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         >
           <Radio.Group>
             {enterOptions.map((o) => (
+              <Radio key={o.value} value={o.value}>
+                {o.label}
+              </Radio>
+            ))}
+          </Radio.Group>
+        </Form.Item>
+        <Form.Item
+          label="消防模式"
+          name="isFireModeOpen"
+          rules={[{ required: true, message: "请选择消防模式！" }]}
+        >
+          <Radio.Group>
+            {isFireModeOpenOptions.map((o) => (
               <Radio key={o.value} value={o.value}>
                 {o.label}
               </Radio>

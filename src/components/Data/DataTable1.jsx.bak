@@ -10,7 +10,6 @@ import {
   Space,
   Pagination,
 } from "antd";
-import Chart from "./DataTable1Chart";
 import moment from "moment";
 import modal from "../../shared/modal";
 import dataService from "../../services/data.service";
@@ -182,11 +181,18 @@ export default function DataTable() {
           />
         </Form.Item>
       </Form>
-      <div>
-        <Chart dataSource={[]} id="province" />
-      </div>
-      <div>
-        <Chart dataSource={[]} id="city" />
+
+      <Table
+        rowKey="index"
+        dataSource={makeData(dataList)}
+        columns={columns}
+        pagination={false}
+        size="small"
+        bordered
+        loading={loading}
+      />
+      <div className="page-container">
+        <Pagination {...paginationProps} />
       </div>
     </div>
   );
