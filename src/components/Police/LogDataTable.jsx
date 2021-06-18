@@ -26,7 +26,12 @@ export default function DataTable({ id }) {
         );
         if (mounted) {
           setLoading(false);
-          setDataList(items);
+          setDataList(
+            items.map((item) => ({
+              ...item,
+              ...item.deviceInteractionLog,
+            }))
+          );
           setTotal(totalCount);
         }
       } catch (error) {
