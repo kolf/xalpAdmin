@@ -83,9 +83,12 @@ export default function DataTable() {
       return [];
     }
     return data.map((item, index) => {
+      const { orderDetail } = item;
       return {
+        ...orderDetail,
         ...item,
-        id: item.orderDetail.id,
+        name1: orderDetail.name,
+        phone1: orderDetail.phone,
         index: index + 1,
       };
     });
@@ -160,7 +163,7 @@ export default function DataTable() {
   }
 
   function getRowClassName(creds, index) {
-    if (creds.orderDetail.status !== 1) {
+    if (creds.status !== 1) {
       return "ant-table-row-disabled";
     }
   }
@@ -171,7 +174,7 @@ export default function DataTable() {
       dataIndex: "orderNO",
       width: 156,
       render(text, creds) {
-        return creds.orderDetail.orderNO || "无";
+        return creds.orderNO || "无";
       },
     },
     {
@@ -200,7 +203,7 @@ export default function DataTable() {
       dataIndex: "name1",
       width: 64,
       render(text, creds) {
-        return creds.orderDetail.name || "无";
+        return text || "无";
       },
     },
     {
@@ -208,7 +211,7 @@ export default function DataTable() {
       dataIndex: "phone1",
       width: 114,
       render(text, creds) {
-        return creds.orderDetail.phone || "无";
+        return text || "无";
       },
     },
     {
@@ -216,7 +219,7 @@ export default function DataTable() {
       dataIndex: "certNumber",
       width: 174,
       render(text, creds) {
-        return creds.orderDetail.certNumber || "无";
+        return creds.certNumber || "无";
       },
     },
     {
@@ -224,9 +227,7 @@ export default function DataTable() {
       dataIndex: "timeRangeName",
       width: 196,
       render(text, creds) {
-        return (
-          moment(creds.orderDetail.startDate).format(dateFormat) + " " + text
-        );
+        return moment(creds.startDate).format(dateFormat) + " " + text;
       },
     },
     {
@@ -314,24 +315,23 @@ export default function DataTable() {
       fixed: "right",
       width: 150,
       render(text, creds) {
-        const { orderDetail } = creds;
         return (
           <div className="text-center">
             <Button
-              disabled={orderDetail.status !== 1}
+              disabled={creds.status !== 1}
               size="small"
               style={{ marginRight: 4 }}
               onClick={(e) => {
-                showReviewModal(orderDetail);
+                showReviewModal(creds);
               }}
             >
               核销
             </Button>
             <Button
-              disabled={orderDetail.status !== 1}
+              disabled={creds.status !== 1}
               size="small"
               onClick={(e) => {
-                showDeleteModal(orderDetail);
+                showDeleteModal(creds);
               }}
             >
               取消预约
