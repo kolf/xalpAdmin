@@ -14,7 +14,7 @@ const { Option } = Select;
 
 export default function HorizontalLoginForm({ onChange }) {
   const [form] = Form.useForm();
-  const [timeRangeType, setTimeRangeType] = useState("2");
+  const [timeRangeType, setTimeRangeType] = useState("1");
 
   useEffect(() => {
     let mounted = true;
@@ -67,13 +67,15 @@ export default function HorizontalLoginForm({ onChange }) {
 
     return {
       CheckDeviceType: "2",
-      TimeRangeType: "2",
+      TimeRangeType: "1",
       "year-1": m1.year(),
       "month-1": m1.month() + 1 + "",
-      "year-2": m2.year(),
-      "month-2": m2.month() + "",
+      // "year-2": m2.year(),
+      // "month-2": m2.month() + "",
     };
   };
+
+  return null
 
   return (
     <Form form={form} onFinish={onFinish} initialValues={makeInitialValues()}>

@@ -78,7 +78,7 @@ export const userStateEnum = {
 export const checkModeEnum = {
   1: "纸质二维码",
   2: "电子二维码",
-  4: "身份证",
+  4: "证件号码",
   8: "IC卡",
   16: "人证核验",
   32: "人脸查找",

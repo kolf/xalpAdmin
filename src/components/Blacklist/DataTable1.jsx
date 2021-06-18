@@ -186,7 +186,7 @@ export default function DataTable() {
       dataIndex: "phone",
     },
     {
-      title: "身份证",
+      title: "证件号码",
       dataIndex: "certNumber",
     },
     {
@@ -213,13 +213,13 @@ export default function DataTable() {
       title: "历史不文明行为",
       dataIndex: "historyBehaviorNames",
       render(text) {
-        return text || "无";
+        return text && text.length > 0 ? text : "无";
       },
     },
     {
       title: "距离处理到期天数",
       dataIndex: "daysOfEndBlock",
-      width:130,
+      width: 130,
       render(text) {
         return text < 0 ? "0" : text;
       },

@@ -141,7 +141,7 @@ export default function DataTable({ dataSource, showType }) {
         },
       },
       {
-        title: "身份证",
+        title: "证件号码",
         dataIndex: "certNumber",
         render(text) {
           return text || "未知";

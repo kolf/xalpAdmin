@@ -141,7 +141,7 @@ export default function DataTable() {
   const columns = [
     {
       title: "订单号",
-      dataIndex: "index",
+      dataIndex: "orderNO",
     },
     {
       title: "活动名称",

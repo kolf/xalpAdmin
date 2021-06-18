@@ -254,7 +254,7 @@ export default function UpdateDataForm({
             <Form.Item
               label="是否上架"
               name="isActive"
-              rules={[{ required: true, message: "请输入身份证!" }]}
+              rules={[{ required: true, message: "请输入证件号码!" }]}
             >
               <Radio.Group>
                 {activityActiveOptions.map((o) => (

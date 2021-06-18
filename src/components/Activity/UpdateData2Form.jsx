@@ -62,7 +62,7 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef }) {
       },
     },
     {
-      title: "身份证号",
+      title: "证件号码",
       dataIndex: "certNumber",
       render(text) {
         return text || "无";

@@ -248,7 +248,7 @@ export default function DataTable() {
     const mod = confirm({
       content: (
         <div>
-          此条活动 <span style={{ color: "#ff0000" }}>{creds.stateName}</span>
+          此条活动<span style={{ color: "#ff0000" }}>{creds.stateName}</span>
           确认后将被{value ? "上架" : "下架"}, 是否继续?
         </div>
       ),

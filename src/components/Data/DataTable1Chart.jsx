@@ -1,42 +1,12 @@
-import React, { useEffect } from "react";
-import F2 from "@antv/f2";
+import React, { useEffect, useRef } from "react";
+import F2 from "@antv/f2/dist/f2-all.js";
 
-const data = [
-  {
-    year: "1951 年",
-    sales: 38,
-  },
-  {
-    year: "1952 年",
-    sales: 52,
-  },
-  {
-    year: "1956 年",
-    sales: 61,
-  },
-  {
-    year: "1957 年",
-    sales: 145,
-  },
-  {
-    year: "1958 年",
-    sales: 48,
-  },
-  {
-    year: "1959 年",
-    sales: 38,
-  },
-  {
-    year: "1960 年",
-    sales: 38,
-  },
-  {
-    year: "1962 年",
-    sales: 38,
-  },
-];
-
-export default React.memo(function DataTable1Chart({ id, dataSource }) {
+export default React.memo(function DataTable1Chart({
+  id,
+  width,
+  dataSource,
+  onClick,
+}) {
   useEffect(() => {
     if (id) {
       renderChart(id);
@@ -48,24 +18,51 @@ export default React.memo(function DataTable1Chart({ id, dataSource }) {
         pixelRatio: window.devicePixelRatio,
       });
 
-      chart.source(data, {
-        sales: {
+      chart.source(dataSource, {
+        value: {
           tickCount: 5,
         },
       });
-      chart.tooltip({
-        showItemMarker: false,
-        onShow: function onShow(ev) {
-          const items = ev.items;
-          items[0].name = null;
-          items[0].name = items[0].title;
-          items[0].value = "¥ " + items[0].value;
-        },
-      });
-      chart.interval().position("year*sales");
+      chart.tooltip(false);
+      chart.interval().position("label*value");
       chart.render();
-    }
-  }, [dataSource, id]);
 
-  return <canvas id={id} width="800" height="320"></canvas>;
+      // 绘制柱状图文本
+      const offset = -5;
+      const canvas = chart.get("canvas");
+      const group = canvas.addGroup();
+      const shapes = {};
+      dataSource.forEach(function (obj) {
+        const point = chart.getPosition(obj);
+        const text = group.addShape("text", {
+          attrs: {
+            x: point.x,
+            y: point.y + offset,
+            text: obj.value,
+            textAlign: "center",
+            textBaseline: "bottom",
+            fill: "#808080",
+          },
+        });
+
+        shapes[obj.label] = text; // 缓存该 shape, 便于后续查找
+      });
+      // 配置柱状图点击交互
+      if (onClick) {
+        chart.interaction("interval-select", {
+          selectAxisStyle: {
+            fill: "#fff",
+            fontWeight: "bold",
+          },
+          mode: "range",
+          defaultSelected: dataSource[0],
+          onStart: function onProcess(e) {
+            e.data && onClick(e.data);
+          },
+        });
+      }
+    }
+  }, [JSON.stringify(dataSource), id]);
+
+  return <canvas id={id} width={width || 600} height="320"></canvas>;
 });
