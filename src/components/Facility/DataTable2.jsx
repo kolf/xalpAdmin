@@ -118,7 +118,7 @@ export default function DataTable() {
     }
     const mod = modal({
       title,
-      width: 960,
+      width: 1200,
       content: (
         <DataTableDetailas onOk={onOk} showType={type} dataSource={creds} />
       ),

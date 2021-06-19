@@ -8,6 +8,8 @@ import "./AppHeader.less";
 
 import * as sessionActions from "../../store/actions/session.actions";
 import DateWidget from "../UI/DateWidget";
+import logoUrl from "../../assets/img/topbar.png";
+import menuUrl from "../../assets/img/icon.png";
 
 const { Header } = Layout;
 
@@ -31,7 +33,7 @@ class AppHeader extends React.Component {
           zIndex: 10,
         }}
       >
-        <div className="brand">雄安郊野公园</div>
+        <div className="brand"></div>
         <Menu
           mode="horizontal"
           defaultSelectedKeys={["3"]}
@@ -44,7 +46,7 @@ class AppHeader extends React.Component {
           }}
         >
           <Menu.Item key="3">
-            <Link to="/">入园管理系统</Link>
+            <img src={menuUrl} /> <Link to="/">入园管理系统</Link>
           </Menu.Item>
         </Menu>
         <div style={{ padding: "0 12px" }}>

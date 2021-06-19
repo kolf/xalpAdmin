@@ -10,6 +10,7 @@ import {
   Space,
   Select,
   Pagination,
+  Image,
 } from "antd";
 import moment from "moment";
 import modal from "../../shared/modal";
@@ -27,6 +28,7 @@ const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
+const secFormat = "YYYY-MM-DD HH:mm:ss";
 const reviewOptions = [
   { value: "3", label: "已核销" },
   { value: "1", label: "未核销" },
@@ -259,7 +261,7 @@ export default function DataTable() {
       dataIndex: "faceWebUrl",
       width: 76,
       render(text) {
-        return text ? <img width="60" src={text} /> : "无";
+        return text ? <Image src={text} width={60} /> : "无";
       },
     },
     {
@@ -299,6 +301,14 @@ export default function DataTable() {
         return creds.checkDeviceName
           ? `${creds.checkDeviceName}(${text})`
           : "无";
+      },
+    },
+    {
+      title: "核销时间",
+      dataIndex: "checkTime",
+      width: 168,
+      render(text, creds) {
+        return text ? moment(text).format(secFormat) : "无";
       },
     },
     {
@@ -449,7 +459,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        scroll={{ x: 2120 }}
+        scroll={{ x: 2300 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

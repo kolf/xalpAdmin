@@ -213,7 +213,9 @@ export default function DataTable() {
       title: "历史不文明行为",
       dataIndex: "historyBehaviorNames",
       render(text) {
-        return text && text.length > 0 ? text : "无";
+        return text && text.length > 0
+          ? text.join('，')
+          : "无";
       },
     },
     {
@@ -333,7 +335,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        scroll={{ x: 1500 }}
+        scroll={{ x: 1600 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

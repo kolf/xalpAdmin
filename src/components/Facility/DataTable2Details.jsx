@@ -2,9 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Table, Button, Form, Input, Pagination } from "antd";
 import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
-import { checkModeEnum } from "../../shared/options";
+import moment from "moment";
 import facilityService from "../../services/faciliy.service";
 const { Search } = Input;
+const secFormat = "YYYY-MM-DD HH:mm:ss";
+
 export default function DataTable({ dataSource, showType }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -169,6 +171,14 @@ export default function DataTable({ dataSource, showType }) {
           return creds.checkDeviceName
             ? `${creds.checkDeviceName}(${text})`
             : "无";
+        },
+      },
+      {
+        title: "核销时间",
+        dataIndex: "checkTime",
+        width: 168,
+        render(text, creds) {
+          return text ? moment(text).format(secFormat) : "无";
         },
       },
       {

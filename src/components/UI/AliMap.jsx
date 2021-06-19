@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useRef } from "react";
 import { renderToString } from "react-dom/server";
-import { Map, APILoader, Marker } from "@uiw/react-amap";
+import { useRequest } from "ahooks";
+import { Map, APILoader } from "@uiw/react-amap";
+import policeService from "../../services/police.service";
 import MapIcon from "./MapIcon";
 import imgUrl from "../../assets/img/cad-01.5a2c39ae.png";
 import update from "./alimapScript";
 
 const AliMap = () => {
+  const { data, loading, run } = useRequest(policeService.getDeviceMapList);
+  if (loading) {
+    return null;
+  }
   return (
     <div className="alimap-root">
       <APILoader akay="c54dd5d1143cb8ea800f1d5e8d48502a">
@@ -26,22 +32,27 @@ const AliMap = () => {
                 url: imgUrl, // 图片 Url
                 zooms: [10, 18], // 设置可见级别，[最小级别，最大级别]
               });
-              const marker1 = new AMap.Marker({
-                position: [115.9436, 39.087134],
-                content: renderToString(<MapIcon />),
-                offset: new AMap.Pixel(-13, -30),
-              });
-              const marker2 = new AMap.Marker({
-                position: [115.9416, 39.085134],
-                content: renderToString(<MapIcon />),
-                offset: new AMap.Pixel(-13, -30),
-              });
-              const marker3 = new AMap.Marker({
-                position: [115.9446, 39.089134],
-                content: renderToString(<MapIcon />),
-                offset: new AMap.Pixel(-13, -30),
-              });
-              const markers = [marker, marker1, marker2, marker3];
+              let markerList = [];
+              if (data && data.length > 0) {
+                markerList = data
+                  .map((item) => {
+                    console.log(item, "item");
+                    const { longitude, latitude } = item;
+                    const position = [longitude * 1, latitude * 1];
+                    if (latitude && longitude) {
+                      return new AMap.Marker({
+                        position,
+                        content: renderToString(
+                          <MapIcon name={item.name} id={item.deviceId} />
+                        ),
+                        offset: new AMap.Pixel(-13, -30),
+                      });
+                    }
+                  })
+                  .filter((item) => item);
+              }
+
+              const markers = [marker, ...markerList];
               map.add(markers);
               update(AMap, map, markers);
             }

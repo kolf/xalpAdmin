@@ -23,6 +23,28 @@ class PoliceService {
     }
   };
 
+  getDeviceMapList = async (creds) => {
+    try {
+      const res = await api.get(
+        `iotbase/device/all?itemIds=36&typeIds=4190&isShow=1`
+      );
+      return res.data.data;
+    } catch (error) {
+      return Promise.resolve([]);
+    }
+  };
+
+  getDeviceMap = async (creds) => {
+    try {
+      const res = await api.get(
+        `sightseer/cockpit/queryTouristGate?${queryString.stringify(creds)}`
+      );
+      return res.data.data;
+    } catch (error) {
+      return Promise.resolve([]);
+    }
+  };
+
   updateDevice = async (creds) => {
     try {
       const res = await api.put(`api/Device/${creds.id}`, creds);

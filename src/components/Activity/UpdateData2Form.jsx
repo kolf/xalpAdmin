@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Form, Input, Radio, Table, Row, Col, Space, Spin } from "antd";
 import utils from "../../shared/utils";
 import moment from "moment";
-import { activityReviewOptions,activityOrderStatusEnum } from "../../shared/options";
+import {
+  activityReviewOptions,
+  activityOrderStatusEnum,
+} from "../../shared/options";
 import activityService from "../../services/activity.service";
 const secFormat = "YYYY-MM-DD HH:mm:ss";
 
@@ -198,7 +201,7 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef }) {
             <div className="pad-bottom">
               <Space>
                 <span>审核结果：</span>
-                <span>{data.stateName || "无"}</span>
+                <span>{activityOrderStatusEnum[data.auditStatus] || "无"}</span>
               </Space>
             </div>
           </Col>
@@ -206,7 +209,11 @@ export default function UpdateDataForm({ defaultValues = {}, saveRef }) {
             <div className="pad-bottom">
               <Space>
                 <span>审核时间：</span>
-                <span>{data.auditTime || "无"}</span>
+                <span>
+                  {data.auditTime
+                    ? moment(data.auditTime).format(secFormat)
+                    : "无"}
+                </span>
               </Space>
             </div>
             {data.refuseReason && (

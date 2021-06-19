@@ -7,7 +7,7 @@ class SessionService {
   login = async (creds) => {
     try {
       const res1 = await axios.post(
-        `/auth/oauth/token?${queryString.stringify({
+        `auth/oauth/token?${queryString.stringify({
           grant_type: "password",
           ...creds,
         })}`,
