@@ -1,6 +1,6 @@
-# React Start Kit
+# 入园前端
 
-## packages installed
+## 技术栈
 
 - [react](https://reactjs.org/)
 - [antd](https://ant.design/) for UI Components
@@ -10,18 +10,7 @@
 - [history](https://github.com/ReactTraining/history) for navigation
 - [prop-types](https://github.com/facebook/prop-types) for runtime type checking
 
-## quick start
-
-start up:
-
-```
-  git clone https://github.com/WisdomFusion/react-starter-kit.git
-  cd react-starter-kit/
-  yarn install
-  yarn start
-```
-
-project structure:
+## 项目目录
 
 - assets/
 - components/
@@ -41,15 +30,3 @@ project structure:
     - *.reduser.js
 - routes.js
 
-## Font Awesome
-
-[Free Font Awesome icons](https://fontawesome.com/icons?d=listing&m=free)
-
-```
-import { faUser, faLock } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-...
-
-<FontAwesomeIcon icon={faUser} />
-```
