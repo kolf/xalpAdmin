@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { Table, Button, Form, Input, Pagination, Select } from "antd";
+import { Table, Button, Form, Input, Pagination, Select, Tooltip } from "antd";
 import UpdateDataForm from "./UpdateData2Form";
 import modal from "../../shared/modal";
 import confirm from "../../shared/confirm";
@@ -242,14 +242,16 @@ export default function DataTable() {
           </Button>
         </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
-          <Search
-            size="small"
-            placeholder="模糊搜索"
-            allowClear
-            onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", keyword: value })
-            }
-          />
+        <Tooltip title="请输入活动名称、团队负责人查询" color={'rgba(11, 34, 63, 0.9)'} overlayStyle={{minWidth:200,textAlign:'center !important'}}>
+            <Search
+              size="small"
+              placeholder="请输入活动名称、团队负责人查询"
+              allowClear
+              onSearch={(value) =>
+                setQuery({ ...query, skipCount: "1", keyword: value })
+              }
+            />
+          </Tooltip>
         </Form.Item>
       </Form>
 

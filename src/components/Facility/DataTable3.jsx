@@ -303,7 +303,7 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"
+            placeholder="请输入姓名查询"
             allowClear
             onSearch={(value) =>
               setQuery({ ...query, keyword: value, skipCount: "1" })
