@@ -26,17 +26,13 @@ export default function DeviceTotal() {
 
   return (
     <Row>
-      <Col span={8}>
+      <Col span={12}>
         <div className="sidebar-heading-num">{data.totalCount}</div>
         <div>闸机总数</div>
       </Col>
-      <Col span={8}>
+      <Col span={12}>
         <div className="sidebar-heading-num">{data.onlineCount}</div>
         <div>在线闸机</div>
-      </Col>
-      <Col span={8}>
-        <div className="sidebar-heading-num">{data.offlineCount}</div>
-        <div>离线闸机</div>
       </Col>
     </Row>
   );
