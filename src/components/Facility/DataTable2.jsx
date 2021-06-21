@@ -162,7 +162,7 @@ export default function DataTable() {
       title: "团体类型",
       dataIndex: "groupTypeName",
       render(text) {
-        return text || "无";
+        return text && text !== "0" ? text : "无";
       },
     },
     {

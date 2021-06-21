@@ -308,15 +308,27 @@ export default function DataTable() {
       dataIndex: "checkTime",
       width: 168,
       render(text, creds) {
-        return text ? moment(text).format(secFormat) : "无";
+        let title = "";
+        if (creds.cancelUserName) {
+          title = creds.cancelTime;
+        } else if (creds.checkUserName) {
+          title = creds.checkTime;
+        }
+        return title ? moment(title).format(secFormat) : "无";
       },
     },
     {
       title: "人工操作",
       dataIndex: "cancelUserName",
       width: 120,
-      render(text) {
-        return text ? `人工取消/${text}` : "无";
+      render(text, creds) {
+        let title = "";
+        if (text) {
+          title = `人工取消/${text}`;
+        } else if (creds.checkUserName) {
+          title = `人工核销/${creds.checkUserName}`;
+        }
+        return title || "无";
       },
     },
     {
