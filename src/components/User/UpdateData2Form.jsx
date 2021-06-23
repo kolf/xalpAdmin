@@ -33,21 +33,27 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
           res = await userService.getAllPermissions({ providerName: "R" });
         }
 
-        const options = res.groups
-          .find((item) => item.name === "SmartTicketing")
-          .permissions.map((item) => {
-            return {
-              label: item.displayName,
-              value: item.name,
-            };
-          });
+        const options = res.groups.reduce((result, o) => {
+          if (o.permissions && o.permissions.length > 0) {
+            result = [
+              ...result,
+              ...o.permissions.map((i) => ({
+                label: i.displayName,
+                value: i.name,
+              })),
+            ];
+          }
+          return result;
+        }, []);
 
-        if(mounted){
+        
+
+        if (mounted) {
           setProviderOptions(options);
-        setLoading(false);
+          setLoading(false);
         }
       } catch (error) {
-        if(mounted){
+        if (mounted) {
           setLoading(false);
         }
       }
@@ -104,7 +110,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
     }
 
     return Object.keys(values).reduce((result, key) => {
-      console.log(result,key)
+      console.log(result, key);
       const value = values[key];
       if (key === "permissions") {
         result[key] = providerOptions

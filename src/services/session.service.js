@@ -35,10 +35,34 @@ class SessionService {
         ossAccessToken,
       });
       const token = res.data.access_token;
+      const roles = await this.getRoles(token);
       sessionStorage.setItem("@Auth:token", token);
+      sessionStorage.setItem("@Auth:roles", roles);
       return Promise.resolve(token);
     } catch (error) {
       return Promise.reject(error);
+    }
+  };
+
+  // config.headers.common.Authorization = `Bearer ${token}`;
+  getRoles = async (token) => {
+    // const token = sessionStorage.getItem("@Auth:token")
+    try {
+      const res = await axios.get(
+        `api/application-configuration`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+        }
+      );
+      const result = Object.keys(res.data.auth.grantedPolicies);
+      if (result.length === 0) {
+        throw `对不起，您没有权限！`
+      }
+      return Promise.resolve(result);
+    } catch (error) {
+      return Promise.reject(`对不起，您没有权限！`);
     }
   };
 
@@ -60,6 +84,11 @@ class SessionService {
   getUserToken = () => {
     return sessionStorage.getItem("@Auth:token");
   }
+
+  getUserRoles = () => {
+    return sessionStorage.getItem("@Auth:roles") || '';
+  }
+
 }
 
 export default new SessionService();

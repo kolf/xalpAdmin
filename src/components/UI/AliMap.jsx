@@ -36,7 +36,6 @@ const AliMap = () => {
               if (data && data.length > 0) {
                 markerList = data
                   .map((item) => {
-                    console.log(item, "item");
                     const { longitude, latitude } = item;
                     const position = [longitude * 1, latitude * 1];
                     if (latitude && longitude) {

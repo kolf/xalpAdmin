@@ -10,14 +10,6 @@ class UserService {
       return Promise.reject(error);
     }
   };
-  getUserRoleList = async (creds) => {
-    try {
-      const res = await api.get(`api/application-configuration`);
-      return res.data;
-    } catch (error) {
-      return Promise.reject(error);
-    }
-  };
   getRoleList = async (creds) => {
     try {
       const res = await api.get(

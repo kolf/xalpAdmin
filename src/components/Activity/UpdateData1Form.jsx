@@ -27,12 +27,18 @@ export default function UpdateDataForm({
   saveRef,
 }) {
   const [form] = Form.useForm();
+  const [defaultAreaOptions, setDefaultAreaOptions] = useState([
+    ...areaOptions,
+  ]);
 
   useEffect(() => {
     let mounted = true;
 
     if (mounted && saveRef) {
       saveRef(form);
+      if (defaultValues.regionCityCode) {
+        
+      }
     }
 
     return () => {
@@ -96,7 +102,7 @@ export default function UpdateDataForm({
         { label: regionAreaName, value: regionAreaCode },
       ];
 
-      const targetOption = areaOptions.find(
+      const targetOption = defaultAreaOptions.find(
         (o) => o.value === regionProvinceCode
       );
       targetOption.children = [
@@ -126,7 +132,7 @@ export default function UpdateDataForm({
               name="provinceLevel"
               rules={[{ required: true, message: "请输入所属地址!" }]}
             >
-              <AreaSelect defaultOptions={areaOptions} />
+              <AreaSelect defaultOptions={defaultAreaOptions} />
             </Form.Item>
 
             <Form.Item
