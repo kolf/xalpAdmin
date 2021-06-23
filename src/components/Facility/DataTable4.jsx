@@ -11,7 +11,7 @@ import {
   Select,
   Pagination,
   Image,
-  message,
+  message
 } from "antd";
 import moment from "moment";
 import modal from "../../shared/modal";
@@ -305,14 +305,14 @@ export default function DataTable() {
           </Button>
         </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
-          <Search
-            size="small"
-            placeholder="模糊搜索"
-            allowClear
-            onSearch={(value) =>
-              setQuery({ ...query, keyword: value, skipCount: "1" })
-            }
-          />
+            <Search
+              size="small"
+              placeholder="请输入姓名查询"
+              allowClear
+              onSearch={(value) =>
+                setQuery({ ...query, keyword: value, skipCount: "1" })
+              }
+            />
         </Form.Item>
       </Form>
 

@@ -281,7 +281,7 @@ export default function DataTable() {
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
           <Search
             size="small"
-            placeholder="模糊搜索"
+            placeholder="请输入设备名称查询"
             allowClear
             onSearch={(value) =>
               setQuery({ ...query, skipCount: "1", keyword: value })

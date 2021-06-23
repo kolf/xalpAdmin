@@ -10,6 +10,7 @@ import {
   Space,
   Select,
   Pagination,
+  Tooltip
 } from "antd";
 import DataTableDetailas from "./DataTable2Details";
 import moment from "moment";
@@ -40,7 +41,6 @@ export default function DataTable() {
     maxResultCount: "10",
     keyword: "",
   });
-
   useEffect(() => {
     let mounted = true;
     loadData();
@@ -342,14 +342,21 @@ export default function DataTable() {
           </Button>
         </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
-          <Search
-            size="small"
-            placeholder="模糊搜索"
-            allowClear
-            onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", keyword: value })
-            }
-          />
+          <Tooltip 
+            title="请输入预约人员姓名查询" 
+            color={'rgba(11, 34, 63, 0.9)'} 
+            overlayStyle={{minWidth:100}}
+            destroyTooltipOnHide="keepParent?: false"
+          >
+            <Search
+              size="small"
+              placeholder="请输入预约人员姓名查询"
+              allowClear
+              onSearch={(value) =>
+                setQuery({ ...query, skipCount: "1", keyword: value })
+              }
+            />
+          </Tooltip>
         </Form.Item>
       </Form>
 

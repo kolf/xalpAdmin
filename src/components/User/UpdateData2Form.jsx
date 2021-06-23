@@ -104,6 +104,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
     }
 
     return Object.keys(values).reduce((result, key) => {
+      console.log(result,key)
       const value = values[key];
       if (key === "permissions") {
         result[key] = providerOptions
