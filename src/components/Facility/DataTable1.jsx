@@ -305,7 +305,7 @@ export default function DataTable() {
       },
     },
     {
-      title: "核销时间",
+      title: "核销/取消时间",
       dataIndex: "checkTime",
       width: 168,
       render(text, creds) {
