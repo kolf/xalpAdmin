@@ -17,17 +17,17 @@ export default function AppMenu() {
           <Link to="/police">入园设备</Link>
         </Menu.Item>
       )}
-      {/SmartTicketing.Devices/.test(roles) && (
+      {/SmartTicketingReservation.TimeRangeSettings/.test(roles) && (
         <Menu.Item>
           <Link to="/calendar">预约量管理</Link>
         </Menu.Item>
       )}
-      {/SmartTicketing.Devices/.test(roles) && (
+      {/SmartTicketingReservation.(Personal|Personal)|Personal.(Merchants|Staffs)/.test(roles) && (
         <Menu.Item>
           <Link to="/facility">预约入园</Link>
         </Menu.Item>
       )}
-      {/SmartTicketing.Devices/.test(roles) && (
+      {/SmartTicketing.BlockUsers/.test(roles) && (
         <Menu.Item>
           <Link to="/blacklist">黑名单管理</Link>
         </Menu.Item>
@@ -37,12 +37,12 @@ export default function AppMenu() {
           <Link to="/user">权限管理</Link>
         </Menu.Item>
       )}
-      {/SmartTicketing.Devices/.test(roles) && (
+      {/SmartTicketing.Products/.test(roles) && (
         <Menu.Item>
           <Link to="/ticket-category">票种管理</Link>
         </Menu.Item>
       )}
-      {/SmartTicketing.Devices/.test(roles) && (
+      {/SmartTicketing.ParkActivities/.test(roles) && (
         <Menu.Item>
           <Link to="/activity">活动管理</Link>
         </Menu.Item>

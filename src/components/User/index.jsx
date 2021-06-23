@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { Tabs } from "antd";
+import sessionService from "../../services/session.service";
 import Main from "../Layouts/AppMain";
 import DataTable1 from "./DataTable1";
 import DataTable2 from "./DataTable2";
@@ -8,9 +9,34 @@ import "./style.less";
 const { TabPane } = Tabs;
 
 export default function Home() {
+  const roles = sessionService.getUserRoles();
   const [show, setShow] = useState(true);
-  const [tabKey, setTabKey] = useState("1");
-  if (!show) {
+  const [tabs, setTabs] = useState([]);
+  const [tabKey, setTabKey] = useState("");
+
+  useEffect(() => {
+    if (tabs.length === 0) {
+      const nextTabs = getTabs();
+      setTabs(nextTabs);
+      setTabKey(nextTabs[0].key);
+    }
+
+    function getTabs() {
+      let result = [];
+      if (/AbpIdentity.Users/.test(roles)) {
+        result.push({ key: "1", label: "用户管理" });
+      }
+      if (/AbpIdentity.Roles/.test(roles)) {
+        result.push({ key: "2", label: "角色管理" });
+      }
+      if (/SmartTicketing.Providers/.test(roles)) {
+        result.push({ key: "3", label: "服务商管理" });
+      }
+      return result;
+    }
+  }, [roles]);
+
+  if (!show || tabs.length === 0) {
     return null;
   }
   return (
@@ -21,9 +47,9 @@ export default function Home() {
       }}
       header={
         <Tabs activeKey={tabKey} onChange={setTabKey}>
-          <TabPane tab="用户管理" key="1" />
-          <TabPane tab="角色管理" key="2" />
-          <TabPane tab="服务商管理" key="3" />
+          {tabs.map((tab) => (
+            <TabPane tab={tab.label} key={tab.key} />
+          ))}
         </Tabs>
       }
     >
