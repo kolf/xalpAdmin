@@ -46,7 +46,7 @@ class AppHeader extends React.Component {
           }}
         >
           <Menu.Item key="3">
-            <img src={menuUrl} /> <Link to="/" style={{color: "#fff"}}>入园管理系统</Link>
+            <img src={menuUrl} /> <Link to="/" style={{color: "#fff"}}>入园管理</Link>
           </Menu.Item>
         </Menu>
         <div style={{ padding: "0 12px" }}>

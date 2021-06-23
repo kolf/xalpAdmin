@@ -20,6 +20,7 @@ export default function DataTableListCalendar({ renderHeader }) {
   const [selectedDate, setSelectedDate] = useState("");
   const [dataList, setDataList] = useState([]);
   const [monthDate, setMonthDate] = useState(currentMoment.format(monthFormat));
+  const [counter, setCounter] = useState(0);
 
   useEffect(() => {
     let mounted = true;
@@ -45,7 +46,7 @@ export default function DataTableListCalendar({ renderHeader }) {
     return () => {
       mounted = false;
     };
-  }, [monthDate]);
+  }, [monthDate, counter]);
 
   function makeQuery(date) {
     const currentDate = moment(date).startOf("month");
@@ -69,6 +70,7 @@ export default function DataTableListCalendar({ renderHeader }) {
     });
     function onOk() {
       mod.close();
+      setCounter(counter + 1);
     }
   }
 
