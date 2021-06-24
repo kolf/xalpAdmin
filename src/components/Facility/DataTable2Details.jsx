@@ -50,7 +50,7 @@ export default function DataTable({ dataSource, showType }) {
       return [];
     }
     return data.map((item, index) => {
-      return { ...item.orderDetail, orderDetail: undefined, index: index + 1 };
+      return { ...item.orderDetail,...item, orderDetail: undefined, index: index + 1 };
     });
   }
 
@@ -192,6 +192,7 @@ export default function DataTable({ dataSource, showType }) {
         dataIndex: "cancelUserName",
         width: 120,
         render(text, creds) {
+          console.log(creds, "creds");
           let title = "";
           if (text) {
             title = `人工取消/${text}`;
@@ -257,6 +258,10 @@ export default function DataTable({ dataSource, showType }) {
       });
     },
   };
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <>
