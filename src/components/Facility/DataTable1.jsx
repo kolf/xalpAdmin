@@ -11,7 +11,7 @@ import {
   Select,
   Pagination,
   Image,
-  Tooltip
+  Tooltip,
 } from "antd";
 import moment from "moment";
 import modal from "../../shared/modal";
@@ -175,7 +175,7 @@ export default function DataTable() {
     {
       title: "订单号",
       dataIndex: "orderNO",
-      width: 156,
+      width: 168,
       render(text, creds) {
         return creds.orderNO || "无";
       },
@@ -268,8 +268,9 @@ export default function DataTable() {
     {
       title: "预约来源",
       dataIndex: "orderChannel",
+      width: 90,
       render(text) {
-        return text ? orderChannelEnum[text] : "未知";
+        return text ? orderChannelEnum[text] : "无预约";
       },
     },
     {
@@ -282,6 +283,7 @@ export default function DataTable() {
     {
       title: "核销设备ID",
       dataIndex: "checkDeviceCode",
+      width: 90,
       render(text) {
         return text || "无";
       },
@@ -452,7 +454,11 @@ export default function DataTable() {
           </Button>
         </Form.Item>
         <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
-          <Tooltip title="请输入参观人/参观人电话证件号码查询" color={'rgba(11, 34, 63, 0.9)'} overlayStyle={{minWidth:260,textAlign:'center !important'}}>
+          <Tooltip
+            title="请输入参观人/参观人电话证件号码查询"
+            color={"rgba(11, 34, 63, 0.9)"}
+            overlayStyle={{ minWidth: 260, textAlign: "center !important" }}
+          >
             <Search
               size="small"
               placeholder="请输入参观人/参观人电话证件号码查询"
@@ -461,7 +467,7 @@ export default function DataTable() {
                 setQuery({ ...query, skipCount: "1", keyword: value })
               }
             />
-           </Tooltip>
+          </Tooltip>
         </Form.Item>
       </Form>
 
@@ -474,7 +480,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        scroll={{ x: 2300 }}
+        scroll={{ x: 2400 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

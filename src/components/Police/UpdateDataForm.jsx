@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Input, Radio, Select, Button } from "antd";
 import {
   deviceActiveOptions,
-  deviceOptions,
+  isEnableFreeCertCheckOptions,
   enterOptions,
   isFireModeOpenOptions,
 } from "../../shared/options";
@@ -18,7 +18,11 @@ const tailLayout = {
   wrapperCol: { offset: 8, span: 16 },
 };
 
-export default function UpdateDataForm({ onOk, defaultValues = {} }) {
+export default function UpdateDataForm({
+  onOk,
+  defaultValues = {},
+  checkDeviceType,
+}) {
   async function onFinish(values) {
     let res = null;
     if (defaultValues.id) {
@@ -45,6 +49,8 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
           result.isDirectionEnter = value === "1";
         } else if (key === "isFireModeOpen") {
           result.isFireModeOpen = value === "1";
+        } else if (key === "isEnableFreeCertCheck") {
+          result.isEnableFreeCertCheck = value === "1";
         } else if (value !== undefined && value !== "-1") {
           result[key] = value;
         }
@@ -52,6 +58,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
       },
       {
         deviceType: 1,
+        checkDeviceType,
       }
     );
   }
@@ -68,6 +75,8 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         result.isDirectionEnter = value ? "1" : "0";
       } else if (key === "isFireModeOpen") {
         result.isFireModeOpen = value ? "1" : "0";
+      } else if (key === "isEnableFreeCertCheck") {
+        result.isEnableFreeCertCheck = value ? "1" : "0";
       } else if (/^(checkDeviceType)$/.test(key)) {
         result[key] = value + "";
       } else if (value !== undefined && value !== "-1") {
@@ -106,7 +115,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         >
           <Input placeholder="请输入" />
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           label="设备类型"
           name="checkDeviceType"
           rules={[{ required: true, message: "请选择设备类型！" }]}
@@ -116,7 +125,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
               <Option key={o.value}>{o.label}</Option>
             ))}
           </Select>
-        </Form.Item>
+        </Form.Item> */}
         {defaultValues.id && (
           <Form.Item label="录入人员姓名" name="creatorName">
             <Input readOnly placeholder="未知" />
@@ -172,19 +181,34 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
             ))}
           </Radio.Group>
         </Form.Item>
-        <Form.Item
-          label="消防模式"
-          name="isFireModeOpen"
-          rules={[{ required: true, message: "请选择消防模式！" }]}
-        >
-          <Radio.Group>
-            {isFireModeOpenOptions.map((o) => (
-              <Radio key={o.value} value={o.value}>
-                {o.label}
-              </Radio>
-            ))}
-          </Radio.Group>
-        </Form.Item>
+        {checkDeviceType === "1" && [
+          <Form.Item
+            label="消防模式"
+            name="isFireModeOpen"
+            rules={[{ required: true, message: "请选择消防模式！" }]}
+          >
+            <Radio.Group>
+              {isFireModeOpenOptions.map((o) => (
+                <Radio key={o.value} value={o.value}>
+                  {o.label}
+                </Radio>
+              ))}
+            </Radio.Group>
+          </Form.Item>,
+          <Form.Item
+            label="无预约入园"
+            name="isEnableFreeCertCheck"
+            rules={[{ required: true, message: "请选择无预约入园！" }]}
+          >
+            <Radio.Group>
+              {isEnableFreeCertCheckOptions.map((o) => (
+                <Radio key={o.value} value={o.value}>
+                  {o.label}
+                </Radio>
+              ))}
+            </Radio.Group>
+          </Form.Item>,
+        ]}
         <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit">
             确定
