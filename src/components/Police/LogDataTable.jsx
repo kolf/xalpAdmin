@@ -26,12 +26,7 @@ export default function DataTable({ id }) {
         );
         if (mounted) {
           setLoading(false);
-          setDataList(
-            items.map((item) => ({
-              ...item,
-              ...item.deviceInteractionLog,
-            }))
-          );
+          setDataList(items);
           setTotal(totalCount);
         }
       } catch (error) {
@@ -48,7 +43,7 @@ export default function DataTable({ id }) {
 
   function makeData(data) {
     return data.map((item, index) => {
-      return { ...item.device, index: index + 1 };
+      return { ...item, ...item.deviceInteractionLog, index: index + 1 };
     });
   }
 
@@ -77,7 +72,7 @@ export default function DataTable({ id }) {
   const columns = [
     {
       title: "设备IP地址",
-      dataIndex: "ipAddress",
+      dataIndex: "deviceIP",
     },
     {
       title: "操作时间",

@@ -30,8 +30,8 @@ export default function DataTable({ id, dataSource, onClose }) {
           id: creds.timeSettingId,
         });
         mod.close();
-        onClose();
         utils.success(`删除成功！`);
+        onClose();
       } catch (error) {
         mod.close();
       }

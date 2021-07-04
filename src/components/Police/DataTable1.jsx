@@ -105,19 +105,28 @@ export default function DataTable() {
     function onOk() {
       mod.close();
       setCounter(counter + 1);
-      setQuery({
-        ...query,
-        skipCount: "1",
-      });
+      // setQuery({
+      //   ...query,
+      //   skipCount: "1",
+      // });
     }
   }
 
   function setIsEnableFreeCertCheck() {
     const mod = modal({
       title: `全开无预约入园`,
-      content: <UpdateFreeCertCheckDataForm />,
+      content: <UpdateFreeCertCheckDataForm onOk={onOk} />,
       footer: null,
     });
+
+    function onOk() {
+      mod.close();
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
+        skipCount: "1",
+      });
+    }
   }
 
   function showAddModal() {
@@ -275,7 +284,7 @@ export default function DataTable() {
               type="primary"
               onClick={setIsEnableFreeCertCheck}
             >
-              无预约入园
+              全开无预约入园
             </Button>
             <Button size="small" type="primary" onClick={showAddModal}>
               新增

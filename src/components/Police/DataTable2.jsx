@@ -104,10 +104,10 @@ export default function DataTable() {
     function onOk() {
       mod.close();
       setCounter(counter + 1);
-      setQuery({
-        ...query,
-        skipCount: "1",
-      });
+      // setQuery({
+      //   ...query,
+      //   skipCount: "1",
+      // });
     }
   }
 

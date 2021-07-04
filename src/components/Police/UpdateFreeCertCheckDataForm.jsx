@@ -20,18 +20,13 @@ const tailLayout = {
 
 export default function UpdateDataForm({ onOk }) {
   async function onFinish(values) {
-    // let res = null;
-    // if (defaultValues.id) {
-    //   res = await policeService.updateDevice({
-    //     ...makeParams(values),
-    //     id: defaultValues.id,
-    //   });
-    //   utils.success(`更新成功！`);
-    // } else {
-    //   res = await policeService.addDevice(makeParams(values));
-    //   utils.success(`添加成功！`);
-    // }
-    // onOk && onOk(res);
+    try {
+      const res = await policeService.switchCertCheck(makeParams(values));
+      utils.success(`更新成功！`);
+      onOk && onOk(res);
+    } catch (error) {
+      utils.error(`更新失败！`);
+    }
   }
 
   function makeParams(values) {

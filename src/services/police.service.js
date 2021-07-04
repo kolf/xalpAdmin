@@ -54,6 +54,15 @@ class PoliceService {
     }
   };
 
+  switchCertCheck = async (creds) => {
+    try {
+      const res = await api.post(`api/Device/SwitchCertCheck`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   addDevice = async (creds) => {
     try {
       const res = await api.post(`api/Device`, creds);
