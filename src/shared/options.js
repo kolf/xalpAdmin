@@ -130,6 +130,17 @@ const activityApplyStatusEnum = {
   3: "已结束",
 };
 
+const isEnableFreeCertCheckEnum = {
+  1: "是",
+  0: "否",
+};
+
+export const isEnableFreeCertCheckOptions = Object.keys(isEnableFreeCertCheckEnum).map((key) => ({
+  value: key + "",
+  label: isEnableFreeCertCheckEnum[key],
+}));
+
+
 export const isFireModeOpenOptions = Object.keys(isFireModeOpenEnum).map((key) => ({
   value: key + "",
   label: isFireModeOpenEnum[key],

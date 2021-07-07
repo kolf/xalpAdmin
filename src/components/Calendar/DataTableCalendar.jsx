@@ -201,7 +201,10 @@ export default function DataTableListCalendar({ renderHeader }) {
         <DataTableCalendarDetails
           id={selectedDate}
           dataSource={getDayData(selectedDate)}
-          onClose={(e) => setSelectedDate("")}
+          onClose={(e) => {
+            setCounter(counter + 1);
+            setSelectedDate("");
+          }}
         />
       ) : (
         <Spin tip="加载中..." spinning={loading}>

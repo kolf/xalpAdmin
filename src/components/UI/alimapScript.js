@@ -41,13 +41,10 @@ export default function update(AMap, map, markers) {
 
     function setHtml(callback) {
       policeService.getDeviceMap({ deviceId: id }).then((res) => {
-        const html = `<div class="ant-row"><div style="flex:auto" class="ant-col">在线状态</div><div style="text-align:right" class="ant-col">${
-          openMap[res.isOpen] || "未知"
-        }</div></div><div class="ant-row"><div style="flex:auto" class="ant-col">设备状态</div><div style="text-align:right" class="ant-col">${
-          stateMap[res.states] || "未知"
-        }</div></div><div class="ant-row"><div style="flex:auto" class="ant-col">今日通行人数</div><div style="text-align:right" class="ant-col">${
-          res.dayNumber
-        }人</div></div>`;
+        const html = `<div class="ant-row"><div style="flex:auto" class="ant-col">在线状态</div><div style="text-align:right" class="ant-col">${openMap[res.isOpen] || "未知"
+          }</div></div><div class="ant-row"><div style="flex:auto" class="ant-col">设备状态</div><div style="text-align:right" class="ant-col">${stateMap[res.states] || "未知"
+          }</div></div><div class="ant-row"><div style="flex:auto" class="ant-col">今日通行人数</div><div style="text-align:right" class="ant-col">${res.dayNumber || "0"
+          }人</div></div>`;
         $content.innerHTML = html;
         callback && callback();
       });

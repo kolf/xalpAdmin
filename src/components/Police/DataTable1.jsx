@@ -12,6 +12,7 @@ import {
 } from "antd";
 import LogDataTable from "./LogDataTable";
 import UpdateDataForm from "./UpdateDataForm";
+import UpdateFreeCertCheckDataForm from "./UpdateFreeCertCheckDataForm";
 import policeService from "../../services/police.service";
 import modal from "../../shared/modal";
 
@@ -95,7 +96,26 @@ export default function DataTable() {
   function showEditModal(creds) {
     const mod = modal({
       title: "编辑",
-      content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
+      content: (
+        <UpdateDataForm onOk={onOk} defaultValues={creds} checkDeviceType="1" />
+      ),
+      footer: null,
+    });
+
+    function onOk() {
+      mod.close();
+      setCounter(counter + 1);
+      // setQuery({
+      //   ...query,
+      //   skipCount: "1",
+      // });
+    }
+  }
+
+  function setIsEnableFreeCertCheck() {
+    const mod = modal({
+      title: `全开无预约入园`,
+      content: <UpdateFreeCertCheckDataForm onOk={onOk} />,
       footer: null,
     });
 
@@ -112,7 +132,7 @@ export default function DataTable() {
   function showAddModal() {
     const mod = modal({
       title: "新增",
-      content: <UpdateDataForm onOk={onOk} />,
+      content: <UpdateDataForm onOk={onOk} checkDeviceType="1" />,
       footer: null,
     });
 
@@ -175,18 +195,25 @@ export default function DataTable() {
         return text || "无";
       },
     },
-
+    {
+      title: "无预约入园",
+      dataIndex: "isEnableFreeCertCheck",
+      width: 90,
+      render(text) {
+        return text ? "是" : "否";
+      },
+    },
     {
       title: "在线状态",
       dataIndex: "isOnline",
-      width:80,
+      width: 80,
       render(text) {
         return text ? "在线" : "离线";
       },
     },
     {
       title: "出入口状态",
-      width:90,
+      width: 90,
       dataIndex: "isDirectionEnter",
       render(text) {
         return text ? "入口" : "出口";
@@ -195,7 +222,7 @@ export default function DataTable() {
     {
       title: "设备状态",
       dataIndex: "isActive",
-      width:80,
+      width: 80,
       render(text) {
         return text ? "启用" : "停用";
       },
@@ -252,6 +279,13 @@ export default function DataTable() {
         <Col flex="auto"></Col>
         <Col flex="120px" style={{ textAlign: "right" }}>
           <Space>
+            <Button
+              size="small"
+              type="primary"
+              onClick={setIsEnableFreeCertCheck}
+            >
+              全开无预约入园
+            </Button>
             <Button size="small" type="primary" onClick={showAddModal}>
               新增
             </Button>
@@ -297,7 +331,7 @@ export default function DataTable() {
         size="small"
         bordered
         loading={loading}
-        scroll={{ x: 1200 }}
+        scroll={{ x: 1280 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

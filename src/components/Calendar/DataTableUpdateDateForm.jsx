@@ -101,6 +101,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
 
   function makeParams(values) {
     const { date, warningLeftQuantity, _items1, _items2 } = values;
+
     let startReserveDate = "";
     let endReserveDate = "";
     if (defaultValues.isSpecial) {
@@ -180,6 +181,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       maxTouristsQuantity,
       startReserveDate,
       endReserveDate,
+      warningLeftQuantity,
       timeItems,
       timeRanges,
       id,
@@ -194,6 +196,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       _items1,
       _items2,
       maxTouristsQuantity,
+      warningLeftQuantity,
       date: isSpecial
         ? [moment(dateTitle, dateFormat), moment(dateTitle, dateFormat)]
         : [
