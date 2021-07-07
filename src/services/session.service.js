@@ -68,7 +68,8 @@ class SessionService {
 
   logout = () => {
     sessionStorage.clear();
-    history.push("/login");
+    const host = window.location.host;
+    window.location.href = `//${host}/#/login?redirectUrl=//${host}/topark/login&appCode=ENTERPARKnL4gX4cG8tJ2zW4r`;
   };
 
   getUser = () => {

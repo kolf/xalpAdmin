@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Select, Dropdown, Button, Menu } from "antd";
 import { DownOutlined, MenuOutlined, SettingOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -11,7 +11,14 @@ export default function AppMenu() {
   const ref = useRef();
   const [visible, setVisible] = useState(false);
   const isHovering = useHover(ref);
+
   const roles = sessionService.getUserRoles();
+
+  useEffect(() => {
+    if (isHovering && !visible) {
+      setVisible(true);
+    }
+  }, [isHovering]);
 
   const menu = (
     <Menu>
@@ -58,7 +65,12 @@ export default function AppMenu() {
   return (
     <div ref={ref} style={{ textAlign: "right" }}>
       {isHovering || visible ? (
-        <Dropdown overlay={menu} visible={visible} onVisibleChange={setVisible}>
+        <Dropdown
+          overlay={menu}
+          trigger={["hover"]}
+          visible={visible}
+          onVisibleChange={setVisible}
+        >
           <Button
             style={{ width: "100%", backgroundColor: "rgba(11, 34, 63, 0.9)" }}
             icon={<MenuOutlined />}
