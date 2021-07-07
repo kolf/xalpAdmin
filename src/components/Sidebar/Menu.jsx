@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Select, Dropdown, Button, Menu } from "antd";
-import { DownOutlined, MenuOutlined } from "@ant-design/icons";
+import { DownOutlined, MenuOutlined, SettingOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
+import { useHover } from "ahooks";
 import sessionService from "../../services/session.service";
 import history from "../../shared/history";
 const { Option } = Select;
 
 export default function AppMenu() {
+  const ref = useRef();
+  const [visible, setVisible] = useState(false);
+  const isHovering = useHover(ref);
   const roles = sessionService.getUserRoles();
-  console.log(roles, "roles");
 
   const menu = (
     <Menu>
@@ -22,7 +25,9 @@ export default function AppMenu() {
           <Link to="/calendar">预约量管理</Link>
         </Menu.Item>
       )}
-      {/SmartTicketingReservation.(Personal|Personal)|Personal.(Merchants|Staffs)/.test(roles) && (
+      {/SmartTicketingReservation.(Personal|Personal)|Personal.(Merchants|Staffs)/.test(
+        roles
+      ) && (
         <Menu.Item>
           <Link to="/facility">预约入园</Link>
         </Menu.Item>
@@ -51,11 +56,22 @@ export default function AppMenu() {
   );
 
   return (
-    <Dropdown overlay={menu}>
-      <Button
-        style={{ width: "100%", backgroundColor: "rgba(11, 34, 63, 0.9)" }}
-        icon={<MenuOutlined />}
-      ></Button>
-    </Dropdown>
+    <div ref={ref} style={{ textAlign: "right" }}>
+      {isHovering || visible ? (
+        <Dropdown overlay={menu} visible={visible} onVisibleChange={setVisible}>
+          <Button
+            style={{ width: "100%", backgroundColor: "rgba(11, 34, 63, 0.9)" }}
+            icon={<MenuOutlined />}
+          >
+            系统菜单
+          </Button>
+        </Dropdown>
+      ) : (
+        <Button
+          icon={<SettingOutlined />}
+          style={{ backgroundColor: "rgba(11, 34, 63, 0.9)" }}
+        />
+      )}
+    </div>
   );
 }
