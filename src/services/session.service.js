@@ -48,17 +48,14 @@ class SessionService {
   getRoles = async (token) => {
     // const token = sessionStorage.getItem("@Auth:token")
     try {
-      const res = await axios.get(
-        `api/application-configuration`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-        }
-      );
+      const res = await axios.get(`api/application-configuration`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const result = Object.keys(res.data.auth.grantedPolicies);
       if (result.length === 0) {
-        throw `对不起，您没有权限！`
+        throw `对不起，您没有权限！`;
       }
       return Promise.resolve(result);
     } catch (error) {
@@ -69,7 +66,7 @@ class SessionService {
   logout = () => {
     sessionStorage.clear();
     const host = window.location.host;
-    window.location.href = `//${host}/#/login?redirectUrl=//${host}/topark/login&appCode=ENTERPARKnL4gX4cG8tJ2zW4r`;
+    window.location.href = `//${host}/#/login?redirectUrl=//${host}/topark/&appCode=ENTERPARKnL4gX4cG8tJ2zW4r`;
   };
 
   getUser = () => {
@@ -84,12 +81,11 @@ class SessionService {
 
   getUserToken = () => {
     return sessionStorage.getItem("@Auth:token");
-  }
+  };
 
   getUserRoles = () => {
-    return sessionStorage.getItem("@Auth:roles") || '';
-  }
-
+    return sessionStorage.getItem("@Auth:roles") || "";
+  };
 }
 
 export default new SessionService();
