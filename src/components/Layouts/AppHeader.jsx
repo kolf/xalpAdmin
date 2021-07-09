@@ -29,7 +29,6 @@ class AppHeader extends React.Component {
   };
 
   render() {
-    console.log(this.userData, "userData");
     return (
       <Header
         style={{

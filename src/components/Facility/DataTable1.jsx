@@ -311,12 +311,7 @@ export default function DataTable() {
       dataIndex: "checkTime",
       width: 168,
       render(text, creds) {
-        let title = "";
-        if (creds.cancelUserName) {
-          title = creds.cancelTime;
-        } else if (creds.checkUserName) {
-          title = creds.checkTime;
-        }
+        const title = creds.cancelTime || creds.checkTime;
         return title ? moment(title).format(secFormat) : "无";
       },
     },

@@ -18,7 +18,6 @@ export default function DataTable({ id, dataSource, onClose }) {
   }
 
   function showDeleteModal(creds) {
-    console.log(creds, "index");
     const mod = confirm({
       content: `此操作将删除这条数据, 是否继续?`,
       onOk,
@@ -39,11 +38,18 @@ export default function DataTable({ id, dataSource, onClose }) {
   }
 
   function showEditModal(creds) {
+    let warningLeftQuantity;
+    if (dataSource.timeRanges && dataSource.timeRanges[0]) {
+      warningLeftQuantity =
+        dataSource.timeRanges[0].groupWarningLeftQuantity ||
+        dataSource.timeRanges[0].individualWarningLeftQuantity;
+    }
     const mod = modal({
       content: (
         <UpdateDataForm
           defaultValues={{
             ...dataSource,
+            warningLeftQuantity,
             isSpecial: true,
             dateTitle: id,
             id: dataSource.timeSettingId,
