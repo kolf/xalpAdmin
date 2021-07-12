@@ -18,8 +18,8 @@ const AliMap = () => {
       <APILoader akay="c54dd5d1143cb8ea800f1d5e8d48502a">
         <Map
           mapStyle="amap://styles/darkblue"
-          center={[115.9425, 39.08746]}
-          zoom={17}
+          center={[115.940771, 39.086931]}
+          zoom={16.5}
           zooms={[14.5, 18]}
         >
           {({ AMap, map, container }) => {
