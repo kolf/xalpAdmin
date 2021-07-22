@@ -50,7 +50,12 @@ export default function DataTable({ dataSource, showType }) {
       return [];
     }
     return data.map((item, index) => {
-      return { ...item.orderDetail,...item, orderDetail: undefined, index: index + 1 };
+      return {
+        ...item.orderDetail,
+        ...item,
+        orderDetail: undefined,
+        index: index + 1,
+      };
     });
   }
 
@@ -178,12 +183,8 @@ export default function DataTable({ dataSource, showType }) {
         dataIndex: "checkTime",
         width: 168,
         render(text, creds) {
-          let title = "";
-          if (creds.cancelUserName) {
-            title = creds.cancelTime;
-          } else if (creds.checkUserName) {
-            title = creds.checkTime;
-          }
+          const title = creds.cancelTime || creds.checkTime;
+
           return title ? moment(title).format(secFormat) : "无";
         },
       },

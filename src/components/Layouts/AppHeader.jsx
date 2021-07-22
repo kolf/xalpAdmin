@@ -15,7 +15,7 @@ import menuUrl from "../../assets/img/icon.png";
 const { Header } = Layout;
 
 class AppHeader extends React.Component {
-  userData = sessionService.getUser();
+  userData = sessionService.getUser() || {};
 
   onLogout = (event) => {
     const mod = confirm({
@@ -82,7 +82,7 @@ class AppHeader extends React.Component {
               className="ant-dropdown-link"
               onClick={(e) => e.preventDefault()}
             >
-              {this.userData.username}
+              {this.userData.userName}
             </a>
           </Dropdown>
         </div>

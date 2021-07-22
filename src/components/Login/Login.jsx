@@ -16,9 +16,10 @@ class Login extends React.Component {
   };
   async componentDidMount() {
     sessionStorage.clear();
-    const {host,search} = window.location;
+    const { host, search } = window.location;
 
     const parsed = queryString.parse(search);
+
     if (parsed.token) {
       try {
         const res = await sessionService.getToken(parsed.token);

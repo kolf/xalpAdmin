@@ -18,49 +18,45 @@ class SessionService {
           },
         }
       );
-      const { access_token: ossAccessToken, user_info: userData } =
-        res1.data.data;
+      const { access_token: ossAccessToken } = res1.data.data;
 
-      await this.getToken(ossAccessToken);
-      sessionStorage.setItem("user", JSON.stringify(userData));
-      return Promise.resolve(userData);
+      const newToken = await this.getToken(ossAccessToken);
+      return Promise.resolve(newToken);
     } catch (error) {
       return Promise.reject(error);
     }
   };
 
   getToken = async (ossAccessToken) => {
+    // debugger;
     try {
       const res = await axios.post("api/LbyTokenAuth", {
         ossAccessToken,
       });
-      const token = res.data.access_token;
-      const roles = await this.getRoles(token);
-      sessionStorage.setItem("@Auth:token", token);
+      const newToken = res.data.access_token;
+      const { roles, userInfo } = await this.getRoles(newToken);
+      sessionStorage.setItem("@Auth:token", newToken);
       sessionStorage.setItem("@Auth:roles", roles);
-      return Promise.resolve(token);
+      sessionStorage.setItem("user", JSON.stringify(userInfo));
+      return Promise.resolve(newToken);
     } catch (error) {
+      console.log(error, "error");
       return Promise.reject(error);
     }
   };
-
   // config.headers.common.Authorization = `Bearer ${token}`;
   getRoles = async (token) => {
-    // const token = sessionStorage.getItem("@Auth:token")
     try {
-      const res = await axios.get(
-        `api/application-configuration`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          },
-        }
-      );
+      const res = await axios.get(`api/application-configuration`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const result = Object.keys(res.data.auth.grantedPolicies);
       if (result.length === 0) {
-        throw `对不起，您没有权限！`
+        throw `对不起，您没有权限！`;
       }
-      return Promise.resolve(result);
+      return Promise.resolve({ roles: result, userInfo: res.data.currentUser });
     } catch (error) {
       return Promise.reject(`对不起，您没有权限！`);
     }
@@ -84,12 +80,11 @@ class SessionService {
 
   getUserToken = () => {
     return sessionStorage.getItem("@Auth:token");
-  }
+  };
 
   getUserRoles = () => {
-    return sessionStorage.getItem("@Auth:roles") || '';
-  }
-
+    return sessionStorage.getItem("@Auth:roles") || "";
+  };
 }
 
 export default new SessionService();
