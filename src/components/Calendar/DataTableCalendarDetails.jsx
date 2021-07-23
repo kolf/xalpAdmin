@@ -115,7 +115,11 @@ export default function DataTable({ id, dataSource, onClose }) {
       title: "库存提示",
       dataIndex: "warningLeftQuantity",
       render(text, creds) {
-        return text || "无";
+        return (
+          creds.groupWarningLeftQuantity ||
+          creds.individualWarningLeftQuantity ||
+          "无"
+        );
       },
     },
     {

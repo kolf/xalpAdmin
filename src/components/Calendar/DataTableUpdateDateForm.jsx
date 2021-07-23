@@ -85,7 +85,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
 
   async function checkDateList1() {
     const { _items1 } = await form.getFieldsValue();
-    if (Object.values(_items1).every((item) => item)) {
+    if (_items1 && Object.values(_items1).every((item) => item)) {
       return Promise.resolve();
     }
     return Promise.reject(new Error("请完善时间段票数信息"));
@@ -93,7 +93,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
 
   async function checkDateList2() {
     const { _items2 } = await form.getFieldsValue();
-    if (Object.values(_items2).every((item) => item)) {
+    if (_items2 && Object.values(_items2).every((item) => item)) {
       return Promise.resolve();
     }
     return Promise.reject(new Error("请完善时间段票数信息"));

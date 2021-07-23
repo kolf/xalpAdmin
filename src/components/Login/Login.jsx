@@ -37,10 +37,11 @@ class Login extends React.Component {
   }
 
   onFinish = async (values) => {
+    const { onLogin } = this.props;
     try {
-      const res = await this.props.onLogin(values);
+      const res = await onLogin(values);
     } catch (error) {
-      utils.error(`登录失败，请稍候再试！`);
+      utils.error(error.message || `登录失败,请稍候再试!`);
     }
   };
 

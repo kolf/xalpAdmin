@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, DatePicker, Form, Input, Select } from "antd";
+import moment from "moment";
 import policeService from "../../services/police.service";
 const { RangePicker } = DatePicker;
 const dateFormat = "YYYY-MM-DD";
+const secFormat = "YYYY-MM-DD HH:mm:ss";
 
 export default function DataTable({ id }) {
   const [form] = Form.useForm();
@@ -77,6 +79,9 @@ export default function DataTable({ id }) {
     {
       title: "操作时间",
       dataIndex: "interactionTime",
+      render(text) {
+        return text ? moment(text).format(secFormat) : "";
+      },
     },
     {
       title: "操作详情",

@@ -24,13 +24,15 @@ export const loginFail = (error) => {
 export const login = (creds) => {
   return (dispatch) => {
     dispatch(loginRequest());
-    sessionService
+    return sessionService
       .login(creds)
       .then((res) => {
         dispatch(loginSuccess(res));
+        return Promise.resolve(res);
       })
       .catch((error) => {
         dispatch(loginFail(error));
+        return Promise.reject(error);
       });
   };
 };

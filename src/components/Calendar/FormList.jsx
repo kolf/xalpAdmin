@@ -23,11 +23,13 @@ function FormList({ pickerOptions = [], name, onChange, value = [] }) {
     setFields([...fields, createId(name)]);
   }
 
-  function remove(fieldKey) {
+  function remove(fieldKey, index) {
     const nextFields = fields.filter((field) => {
       return field !== fieldKey;
     });
+    const propsValue = value.filter((v, i) => i !== index);
     setFields(nextFields);
+    onChange(propsValue);
   }
 
   function handleChange(field, name, newValue) {
@@ -38,6 +40,7 @@ function FormList({ pickerOptions = [], name, onChange, value = [] }) {
           [name]: newValue,
         }
       : { [name]: newValue };
+
     onChange(value);
   }
 
@@ -61,7 +64,9 @@ function FormList({ pickerOptions = [], name, onChange, value = [] }) {
               <Select
                 style={{ width: 160 }}
                 placeholder="请选择时间段"
-                defaultValue={value[index] ? value[index].timeItemId : undefined}
+                defaultValue={
+                  value[index] ? value[index].timeItemId : undefined
+                }
                 onChange={(v) => handleChange(field, "timeItemId", v)}
               >
                 {pickerOptions.map((o) => (
@@ -86,7 +91,7 @@ function FormList({ pickerOptions = [], name, onChange, value = [] }) {
                 onClick={(e) => (fields.length < 3 ? add() : null)}
               />
             ) : (
-              <MinusCircleOutlined onClick={() => remove(field)} />
+              <MinusCircleOutlined onClick={() => remove(field, index)} />
             )}
           </Space>
         );

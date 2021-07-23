@@ -86,8 +86,16 @@ export default function DataTableListCalendar({ renderHeader }) {
     }
     const date = e.date();
     let isSpecial = false;
+    let isWraning = false;
     if (current && current.timeRanges) {
       isSpecial = current.timeRanges.some((item) => item.isSpecial);
+      isWraning = current.timeRanges.some(
+        (item) =>
+          item.groupWarningLeftQuantity > 0 ||
+          item.individualWarningLeftQuantity > 0
+      );
+      //       groupWarningLeftQuantity
+      // individualWarningLeftQuantity
     }
 
     return (
@@ -125,7 +133,7 @@ export default function DataTableListCalendar({ renderHeader }) {
         </div>
         <div
           className="calendar-cell-value"
-          style={isSpecial ? { color: "#ffe58f" } : null}
+          style={{ color: getValueColor(isSpecial, isWraning) }}
         >
           {current
             ? (current.timeRanges || []).reduce((result, item) => {
@@ -135,6 +143,16 @@ export default function DataTableListCalendar({ renderHeader }) {
         </div>
       </div>
     );
+  }
+
+  function getValueColor(isSpecial, isWraning) {
+    if (isSpecial) {
+      return "#ffe58f";
+    }
+    if (isWraning) {
+      return "#b74635";
+    }
+    return "#fff";
   }
 
   function headerRender({ value, onChange }) {

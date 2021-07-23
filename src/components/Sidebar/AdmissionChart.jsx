@@ -108,6 +108,15 @@ export default function AdmissionChart() {
           },
         });
         chart.legend(false);
+        chart.tooltip({
+          showCrosshairs: true,
+          showItemMarker: false,
+          onShow: function onShow(ev) {
+            const items = ev.items;
+            items[0].date = null;
+            items[0].value = items[0].value;
+          },
+        });
         chart.axis("date", {
           label: function label(text, index, total) {
             const textCfg = {};

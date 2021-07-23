@@ -138,7 +138,7 @@ export default function DataTable({ renderHeader }) {
   }
 
   function showEditModal(creds) {
-    console.log(creds,'creds')
+    console.log(creds, "creds");
     const mod = modal({
       content: <UpdateDataForm defaultValues={creds} onOk={onOk} />,
       footer: null,
@@ -283,16 +283,6 @@ export default function DataTable({ renderHeader }) {
           <Button type="primary" htmlType="submit" size="small">
             查询数据
           </Button>
-        </Form.Item>
-        <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
-          <Search
-            size="small"
-            placeholder="模糊搜索"
-            allowClear
-            onSearch={(value) => {
-              setQuery({ ...query, skipCount: "1", keyword: value });
-            }}
-          />
         </Form.Item>
       </Form>
 

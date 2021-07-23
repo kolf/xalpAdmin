@@ -54,11 +54,11 @@ class SessionService {
       });
       const result = Object.keys(res.data.auth.grantedPolicies);
       if (result.length === 0) {
-        throw `对不起，您没有权限！`;
+        throw new Error(`对不起，您没有权限！`);
       }
       return Promise.resolve({ roles: result, userInfo: res.data.currentUser });
     } catch (error) {
-      return Promise.reject(`对不起，您没有权限！`);
+      return Promise.reject(error);
     }
   };
 
