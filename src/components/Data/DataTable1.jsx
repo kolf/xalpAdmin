@@ -9,6 +9,7 @@ import {
   Col,
   Space,
   Pagination,
+  message,
 } from "antd";
 import Chart from "./DataTable1Chart";
 import moment from "moment";
@@ -24,42 +25,70 @@ export default React.memo(function DataTable() {
   const [chartWidth, setChartWidth] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
-    maxResultCount: "10",
+    maxResultCount: "1000",
     keyword: "",
     date: [moment().startOf("month"), moment()],
   });
-  const { data, run, loading } = useRequest(dataService.getAreaTopProvince, {
-    manual: true,
-    initialData: [],
-  });
-  const {
-    data: areaData,
-    run: fetchArea,
-    loading: areaLoading,
-  } = useRequest(dataService.getOrderAreaList, {
-    debounceInterval: 600,
-    manual: true,
-    initialData: {
-      items: [],
-    },
-  });
+  const [province, setProvince] = useState("");
+  const [city, setCity] = useState("");
+
+  const { data, run, loading } = useRequest(
+    () =>
+      dataService.getAreaTopProvince({
+        ...makeQuery(query),
+        maxResultCount: 1000,
+      }),
+    {
+      initialData: [],
+      onSuccess(res) {
+        setProvince(res[0].sourceProvince);
+      },
+    }
+  );
+
+  const { data: areaData, loading: areaLoading } = useRequest(
+    () =>
+      dataService.getOrderAreaList({
+        ...makeQuery(query),
+        maxResultCount: 1000,
+        keyword: province,
+      }),
+    {
+      debounceInterval: 600,
+      initialData: {
+        items: [],
+      },
+      onSuccess(res) {
+        setCity(res.items[0].sourceCity);
+      },
+      refreshDeps: [province],
+    }
+  );
+
+  const { data: cityData, loading: cityLoading } = useRequest(
+    () =>
+      dataService.getOrderCityList({
+        ...makeQuery(query),
+        cityName: city,
+        keyword: undefined,
+        maxResultCount: undefined,
+        skipCount: undefined,
+      }),
+    {
+      debounceInterval: 600,
+      throwOnError: true,
+      initialData: {
+        items: [],
+      },
+      refreshDeps: [city],
+    }
+  );
 
   useEffect(() => {
-    console.log(query, "query");
-    run(makeQuery(query)).then((res) => {
-      if (res.length > 0) {
-        // setAreaKeyword(res[0].sourceProvince);
-        fetchArea({
-          ...makeQuery(query),
-          maxResultCount: 1000,
-          keyword: res[0].sourceProvince,
-        });
-      }
-    });
     if (!chartWidth) {
       setChartWidth(window.innerWidth - 600);
     }
-  }, [JSON.stringify(query)]);
+  }, [window.innerWidth]);
 
   function makeQuery(query) {
     return Object.keys(query).reduce((result, key) => {
@@ -80,21 +109,28 @@ export default React.memo(function DataTable() {
 
   async function openFile() {
     try {
-      const res = await dataService.exportAreaList(makeQuery(query));
-      window.open(res);
-    } catch (error) {}
-  }
-
-  function handleClick(data) {
-    fetchArea({
-      ...makeQuery(query),
-      maxResultCount: 1000,
-      keyword: data.label,
-    });
+      const res1 = await dataService.exportAreaList(makeQuery(query));
+      window.open(res1);
+    } catch (error) {
+      message.error(`导出失败！`);
+    }
   }
 
   return (
     <div>
+      <Row style={{ paddingBottom: 12 }}>
+        <Col flex="auto"></Col>
+        <Col flex="120px" style={{ textAlign: "right" }}>
+          <Button
+            size="small"
+            type="primary"
+            onClick={openFile}
+            disabled={data.length === 0}
+          >
+            下载数据
+          </Button>
+        </Col>
+      </Row>
       <Form
         form={form}
         name="form"
@@ -129,20 +165,37 @@ export default React.memo(function DataTable() {
             dataSource={data.map((item) => ({
               label: item.sourceProvince,
               value: item.ticketCount,
+              rate: item.rate * 100,
             }))}
             id="province"
             width={chartWidth}
-            onClick={handleClick}
+            onClick={(e) => setProvince(e.label)}
           />
         )}
       </div>
       <div className="panel-title">市排行</div>
       <div style={{ paddingBottom: 12, height: 320 }}>
-        {chartWidth && areaData.items.length > 0 && (
+        {chartWidth && areaData && areaData.items.length > 0 && (
           <Chart
             dataSource={areaData.items.map((item) => ({
               label: item.sourceCity,
               value: item.ticketCount,
+              rate: item.rate * 100,
+            }))}
+            id="area"
+            width={chartWidth}
+            onClick={(e) => setCity(e.label)}
+          />
+        )}
+      </div>
+      <div className="panel-title">区排行</div>
+      <div style={{ paddingBottom: 12, height: 320 }}>
+        {chartWidth && cityData && cityData.items.length > 0 && (
+          <Chart
+            dataSource={cityData.items.map((item) => ({
+              label: item.sourceCity,
+              value: item.ticketCount,
+              rate: item.rate * 100,
             }))}
             id="city"
             width={chartWidth}

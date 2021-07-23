@@ -35,6 +35,17 @@ class DataService {
     }
   };
 
+  getOrderCityList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Order/CityArea?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   getOrderAgeList = async (creds) => {
     try {
       const res = await api.get(

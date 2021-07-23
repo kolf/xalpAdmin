@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import F2 from "@antv/f2/dist/f2-all.js";
 
+function getLabels(data) {
+  return data.filter((item, index) => index < 12).map((item) => item.label);
+}
+
 export default React.memo(function DataTable1Chart({
   id,
   width,
@@ -19,34 +23,38 @@ export default React.memo(function DataTable1Chart({
       });
 
       chart.source(dataSource, {
-        value: {
-          tickCount: 5,
+        value: {},
+        label: {
+          tickCount: 12,
+          values: getLabels(dataSource),
         },
       });
-      chart.tooltip(false);
+
       chart.interval().position("label*value");
+      chart.interaction("pan");
+      // 定义进度条
+      chart.scrollBar({
+        mode: "x",
+        xStyle: {
+          backgroundColor: "#808080",
+          fillerColor: "rgb(39 255 212 / 80%)",
+          offsetY: -2,
+        },
+      }); // 绘制柱状图文本
+      dataSource.forEach(function (obj) {
+        chart.guide().text({
+          position: [obj.label, obj.value, obj.rate],
+          content: obj.rate + "%",
+          offsetY: -10,
+        });
+        chart.guide().text({
+          position: [obj.label, obj.value, obj.rate],
+          content: obj.value + "人",
+          offsetY: -26,
+        });
+      });
       chart.render();
 
-      // 绘制柱状图文本
-      const offset = -5;
-      const canvas = chart.get("canvas");
-      const group = canvas.addGroup();
-      const shapes = {};
-      dataSource.forEach(function (obj) {
-        const point = chart.getPosition(obj);
-        const text = group.addShape("text", {
-          attrs: {
-            x: point.x,
-            y: point.y + offset,
-            text: obj.value,
-            textAlign: "center",
-            textBaseline: "bottom",
-            fill: "#808080",
-          },
-        });
-
-        shapes[obj.label] = text; // 缓存该 shape, 便于后续查找
-      });
       // 配置柱状图点击交互
       if (onClick) {
         chart.interaction("interval-select", {
