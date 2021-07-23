@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import F2 from "@antv/f2";
+import F2 from "@antv/f2/dist/f2-all.js";
 import { Spin } from "antd";
 import moment from "moment";
 import DataForm from "./DataForm";
@@ -103,18 +103,18 @@ export default function AdmissionChart() {
         });
         chart.source(data, {
           date: {
-            tickCount: 6,
             range: [0, 1],
           },
         });
         chart.legend(false);
         chart.tooltip({
-          showCrosshairs: true,
-          showItemMarker: false,
-          onShow: function onShow(ev) {
-            const items = ev.items;
-            items[0].date = null;
-            items[0].value = items[0].value;
+          custom: true,
+          showXTip: true,
+          showYTip: true,
+          snap: true,
+          crosshairsType: "xy",
+          crosshairsStyle: {
+            lineDash: [2],
           },
         });
         chart.axis("date", {
