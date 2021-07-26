@@ -298,7 +298,7 @@ export default function DataTable() {
     },
     {
       title: "核销设备（核销方式）",
-      dataIndex: "checkMode",
+      dataIndex: "checkModeName",
       width: 158,
       render(text, creds) {
         return creds.checkDeviceName

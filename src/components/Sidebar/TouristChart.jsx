@@ -7,9 +7,30 @@ import dataService from "../../services/data.service";
 const dateFormat = "YYYY-MM-DD";
 const startDate = moment().startOf("month").format(dateFormat) + " 00:00:00";
 const endDate = moment().endOf("month").format(dateFormat) + " 23:59:59";
+const defaultRes1 = [
+  {
+    value: 0,
+    name: "河北省",
+  },
+  {
+    value: 0,
+    name: "河南省",
+  },
+  {
+    value: 0,
+    name: "北京市",
+  },
+];
+
+function splitRate(data, item) {
+  if (data.every((item) => !item.rate)) {
+    return 1 / data.length;
+  }
+  return item.rate;
+}
 
 export default function TouristChart() {
-  const [areaData, setAreaData] = useState([]);
+  const [areaData, setAreaData] = useState(defaultRes1);
 
   useEffect(() => {
     let mounted = true;
@@ -35,14 +56,17 @@ export default function TouristChart() {
           return;
         }
 
-        setAreaData(
-          res2.filter((item, index) => index < 3)
-            .map((item) => ({
-              ...item,
-              value: item.ticketCount,
-              name: item.sourceProvince || "无",
-            }))
-        );
+        if (res2.length > 0) {
+          setAreaData(
+            res2
+              .filter((item, index) => index < 3)
+              .map((item) => ({
+                ...item,
+                value: item.ticketCount,
+                name: item.sourceProvince || "无",
+              }))
+          );
+        }
 
         data = res1
           .filter((item, index) => index < 5)
@@ -69,7 +93,6 @@ export default function TouristChart() {
             },
           },
         });
-        chart.tooltip(false);
         chart.legend({
           position: "right",
           itemFormatter: function itemFormatter(val) {
@@ -101,9 +124,7 @@ export default function TouristChart() {
         </div>`,
         });
         chart.render();
-      } catch (error) {
-
-      }
+      } catch (error) {}
     }
     return () => {
       mounted = false;
@@ -113,30 +134,32 @@ export default function TouristChart() {
   return (
     <>
       <canvas id="chart2" width="352" height="138"></canvas>
-      <div style={{ height: 82, overflow: "hidden" }}>
-        {areaData.map((item, index) => {
-          return (
-            <Row style={{ padding: "4px 0" }} key={"char2-" + index}>
-              <Col span={4}>
-                <span
-                  className="iconfont1"
-                  style={{ fontSize: 18, lineHeight: 1.2 }}
-                >
-                  TOP{index + 1}
-                </span>
-              </Col>
-              <Col span={3}>{item.name}</Col>
-              <Col span={16}>
-                <Progress
-                  percent={item.rate ? item.rate * 100 : 0}
-                  strokeLinecap="square"
-                  format={() => item.value}
-                />
-              </Col>
-            </Row>
-          );
-        })}
-      </div>
+      {areaData.length > 0 && (
+        <div style={{ height: 82, overflow: "hidden" }}>
+          {areaData.map((item, index) => {
+            return (
+              <Row style={{ padding: "4px 0" }} key={"char2-" + index}>
+                <Col span={4}>
+                  <span
+                    className="iconfont1"
+                    style={{ fontSize: 18, lineHeight: 1.2 }}
+                  >
+                    TOP{index + 1}
+                  </span>
+                </Col>
+                <Col span={3}>{item.name}</Col>
+                <Col span={16}>
+                  <Progress
+                    percent={item.rate ? item.rate * 100 : 0}
+                    strokeLinecap="square"
+                    format={() => item.value}
+                  />
+                </Col>
+              </Row>
+            );
+          })}
+        </div>
+      )}
     </>
   );
 }

@@ -1,174 +1,84 @@
 import React, { useState, useEffect } from "react";
-import F2 from "@antv/f2/dist/f2-all.js";
+import { Chart } from "@antv/g2";
 import { Spin } from "antd";
 import moment from "moment";
-import DataForm from "./DataForm";
+import { useRequest } from "ahooks";
 import dataService from "../../services/data.service";
 import utils from "../../shared/utils";
 const dateFormat = "YYYY-MM-DD";
-const colors = ["#32E9FF", "#1FFE9A"];
 
-function makeDate(type, y, m, d) {
-  let startDate = "";
-  let endDate = "";
-  if (type === "4") {
-    startDate = moment(y).startOf("year").format(dateFormat) + " 00:00:00";
-    endDate = moment(y).endOf("year").format(dateFormat) + " 23:59:59";
-  } else if (type === "2") {
-    startDate =
-      moment()
-        .set({ year: y, month: m - 1 })
-        .startOf("month")
-        .format(dateFormat) + " 00:00:00";
-    endDate =
-      moment()
-        .set({ year: y, month: m - 1 })
-        .endOf("month")
-        .format(dateFormat) + " 23:59:59";
-  } else if (type === "1") {
-    startDate =
-      moment()
-        .set({ year: y, month: m - 1, date: d })
-        .format(dateFormat) + " 00:00:00";
-    endDate =
-      moment()
-        .set({ year: y, month: m - 1, date: d })
-        .format(dateFormat) + " 23:59:59";
-  }
-
+function makeDate() {
+  const date = moment().format(dateFormat);
   return {
-    StartDateTime: startDate,
-    EndDateTime: endDate,
+    StartDateTime: date + " 00:00:00",
+    EndDateTime: date + " 23:59:59",
   };
 }
 
 export default function AdmissionChart() {
-  const [loading, setLoading] = useState(false);
-  const [query, setQuery] = useState({});
-  useEffect(() => {
-    let mounted = true;
-    renderChart();
-
-    async function renderChart() {
-      const { TimeRangeType, CheckDeviceType } = query;
-      let data = [];
-      let res1 = [];
-      let res2 = [];
-      try {
-        if (query["year-1"]) {
-          res1 = await dataService.getOrderCheckTimeRanges({
-            TimeRangeType,
-            CheckDeviceType,
-            ...makeDate(
-              TimeRangeType,
-              query["year-1"],
-              query["month-1"],
-              query["date-1"]
-            ),
-          });
-        }
-        if (query["year-2"]) {
-          res2 = await dataService.getOrderCheckTimeRanges({
-            TimeRangeType,
-            CheckDeviceType,
-            ...makeDate(
-              TimeRangeType,
-              query["year-2"],
-              query["month-2"],
-              query["date-2"]
-            ),
-          });
-        }
-
-        if (!mounted) {
-          return null;
-        }
-
-        data = [
-          ...res1.map((item) => ({
-            type: "数据1",
-            value: item.personCount,
-            date: item.checkTime,
-          })),
-          ...res2.map((item) => ({
-            type: "数据2",
-            value: item.personCount,
-            date: item.checkTime,
-          })),
-        ];
-
-        const chart = new F2.Chart({
-          id: "chart1",
-          pixelRatio: window.devicePixelRatio,
-        });
-        chart.source(data, {
-          date: {
-            range: [0, 1],
-          },
-        });
-        chart.legend(false);
-        chart.tooltip({
-          custom: true,
-          showXTip: true,
-          showYTip: true,
-          snap: true,
-          crosshairsType: "xy",
-          crosshairsStyle: {
-            lineDash: [2],
-          },
-        });
-        chart.axis("date", {
-          label: function label(text, index, total) {
-            const textCfg = {};
-            if (index === 0) {
-              textCfg.textAlign = "left";
-            } else if (index === total - 1) {
-              textCfg.textAlign = "right";
-            }
-            return textCfg;
-          },
-        });
-        chart.line().position("date*value").color("type", colors);
-        chart.point().position("date*value").color("type", colors);
-        chart.render();
-      } catch (error) {}
-    }
-    return () => {
-      mounted = false;
-    };
+  const [query, setQuery] = useState({
+    CheckDeviceType: 2,
+    TimeRangeType: 1,
   });
+  const { data, loading } = useRequest(
+    () =>
+      dataService.getOrderCheckTimeRanges({
+        ...query,
+        ...makeDate(),
+      }),
+    { initialData: [] }
+  );
+
+  console.log(data, "data");
+
+  useEffect(() => {
+    if (data.length > 0) {
+      renderChart(data);
+    }
+
+    function renderChart(data) {
+      const chart = new Chart({
+        container: "chart1",
+        autoFit: true,
+        height: 160,
+        padding: [20, 18, 20, 30],
+      });
+
+      chart.data(data);
+      chart.scale({
+        personCount: {
+          alias: "入园人数",
+          min: 1,
+        },
+      });
+
+      chart.tooltip({
+        showCrosshairs: true,
+        shared: true,
+      });
+
+      chart
+        .line()
+        .position("checkTime*personCount")
+        .color("#32E9FF")
+        .shape("smooth");
+      chart
+        .point()
+        .position("checkTime*personCount")
+        .color("#32E9FF")
+        .shape("circle");
+
+      chart.render();
+    }
+  }, [data]);
 
   async function openFile() {
-    const { TimeRangeType, CheckDeviceType } = query;
-    let res1 = null;
-    let res2 = null;
     try {
-      if (query["year-1"]) {
-        res1 = await dataService.exportCheckTimeRange({
-          TimeRangeType,
-          CheckDeviceType,
-          ...makeDate(
-            TimeRangeType,
-            query["year-1"],
-            query["month-1"],
-            query["date-1"]
-          ),
-        });
-        window.open(res1);
-      }
-      if (query["year-2"]) {
-        res2 = await dataService.exportCheckTimeRange({
-          TimeRangeType,
-          CheckDeviceType,
-          ...makeDate(
-            TimeRangeType,
-            query["year-2"],
-            query["month-2"],
-            query["date-2"]
-          ),
-        });
-        window.open(res2);
-      }
+      const res = await dataService.exportCheckTimeRange({
+        ...query,
+        ...makeDate(),
+      });
+      window.open(res);
     } catch (error) {
       utils.error(`下载失败！`);
     }
@@ -176,8 +86,9 @@ export default function AdmissionChart() {
 
   return (
     <Spin spinning={loading}>
-      <DataForm onChange={setQuery}></DataForm>
-      <canvas id="chart1" width="352" height="160"></canvas>
+      <div style={{ height: 180 }}>
+        <div id="chart1"></div>
+      </div>
       <div style={{ display: "flex", padding: "6px 6px 0 0" }}>
         <a
           style={{ marginLeft: "auto", marginTop: "-18px" }}

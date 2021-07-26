@@ -7,8 +7,7 @@ import {
   Input,
   Row,
   Col,
-  Space,
-  Pagination,
+  Empty,
   message,
 } from "antd";
 import Chart from "./DataTable1Chart";
@@ -32,7 +31,12 @@ export default React.memo(function DataTable() {
   const [province, setProvince] = useState("");
   const [city, setCity] = useState("");
 
-  const { data, run, loading } = useRequest(
+  const {
+    data,
+    run,
+    loading,
+    mutate: setData,
+  } = useRequest(
     () =>
       dataService.getAreaTopProvince({
         ...makeQuery(query),
@@ -41,12 +45,19 @@ export default React.memo(function DataTable() {
     {
       initialData: [],
       onSuccess(res) {
-        setProvince(res[0].sourceProvince);
+        if (res.length > 0) {
+          setProvince(res[0].sourceProvince);
+        }
       },
+      refreshDeps: [query],
     }
   );
 
-  const { data: areaData, loading: areaLoading } = useRequest(
+  const {
+    data: areaData,
+    loading: areaLoading,
+    mutate: setAreaData,
+  } = useRequest(
     () =>
       dataService.getOrderAreaList({
         ...makeQuery(query),
@@ -56,36 +67,49 @@ export default React.memo(function DataTable() {
     {
       // manual: true,
       debounceInterval: 600,
-      initialData: {
-        items: [],
-      },
+      initialData: [],
       onSuccess(res) {
-        setCity(res.items[0].sourceCity);
+        if (res.length > 0) {
+          setCity(res[0].sourceCity);
+        }
       },
-      refreshDeps: [province],
+      refreshDeps: [province, query],
       ready: province,
     }
   );
 
-  const { data: cityData, loading: cityLoading } = useRequest(
+  const {
+    data: cityData,
+    loading: cityLoading,
+    mutate: setCityData,
+  } = useRequest(
     () =>
       dataService.getOrderCityList({
         ...makeQuery(query),
         cityName: city,
-        keyword: undefined,
+        keyword: province,
         maxResultCount: undefined,
         skipCount: undefined,
       }),
     {
       debounceInterval: 600,
       throwOnError: true,
-      initialData: {
-        items: [],
-      },
-      refreshDeps: [city],
+      initialData: [],
+      refreshDeps: [city, province, query],
       ready: city,
     }
   );
+
+  useEffect(() => {
+    setData([]);
+    setAreaData([]);
+    setCityData([]);
+    setProvince("");
+  }, [query]);
+
+  useEffect(() => {
+    setCity("");
+  }, [province]);
 
   useEffect(() => {
     if (!chartWidth) {
@@ -128,7 +152,7 @@ export default React.memo(function DataTable() {
             size="small"
             type="primary"
             onClick={openFile}
-            disabled={data.length === 0}
+            disabled={!data || data.length === 0}
           >
             下载数据
           </Button>
@@ -150,39 +174,36 @@ export default React.memo(function DataTable() {
             查询数据
           </Button>
         </Form.Item>
-        <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
-          <Search
-            size="small"
-            placeholder="模糊搜索"
-            allowClear
-            onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", keyword: value })
-            }
-          />
-        </Form.Item>
       </Form>
-      <div className="panel-title">全国排行</div>
-      <div style={{ height: 320 }}>
-        {chartWidth && data.length > 0 && (
-          <Chart
-            dataSource={data.map((item) => ({
-              label: item.sourceProvince,
-              value: item.ticketCount,
-              rate: item.rate * 100,
-            }))}
-            id="province"
-            width={chartWidth}
-            onClick={(e) => setProvince(e.label)}
-          />
-        )}
-      </div>
+      {data.length === 0 && !loading && (
+        <div style={{ paddingTop: 48 }}>
+          <Empty />
+        </div>
+      )}
+      {data.length > 0 && (
+        <div>
+          <div className="panel-title">全国排行</div>
+          <div style={{ height: 320 }}>
+            <Chart
+              dataSource={data.map((item) => ({
+                label: item.sourceProvince,
+                value: item.ticketCount,
+                rate: item.rate * 100,
+              }))}
+              id="province"
+              width={chartWidth}
+              onClick={(e) => setProvince(e.label)}
+            />
+          </div>
+        </div>
+      )}
 
-      {areaData && areaData.items.length > 0 && (
+      {areaData.length > 0 && (
         <div>
           <div className="panel-title">{province}排行</div>
           <div style={{ paddingBottom: 12, height: 320 }}>
             <Chart
-              dataSource={areaData.items.map((item) => ({
+              dataSource={areaData.map((item) => ({
                 label: item.sourceCity,
                 value: item.ticketCount,
                 rate: item.rate * 100,
@@ -194,12 +215,12 @@ export default React.memo(function DataTable() {
           </div>
         </div>
       )}
-      {cityData && cityData.items.length > 0 && (
+      {cityData.length > 0 && (
         <div>
           <div className="panel-title">{city}排行</div>
           <div style={{ paddingBottom: 12, height: 320 }}>
             <Chart
-              dataSource={cityData.items.map((item) => ({
+              dataSource={cityData.map((item) => ({
                 label: item.sourceCityArea,
                 value: item.ticketCount,
                 rate: item.rate * 100,

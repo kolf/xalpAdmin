@@ -44,7 +44,7 @@ export default React.memo(function DataTable1Chart({
       dataSource.forEach(function (obj) {
         chart.guide().text({
           position: [obj.label, obj.value, obj.rate],
-          content: obj.rate + "%",
+          content: (obj.rate ? obj.rate.toFixed(2) : 0) + "%",
           offsetY: -10,
         });
         chart.guide().text({
@@ -65,6 +65,7 @@ export default React.memo(function DataTable1Chart({
           mode: "range",
           defaultSelected: dataSource[0],
           onStart: function onProcess(e) {
+            console.log(e.data, "e.data");
             e.data && onClick(e.data);
           },
         });
