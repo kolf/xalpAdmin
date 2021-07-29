@@ -146,7 +146,9 @@ class FaciliyService {
     try {
       const res = await api.put(
         `api/ReservationTimeSetting/${creds.id}`,
-        creds
+        creds, {
+        data: { showError: false }
+      }
       );
       return res.data;
     } catch (error) {

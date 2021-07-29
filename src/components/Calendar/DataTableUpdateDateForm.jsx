@@ -174,7 +174,6 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   }
 
   function makeDefaultValues(values) {
-    console.log(values, "values");
     const {
       isSpecial,
       dateTitle,

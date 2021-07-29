@@ -89,11 +89,15 @@ export default function DataTableListCalendar({ renderHeader }) {
     let isWraning = false;
     if (current && current.timeRanges) {
       isSpecial = current.timeRanges.some((item) => item.isSpecial);
-      isWraning = current.timeRanges.some(
-        (item) =>
-          item.groupWarningLeftQuantity > 0 ||
-          item.individualWarningLeftQuantity > 0
-      );
+      console.log(current.timeRanges, "current.timeRanges");
+      isWraning = current.timeRanges.some((item) => {
+        const max =
+          item.groupWarningLeftQuantity || item.individualWarningLeftQuantity;
+        const number =
+          item.groupRemainTouristsQuantity +
+          item.individualRemainTouristsQuantity;
+        return number < max;
+      });
       //       groupWarningLeftQuantity
       // individualWarningLeftQuantity
     }
