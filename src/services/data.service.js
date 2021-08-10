@@ -2,6 +2,17 @@ import queryString from "query-string";
 import api from "../core/http";
 
 class DataService {
+  exportStaffCheckRecords = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/TicketCardInfo/ExportStarffCheckRecords?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   getAreaOptions = async (creds) => {
     try {
       const res = await api.get(

@@ -2,6 +2,16 @@ import queryString from "query-string";
 import api from "../core/http";
 
 class FaciliyService {
+  getStaffCheckRecords = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/TicketCardInfo/StaffCheckRecords?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
   // 预约管理-服务商
   getMerchantList = async (creds) => {
     try {

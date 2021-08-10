@@ -135,6 +135,16 @@ const isEnableFreeCertCheckEnum = {
   0: "否",
 };
 
+const staffType = {
+  1: '工作人员',
+  2: '供应商人员'
+}
+
+export const staffTypeOptions = Object.entries(staffType).map(item => ({
+  value: item[0],
+  label: item[1]
+}));
+
 export const isEnableFreeCertCheckOptions = Object.keys(isEnableFreeCertCheckEnum).map((key) => ({
   value: key + "",
   label: isEnableFreeCertCheckEnum[key],
