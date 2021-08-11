@@ -8,6 +8,8 @@ import {
 } from "../../shared/options";
 import utils from "../../shared/utils";
 import policeService from "../../services/police.service";
+
+const coordinateReg = /^\d{1,}\.\d{1,}[,，]\d{1,}\.\d{1,}$/g
 const { Option } = Select;
 
 const layout = {
@@ -51,6 +53,10 @@ export default function UpdateDataForm({
           result.isFireModeOpen = value === "1";
         } else if (key === "isEnableFreeCertCheck") {
           result.isEnableFreeCertCheck = value === "1";
+        } else if (key === 'coordinate') {
+          const [longitude, latitude] = value.split(/,|，/);
+          result.longitude = longitude;
+          result.latitude = latitude;
         } else if (value !== undefined && value !== "-1") {
           result[key] = value;
         }
@@ -81,9 +87,27 @@ export default function UpdateDataForm({
         result[key] = value + "";
       } else if (value !== undefined && value !== "-1") {
         result[key] = value;
+      } else if (/^(longitude|latitude)/.test(key)) {
+        result[key] = undefined
       }
+      result.coordinate = values.longitude + "，" + values.latitude;
+
       return result;
     }, {});
+  }
+
+  function validatorCoordinate(rule, value, callback) {
+    try {
+      if (!value) {
+        throw new Error(`请输入经纬度！`)
+      }
+      if (!coordinateReg.test(value)) {
+        throw new Error(`请输入正确的经纬度！`)
+      }
+      callback()
+    } catch (error) {
+      callback(error)
+    }
   }
 
   return (
@@ -115,6 +139,13 @@ export default function UpdateDataForm({
         >
           <Input placeholder="请输入" />
         </Form.Item>
+        {checkDeviceType === '1' && <Form.Item
+          label="设备经纬度"
+          name="coordinate"
+          rules={[{ validator: validatorCoordinate }]}
+        >
+          <Input placeholder="前面经度、后面纬度，用逗号分隔！" />
+        </Form.Item>}
         {/* <Form.Item
           label="设备类型"
           name="checkDeviceType"
