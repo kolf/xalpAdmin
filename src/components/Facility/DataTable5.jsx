@@ -11,7 +11,7 @@ import {
   Select,
   Pagination,
   Image,
-  message
+  message,
 } from "antd";
 import moment from "moment";
 import faciliyService from "../../services/faciliy.service";
@@ -74,32 +74,27 @@ export default function DataTable() {
   }
 
   function makeQuery(query) {
-    return Object.keys(query).reduce(
-      (result, key) => {
-        const value = query[key];
-        if (key === "date" && value) {
-          const [start, end] = value;
-          result.StartDateTime = start.format(dateFormat) + " 00:00:00";
-          result.EndDateTime = end.format(dateFormat) + " 23:59:59";
-        } else if (value !== undefined && value !== "-1") {
-          result[key] = value;
-        }
-        if (query.skipCount) {
-          result.skipCount = (query.skipCount - 1) * query.maxResultCount;
-        }
-        return result;
-      },
-      {
-        StaffType: 2,
+    return Object.keys(query).reduce((result, key) => {
+      const value = query[key];
+      if (key === "date" && value) {
+        const [start, end] = value;
+        result.StartDateTime = start.format(dateFormat) + " 00:00:00";
+        result.EndDateTime = end.format(dateFormat) + " 23:59:59";
+      } else if (value !== undefined && value !== "-1") {
+        result[key] = value;
       }
-    );
+      if (query.skipCount) {
+        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
+      }
+      return result;
+    }, {});
   }
 
   async function openFile() {
     try {
       const res = await dataService.exportStaffCheckRecords(makeQuery(query));
       window.open(res);
-    } catch (error) { }
+    } catch (error) {}
   }
 
   const columns = [
