@@ -33,6 +33,7 @@ export default function DataTable() {
     skipCount: "1",
     maxResultCount: "10",
     keyword: "",
+    date: [moment(), moment()],
   });
 
   useEffect(() => {
@@ -167,6 +168,7 @@ export default function DataTable() {
         layout="inline"
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
+        initialValues={query}
       >
         <Form.Item name="CardStatus" style={{ marginBottom: 6, width: 100 }}>
           <Select size="small" placeholder="人员类型" allowClear>

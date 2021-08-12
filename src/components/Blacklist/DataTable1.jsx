@@ -141,6 +141,11 @@ export default function DataTable() {
 
     function onOk() {
       mod.close();
+      setCounter(counter + 1);
+      setQuery({
+        ...query,
+        skipCount: "1",
+      });
     }
   }
 
@@ -213,9 +218,7 @@ export default function DataTable() {
       title: "历史不文明行为",
       dataIndex: "historyBehaviorNames",
       render(text) {
-        return text && text.length > 0
-          ? text.join('，')
-          : "无";
+        return text && text.length > 0 ? text.join("，") : "无";
       },
     },
     {

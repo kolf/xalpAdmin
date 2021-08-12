@@ -37,6 +37,7 @@ const reviewOptions = [
 export default function DataTable() {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [openLoading, setOpenLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
   const [totalData, setTotalData] = useState({
     travelTouristCount: 0,
@@ -159,10 +160,14 @@ export default function DataTable() {
   }
 
   async function openFile() {
+    setOpenLoading(true);
     try {
       const res = await dataService.exportOrderList(makeQuery(query));
+      setOpenLoading(false);
       window.open(res);
-    } catch (error) {}
+    } catch (error) {
+      setOpenLoading(false);
+    }
   }
 
   function getRowClassName(creds, index) {
@@ -400,7 +405,12 @@ export default function DataTable() {
         </Col>
         <Col flex="120px" style={{ textAlign: "right" }}>
           <Space>
-            <Button size="small" type="primary" onClick={openFile}>
+            <Button
+              size="small"
+              type="primary"
+              onClick={openFile}
+              loading={openLoading}
+            >
               下载数据
             </Button>
           </Space>
