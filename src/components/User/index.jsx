@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs } from "antd";
 import sessionService from "../../services/session.service";
 import Main from "../Layouts/AppMain";
@@ -18,7 +18,9 @@ export default function Home() {
     if (tabs.length === 0) {
       const nextTabs = getTabs();
       setTabs(nextTabs);
-      setTabKey(nextTabs[0].key);
+      if (nextTabs.length > 0) {
+        setTabKey(nextTabs[0].key);
+      }
     }
 
     function getTabs() {
