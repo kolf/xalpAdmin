@@ -27,6 +27,9 @@ export default function AppMenu() {
           <Link to="/police">入园设备</Link>
         </Menu.Item>
       )}
+      <Menu.Item>
+        <Link to="/count">过闸数据统计</Link>
+      </Menu.Item>
       {/SmartTicketingReservation.TimeRangeSettings/.test(roles) && (
         <Menu.Item>
           <Link to="/calendar">预约量管理</Link>

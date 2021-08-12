@@ -16,7 +16,7 @@ import {
 import moment from "moment";
 import faciliyService from "../../services/faciliy.service";
 import dataService from "../../services/data.service";
-import { staffTypeOptions } from "../../shared/options";
+import { staffTypeEnum, staffTypeOptions } from "../../shared/options";
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
@@ -70,6 +70,7 @@ export default function DataTable() {
     return data.map((item, index) => {
       return {
         ...item,
+        ...item.checkRecord,
       };
     });
   }
@@ -105,7 +106,7 @@ export default function DataTable() {
     },
     {
       title: "姓名",
-      dataIndex: "name",
+      dataIndex: "staffName",
     },
     {
       title: "联系电话",
@@ -117,11 +118,14 @@ export default function DataTable() {
     },
     {
       title: "人员类型",
-      dataIndex: "organizationUnit",
+      dataIndex: "staffType",
+      render(text) {
+        return staffTypeEnum[text] || "未知";
+      },
     },
     {
       title: "入园时间",
-      dataIndex: "lastModificationTime",
+      dataIndex: "useTime",
       render(text) {
         return text ? moment(text).format(secFormat) : "无";
       },
@@ -205,7 +209,6 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey="id"
-        scroll={{ x: 1200 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

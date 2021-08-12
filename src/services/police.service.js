@@ -2,6 +2,16 @@ import queryString from "query-string";
 import api from "../core/http";
 
 class PoliceService {
+  getDeviceInOutCount = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Device/InOutCount?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
   getDeviceLogList = async (creds) => {
     try {
       const res = await api.get(
