@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { Table, Button, DatePicker, Form, Space, Upload } from "antd";
-import dataService from "../../services/data.service";
-import sessionService from "../../services/session.service";
-import utils from "../../shared/utils";
+import React, { useState, useEffect } from 'react';
+import { Table, Button, DatePicker, Form, Space, Upload } from 'antd';
+import dataService from '../../services/data.service';
+import sessionService from '../../services/session.service';
+import utils from '../../shared/utils';
 const { RangePicker } = DatePicker;
-const dateFormat = "YYYY-MM-DD";
+const dateFormat = 'YYYY-MM-DD';
 
 export default function DataTable({ id, onOk }) {
   const uersToken = sessionService.getUserToken();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [dataList, setDataList] = useState([]);
-  const [fileName, setFileName] = useState("");
-  const [error, setError] = useState("");
+  const [fileName, setFileName] = useState('');
+  const [error, setError] = useState('');
 
   function makeData(data) {
     return data.map((item, index) => {
@@ -20,8 +20,11 @@ export default function DataTable({ id, onOk }) {
     });
   }
 
-  function openTemplateFile() {
-    window.open(`${dataService.getTemplateFileUrl(3)}`);
+  async function openTemplateFile() {
+    try {
+      const res = await dataService.getBlockBehaviorTemplateFileUrl();
+      window.open(res);
+    } catch (error) {}
   }
 
   async function onFinish() {
@@ -33,57 +36,57 @@ export default function DataTable({ id, onOk }) {
       const res = await dataService.importBlockAllowRecord({ fileName });
       utils.success(`导入成功！`);
     } catch (error) {}
-    
+
     onOk && onOk();
   }
 
   function getRowClassName(creds, index) {
     if (creds.exception) {
-      return "ant-table-row-error";
+      return 'ant-table-row-error';
     }
   }
 
   const columns = [
     {
-      title: "序号",
-      dataIndex: "index",
+      title: '序号',
+      dataIndex: 'index',
     },
     {
-      title: "姓名",
-      dataIndex: "name",
+      title: '姓名',
+      dataIndex: 'name',
     },
     {
-      title: "手机号",
-      dataIndex: "phone",
+      title: '手机号',
+      dataIndex: 'phone',
     },
     {
-      title: "不文明行为",
-      dataIndex: "behaviorName",
+      title: '不文明行为',
+      dataIndex: 'behaviorName',
     },
     {
-      title: "处罚",
-      dataIndex: "behaviorDescription",
+      title: '处罚',
+      dataIndex: 'behaviorTypeName',
     },
     {
-      title: "错误信息",
-      dataIndex: "exception",
+      title: '错误信息',
+      dataIndex: 'exception',
       render(text) {
-        return text || "无";
+        return text || '无';
       },
     },
   ];
 
   const uploadProps = {
-    name: "file",
+    name: 'file',
     showUploadList: false,
-    action: "api/BlockAllowRecord/Check",
+    action: 'api/BlockAllowRecord/Check',
     headers: {
-      authorization: "Bearer " + uersToken,
+      authorization: 'Bearer ' + uersToken,
     },
     onChange(info) {
-      if (info.file.status !== "uploading") {
+      if (info.file.status !== 'uploading') {
       }
-      if (info.file.status === "done") {
+      if (info.file.status === 'done') {
         const res = info.file.response;
         try {
           setDataList(res.blockAllowRecords);
@@ -94,7 +97,7 @@ export default function DataTable({ id, onOk }) {
         } catch (error) {
           utils.error(`文件格式有误！`);
         }
-      } else if (info.file.status === "error") {
+      } else if (info.file.status === 'error') {
         utils.error(`${info.file.name} 上传失败！`);
       }
     },
@@ -104,11 +107,11 @@ export default function DataTable({ id, onOk }) {
     <>
       <div style={{ paddingBottom: 12, marginTop: -12 }}>
         <Space>
-          <Button size="small" type="primary" onClick={openTemplateFile}>
+          <Button size='small' type='primary' onClick={openTemplateFile}>
             模板下载
           </Button>
           <Upload {...uploadProps}>
-            <Button size="small" type="primary">
+            <Button size='small' type='primary'>
               表格导入
             </Button>
           </Upload>
@@ -116,17 +119,17 @@ export default function DataTable({ id, onOk }) {
       </div>
 
       <Table
-        rowKey="id"
+        rowKey='id'
         dataSource={makeData(dataList)}
         columns={columns}
         rowClassName={getRowClassName}
         pagination={false}
-        size="small"
+        size='small'
         bordered
         loading={loading}
       />
-      <div className="text-right" style={{ paddingTop: 12 }}>
-        <Button size="small" type="primary" onClick={onFinish}>
+      <div className='text-right' style={{ paddingTop: 12 }}>
+        <Button size='small' type='primary' onClick={onFinish}>
           确定导入
         </Button>
       </div>

@@ -1,27 +1,12 @@
-import React, { useState, useEffect } from "react";
-import moment from "moment";
-import {
-  Form,
-  Input,
-  Button,
-  Radio,
-  Checkbox,
-  Select,
-  DatePicker,
-  InputNumber,
-  message,
-} from "antd";
-import utils from "../../shared/utils";
-import blanklistService from "../../services/blanklist.service";
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
+import { Form, Input, Button, Select, DatePicker } from 'antd';
+import utils from '../../shared/utils';
+import { certList } from '../../shared/options';
+import blanklistService from '../../services/blanklist.service';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
-const dateFormat = "YYYY-MM-DD";
-
-const plainOptions = [
-  { value: "1", label: "启用" },
-  { value: "2", label: "再次验证未入园" },
-  { value: "3", label: "可预售" },
-];
+const dateFormat = 'YYYY-MM-DD';
 
 const layout = {
   labelCol: { span: 8 },
@@ -83,17 +68,16 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     return Object.keys(values).reduce(
       (result, key) => {
         const value = values[key];
-        if (key === "startTime" && value) {
+        if (key === 'startTime' && value) {
           result.startTime = value.format(dateFormat);
-        } else if (value !== undefined && value !== "-1") {
+        } else if (value !== undefined && value !== '-1') {
           result[key] = value;
         }
         return result;
       },
       {
         userType: 1,
-        certType: "证件号码",
-      }
+      },
     );
   }
 
@@ -107,6 +91,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       startTime,
       address,
       reason,
+      certType,
     } = defaultValues;
 
     if (!id) {
@@ -115,6 +100,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     return {
       name,
       certNumber,
+      certType,
       phone,
       behaviorId,
       address,
@@ -127,39 +113,47 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     <>
       <Form
         {...layout}
-        size="small"
+        size='small'
         onFinish={onFinish}
-        initialValues={makeDefaultValues(defaultValues)}
-      >
+        initialValues={makeDefaultValues(defaultValues)}>
         <Form.Item
-          label="姓名"
-          name="name"
-          rules={[{ required: true, message: "请输入姓名!" }]}
-        >
-          <Input placeholder="请输入" />
+          label='姓名'
+          name='name'
+          rules={[{ required: true, message: '请输入姓名!' }]}>
+          <Input placeholder='请输入' />
         </Form.Item>
 
         <Form.Item
-          label="证件号码"
-          name="certNumber"
-          rules={[{ required: true, message: "请输入证件号码!" }]}
-        >
-          <Input placeholder="请输入" />
+          label='证件类型'
+          name='certType'
+          rules={[{ required: true, message: '请输入证件类型!' }]}>
+          <Select placeholder='请选择'>
+            {certList.map((o) => (
+              <Option value={o} key={o}>
+                {o}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
 
         <Form.Item
-          label="手机号"
-          name="phone"
-          rules={[{ required: true, message: "请输入手机号!" }]}
-        >
-          <Input placeholder="请输入" />
+          label='证件号码'
+          name='certNumber'
+          rules={[{ required: true, message: '请输入证件号码!' }]}>
+          <Input placeholder='请输入' />
+        </Form.Item>
+
+        <Form.Item
+          label='手机号'
+          name='phone'
+          rules={[{ required: true, message: '请输入手机号!' }]}>
+          <Input placeholder='请输入' />
         </Form.Item>
         <Form.Item
-          label="当前不文明行为"
-          name="behaviorId"
-          rules={[{ required: true, message: "请选择当前不文明行为!" }]}
-        >
-          <Select placeholder="请选择">
+          label='当前不文明行为'
+          name='behaviorId'
+          rules={[{ required: true, message: '请选择当前不文明行为!' }]}>
+          <Select placeholder='请选择'>
             {blockBehaviorOptions.map((o) => (
               <Option value={o.value} key={o.value}>
                 {o.label}
@@ -168,28 +162,25 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           </Select>
         </Form.Item>
         <Form.Item
-          label="发生时间"
-          name="startTime"
-          rules={[{ required: true, message: "请输入!" }]}
-        >
-          <DatePicker size="small" />
+          label='发生时间'
+          name='startTime'
+          rules={[{ required: true, message: '请输入!' }]}>
+          <DatePicker size='small' />
         </Form.Item>
         <Form.Item
-          label="发生地点"
-          name="address"
-          rules={[{ required: true, message: "请输入!" }]}
-        >
-          <Input size="small" placeholder="请输入" />
+          label='发生地点'
+          name='address'
+          rules={[{ required: true, message: '请输入!' }]}>
+          <Input size='small' placeholder='请输入' />
         </Form.Item>
         <Form.Item
-          label="详情描述"
-          name="reason"
-          rules={[{ required: true, message: "请输入!" }]}
-        >
-          <Input size="small" placeholder="请输入" />
+          label='详情描述'
+          name='reason'
+          rules={[{ required: true, message: '请输入!' }]}>
+          <Input size='small' placeholder='请输入' />
         </Form.Item>
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
+          <Button type='primary' htmlType='submit'>
             确定
           </Button>
         </Form.Item>

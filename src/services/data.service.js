@@ -118,9 +118,20 @@ class DataService {
       return Promise.reject(error);
     }
   };
+
   getTemplateFileUrl(fileType) {
     return `api/UploadFile/GetSampleFile?fileType=${fileType}`;
   }
+
+  getBlockBehaviorTemplateFileUrl = async () => {
+    try {
+      const res = await api.get(`api/BlockBehavior/ExportTemplate`);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   exportCheckTimeRange = async (creds) => {
     try {
       const res = await api.get(

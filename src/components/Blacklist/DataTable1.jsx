@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import moment from "moment";
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import {
   Table,
   Button,
@@ -10,19 +10,19 @@ import {
   Col,
   Space,
   Pagination,
-} from "antd";
-import UpdateDataForm from "./UpdateData1Form";
-import ExportDataTable from "./ExportData1Table";
-import modal from "../../shared/modal";
-import confirm from "../../shared/confirm";
-import utils from "../../shared/utils";
+} from 'antd';
+import UpdateDataForm from './UpdateData1Form';
+import ExportDataTable from './ExportData1Table';
+import modal from '../../shared/modal';
+import confirm from '../../shared/confirm';
+import utils from '../../shared/utils';
 
-import blanklistService from "../../services/blanklist.service";
-import dataService from "../../services/data.service";
+import blanklistService from '../../services/blanklist.service';
+import dataService from '../../services/data.service';
 const { RangePicker } = DatePicker;
 const { Search } = Input;
-const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD HH:mm:ss";
+const dateFormat = 'YYYY-MM-DD';
+const secFormat = 'YYYY-MM-DD HH:mm:ss';
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -32,9 +32,9 @@ export default function DataTable() {
   const [totalArr, setTotalArr] = useState([0, 0]);
   const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
-    skipCount: "1",
-    maxResultCount: "10",
-    keyword: "",
+    skipCount: '1',
+    maxResultCount: '10',
+    keyword: '',
   });
 
   useEffect(() => {
@@ -83,11 +83,11 @@ export default function DataTable() {
   function makeQuery(query) {
     return Object.keys(query).reduce((result, key) => {
       const value = query[key];
-      if (key === "date" && value) {
+      if (key === 'date' && value) {
         const [start, end] = value;
-        result.StartTimeStart = start.format(dateFormat) + " 00:00:00";
-        result.StartTimeEnd = end.format(dateFormat) + " 23:59:59";
-      } else if (value !== undefined && value !== "-1") {
+        result.StartTimeStart = start.format(dateFormat) + ' 00:00:00';
+        result.StartTimeEnd = end.format(dateFormat) + ' 23:59:59';
+      } else if (value !== undefined && value !== '-1') {
         result[key] = value;
       }
       if (query.skipCount) {
@@ -99,7 +99,7 @@ export default function DataTable() {
 
   function showAddModal() {
     const mod = modal({
-      title: "新增",
+      title: '新增',
       content: <UpdateDataForm onOk={onOk} />,
       footer: null,
     });
@@ -109,14 +109,14 @@ export default function DataTable() {
       setCounter(counter + 1);
       setQuery({
         ...query,
-        skipCount: "1",
+        skipCount: '1',
       });
     }
   }
 
   function showEditModal(creds) {
     const mod = modal({
-      title: "编辑",
+      title: '编辑',
       content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
       footer: null,
     });
@@ -126,14 +126,14 @@ export default function DataTable() {
       setCounter(counter + 1);
       setQuery({
         ...query,
-        skipCount: "1",
+        skipCount: '1',
       });
     }
   }
 
   function showImportModal(creds) {
     const mod = modal({
-      title: "批量导入",
+      title: '批量导入',
       width: 800,
       content: <ExportDataTable onOk={onOk} />,
       footer: null,
@@ -144,7 +144,7 @@ export default function DataTable() {
       setCounter(counter + 1);
       setQuery({
         ...query,
-        skipCount: "1",
+        skipCount: '1',
       });
     }
   }
@@ -162,7 +162,7 @@ export default function DataTable() {
         mod.close();
         utils.success(`删除成功！`);
         setCounter(counter + 1);
-        setQuery({ ...query, skipCount: "1" });
+        setQuery({ ...query, skipCount: '1' });
       } catch (error) {
         mod.close();
       }
@@ -178,76 +178,79 @@ export default function DataTable() {
 
   const columns = [
     {
-      title: "序号",
-      dataIndex: "index",
+      title: '序号',
+      dataIndex: 'index',
       width: 60,
     },
     {
-      title: "姓名",
-      dataIndex: "name",
+      title: '姓名',
+      dataIndex: 'name',
     },
     {
-      title: "手机号",
-      dataIndex: "phone",
+      title: '手机号',
+      dataIndex: 'phone',
     },
     {
-      title: "证件号码",
-      dataIndex: "certNumber",
+      title: '证件号码',
+      dataIndex: 'certType',
     },
     {
-      title: "不文明行为",
-      dataIndex: "behaviorName",
+      title: '证件号码',
+      dataIndex: 'certNumber',
     },
     {
-      title: "发生时间",
-      dataIndex: "startTime",
+      title: '不文明行为',
+      dataIndex: 'behaviorName',
+    },
+    {
+      title: '发生时间',
+      dataIndex: 'startTime',
       width: 170,
       render(text) {
-        return text ? moment(text).format(secFormat) : "无";
+        return text ? moment(text).format(secFormat) : '无';
       },
     },
     {
-      title: "发生地点",
-      dataIndex: "address",
+      title: '发生地点',
+      dataIndex: 'address',
     },
     {
-      title: "详情描述",
-      dataIndex: "reason",
+      title: '详情描述',
+      dataIndex: 'reason',
     },
     {
-      title: "历史不文明行为",
-      dataIndex: "historyBehaviorNames",
+      title: '历史不文明行为',
+      dataIndex: 'historyBehaviorNames',
       render(text) {
-        return text && text.length > 0 ? text.join("，") : "无";
+        return text && text.length > 0 ? text.join('，') : '无';
       },
     },
     {
-      title: "距离处理到期天数",
-      dataIndex: "daysOfEndBlock",
+      title: '距离处理到期天数',
+      dataIndex: 'daysOfEndBlock',
       width: 130,
       render(text) {
-        return text < 0 ? "0" : text;
+        return text < 0 ? '0' : text;
       },
     },
     {
-      title: "处罚",
-      dataIndex: "behaviorDescription",
+      title: '处罚',
+      dataIndex: 'behaviorDescription',
     },
     {
-      title: "操作",
-      dataIndex: "options",
-      fixed: "right",
+      title: '操作',
+      dataIndex: 'options',
+      fixed: 'right',
       render(text, creds) {
         return (
-          <div className="text-center">
+          <div className='text-center'>
             <Button
-              size="small"
+              size='small'
               style={{ marginRight: 4 }}
-              onClick={(e) => showEditModal(creds)}
-            >
+              onClick={(e) => showEditModal(creds)}>
               编辑
             </Button>
-            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
+            <Button size='small' onClick={(e) => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -262,8 +265,8 @@ export default function DataTable() {
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
     total,
-    position: ["", "bottomCenter"],
-    size: "small",
+    position: ['', 'bottomCenter'],
+    size: 'small',
     onChange(pageNum, pageSize) {
       let nextPageNum = pageNum;
       if (pageSize !== query.maxResultCount * 1) {
@@ -272,8 +275,8 @@ export default function DataTable() {
 
       setQuery({
         ...query,
-        skipCount: nextPageNum + "",
-        maxResultCount: pageSize + "",
+        skipCount: nextPageNum + '',
+        maxResultCount: pageSize + '',
       });
     },
   };
@@ -281,23 +284,23 @@ export default function DataTable() {
   return (
     <div>
       <Row style={{ paddingBottom: 12 }}>
-        <Col flex="auto">
+        <Col flex='auto'>
           <Space>
             <span>黑名单人数:</span>
-            <span className="iconfont1 text-danger">{totalArr[0]}</span>
+            <span className='iconfont1 text-danger'>{totalArr[0]}</span>
             <span>当前限制人数:</span>
-            <span className="iconfont1 text-danger">{totalArr[1]}</span>
+            <span className='iconfont1 text-danger'>{totalArr[1]}</span>
           </Space>
         </Col>
-        <Col flex="120px" style={{ textAlign: "right" }}>
+        <Col flex='120px' style={{ textAlign: 'right' }}>
           <Space>
-            <Button size="small" type="primary" onClick={showAddModal}>
+            <Button size='small' type='primary' onClick={showAddModal}>
               新增
             </Button>
-            <Button size="small" type="primary" onClick={showImportModal}>
+            <Button size='small' type='primary' onClick={showImportModal}>
               批量导入
             </Button>
-            <Button size="small" type="primary" onClick={openFile}>
+            <Button size='small' type='primary' onClick={openFile}>
               下载数据
             </Button>
           </Space>
@@ -305,42 +308,43 @@ export default function DataTable() {
       </Row>
       <Form
         form={form}
-        name="form"
-        layout="inline"
+        name='form'
+        layout='inline'
         style={{ paddingBottom: 12 }}
-        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
-      >
-        <Form.Item name="date">
-          <RangePicker size="small" />
+        onFinish={(values) =>
+          setQuery({ ...query, ...values, skipCount: '1' })
+        }>
+        <Form.Item name='date'>
+          <RangePicker size='small' />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" size="small">
+          <Button type='primary' htmlType='submit' size='small'>
             查询数据
           </Button>
         </Form.Item>
-        <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
+        <Form.Item style={{ marginLeft: 'auto', marginRight: 0 }}>
           <Search
-            size="small"
-            placeholder="请输入姓名查询"
+            size='small'
+            placeholder='请输入姓名查询'
             allowClear
             onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", keyword: value })
+              setQuery({ ...query, skipCount: '1', keyword: value })
             }
           />
         </Form.Item>
       </Form>
 
       <Table
-        rowKey="id"
+        rowKey='id'
         dataSource={makeData(dataList)}
         columns={columns}
         pagination={false}
-        size="small"
+        size='small'
         bordered
         loading={loading}
         scroll={{ x: 1600 }}
       />
-      <div className="page-container">
+      <div className='page-container'>
         <Pagination {...paginationProps} />
       </div>
     </div>

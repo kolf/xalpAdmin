@@ -1,18 +1,18 @@
-import queryString from "query-string";
-import api from "../core/http";
+import queryString from 'query-string';
+import api from '../core/http';
 
 class UserService {
   getOrgList = async (creds) => {
     try {
       const res = await api.get(
-        `api/base/orgs/loadOrgs?${queryString.stringify(creds)}`
+        `api/base/orgs/all?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
     }
   };
-  
+
   updateOrg = async (creds) => {
     try {
       const res = await api.put(`api/base/orgs/${creds.id}`, creds);
@@ -21,27 +21,27 @@ class UserService {
       return Promise.reject(error);
     }
   };
-  
+
   addOrg = async (creds) => {
     try {
-      const res = await api.post(`api/base/orgs​`, creds);
+      const res = await api.post(`api/base/orgs`, creds);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
     }
   };
-  
+
   deleteOrg = async (creds) => {
     try {
       const res = await api.post(
-        `api/base/orgs​/Delete?${queryString.stringify(creds)}`
+        `api/base/orgs/Delete?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
     }
   };
-  
+
   getAllRole = async (creds) => {
     try {
       const res = await api.get(`api/identity/roles/all`);
@@ -50,16 +50,18 @@ class UserService {
       return Promise.reject(error);
     }
   };
+
   getRoleList = async (creds) => {
     try {
       const res = await api.get(
-        `api/identity/roles?${queryString.stringify(creds)}`
+        `api/identity/roles?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
     }
   };
+
   updateRole = async (creds) => {
     try {
       const res = await api.put(`api/identity/roles/${creds.id}`, {
@@ -73,7 +75,7 @@ class UserService {
             name: item,
             isGranted: true,
           })),
-        }
+        },
       );
       return res.data;
     } catch (error) {
@@ -93,7 +95,7 @@ class UserService {
             name: item,
             isGranted: true,
           })),
-        }
+        },
       );
       return res.data;
     } catch (error) {
@@ -109,26 +111,29 @@ class UserService {
       return Promise.reject(error);
     }
   };
+
   getUserList = async (creds) => {
     try {
       const res = await api.get(
-        `api/identity/users?${queryString.stringify(creds)}`
+        `api/identity/users?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
     }
   };
+
   getAllPermissions = async (creds) => {
     try {
       const res = await api.get(
-        `api/permission-management/permissions?${queryString.stringify(creds)}`
+        `api/permission-management/permissions?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
       return Promise.reject(error);
     }
   };
+
   updateUser = async (creds) => {
     try {
       const res = await api.put(`api/identity/users/${creds.id}`, creds);
@@ -150,7 +155,7 @@ class UserService {
   deleteUser = async (creds) => {
     try {
       const res = await api.delete(
-        `api/identity/users​?${queryString.stringify(creds)}`
+        `api/identity/users​?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
