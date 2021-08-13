@@ -1,11 +1,24 @@
-import queryString from "query-string";
-import api from "../core/http";
+import queryString from 'query-string';
+import api from '../core/http';
 
 class DataService {
+  exportDeviceInOutRecords = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Device/ExportDeviceInOutRecords?${queryString.stringify(creds)}`,
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   exportStaffCheckRecords = async (creds) => {
     try {
       const res = await api.get(
-        `api/TicketCardInfo/ExportStarffCheckRecords?${queryString.stringify(creds)}`
+        `api/TicketCardInfo/ExportStarffCheckRecords?${queryString.stringify(
+          creds,
+        )}`,
       );
       return res.data;
     } catch (error) {
@@ -16,7 +29,7 @@ class DataService {
   getAreaOptions = async (creds) => {
     try {
       const res = await api.get(
-        `api/Region/Items?${queryString.stringify(creds)}`
+        `api/Region/Items?${queryString.stringify(creds)}`,
       );
       return res.data.items || [];
     } catch (error) {
@@ -27,7 +40,7 @@ class DataService {
   getAreaTopProvince = async (creds) => {
     try {
       const res = await api.get(
-        `api/Order/AreaTopProvince?${queryString.stringify(creds)}`
+        `api/Order/AreaTopProvince?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -38,7 +51,7 @@ class DataService {
   getOrderAreaList = async (creds) => {
     try {
       const res = await api.get(
-        `api/Order/Area?${queryString.stringify(creds)}`
+        `api/Order/Area?${queryString.stringify(creds)}`,
       );
       return res.data.items || [];
     } catch (error) {
@@ -49,7 +62,7 @@ class DataService {
   getOrderCityList = async (creds) => {
     try {
       const res = await api.get(
-        `api/Order/CityArea?${queryString.stringify(creds)}`
+        `api/Order/CityArea?${queryString.stringify(creds)}`,
       );
       return res.data.items || [];
     } catch (error) {
@@ -60,7 +73,7 @@ class DataService {
   getOrderAgeList = async (creds) => {
     try {
       const res = await api.get(
-        `api/Order/Age?${queryString.stringify(creds)}`
+        `api/Order/Age?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -70,7 +83,7 @@ class DataService {
   getDeviceTotal = async (creds) => {
     try {
       const res = await api.get(
-        `api/Device/Count?${queryString.stringify(creds)}`
+        `api/Device/Count?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -79,9 +92,7 @@ class DataService {
   };
   getOrderRealTimeStatistics = async () => {
     try {
-      const res = await api.get(
-        `api/order/RealTimeStatistics`
-      );
+      const res = await api.get(`api/order/RealTimeStatistics`);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -90,7 +101,7 @@ class DataService {
   getOrderCheckTimeRanges = async (creds) => {
     try {
       const res = await api.get(
-        `api/Order/CheckTimeRanges?${queryString.stringify(creds)}`
+        `api/Order/CheckTimeRanges?${queryString.stringify(creds)}`,
       );
       return res.data || [];
     } catch (error) {
@@ -100,7 +111,7 @@ class DataService {
   getOrderStatistics = async (creds) => {
     try {
       const res = await api.get(
-        `api/Order/Statistics?${queryString.stringify(creds)}`
+        `api/Order/Statistics?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -113,7 +124,7 @@ class DataService {
   exportCheckTimeRange = async (creds) => {
     try {
       const res = await api.get(
-        `api/Order/ExportCheckTimeRange?${queryString.stringify(creds)}`
+        `api/Order/ExportCheckTimeRange?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -123,7 +134,7 @@ class DataService {
   exportBlockBehavior = async (creds) => {
     try {
       const res = await api.get(
-        `api/BlockBehavior/Export?${queryString.stringify(creds)}`
+        `api/BlockBehavior/Export?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -133,7 +144,7 @@ class DataService {
   exportBlockAllowRecord = async (creds) => {
     try {
       const res = await api.get(
-        `api/BlockAllowUser/Export?${queryString.stringify(creds)}`
+        `api/BlockAllowUser/Export?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -143,7 +154,7 @@ class DataService {
   exportMerchantList = async (creds) => {
     try {
       const res = await api.get(
-        `api/Merchant/Export?${queryString.stringify(creds)}`
+        `api/Merchant/Export?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -153,7 +164,7 @@ class DataService {
   exportUserList = async (creds) => {
     try {
       const res = await api.get(
-        `api/identity/users/Export?${queryString.stringify(creds)}`
+        `api/identity/users/Export?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -163,7 +174,7 @@ class DataService {
   exportOrderList = async (creds) => {
     try {
       const res = await api.get(
-        `api/Order/ExportDetails?${queryString.stringify(creds)}`
+        `api/Order/ExportDetails?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -173,7 +184,7 @@ class DataService {
   exportStaffList = async (creds) => {
     try {
       const res = await api.get(
-        `api/Staff/Export?${queryString.stringify(creds)}`
+        `api/Staff/Export?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -183,7 +194,7 @@ class DataService {
   exportAgeList = async (creds) => {
     try {
       const res = await api.get(
-        `api/Order/ExportAgeRange?${queryString.stringify(creds)}`
+        `api/Order/ExportAgeRange?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -193,7 +204,7 @@ class DataService {
   exportAreaList = async (creds) => {
     try {
       const res = await api.get(
-        `api/Order/ExportCityAreaRange?${queryString.stringify(creds)}`
+        `api/Order/ExportCityAreaRange?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -204,7 +215,7 @@ class DataService {
   importBlockBehavior = async (creds) => {
     try {
       const res = await api.post(
-        `api/BlockBehavior/Import?${queryString.stringify(creds)}`
+        `api/BlockBehavior/Import?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -215,7 +226,7 @@ class DataService {
   importBlockAllowRecord = async (creds) => {
     try {
       const res = await api.post(
-        `api/BlockAllowRecord/Import?${queryString.stringify(creds)}`
+        `api/BlockAllowRecord/Import?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {
@@ -226,7 +237,7 @@ class DataService {
   importMerchantList = async (creds) => {
     try {
       const res = await api.post(
-        `api/Merchant/Import?${queryString.stringify(creds)}`
+        `api/Merchant/Import?${queryString.stringify(creds)}`,
       );
       return res.data;
     } catch (error) {

@@ -2,6 +2,46 @@ import queryString from "query-string";
 import api from "../core/http";
 
 class UserService {
+  getOrgList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/base/orgs/loadOrgs?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  
+  updateOrg = async (creds) => {
+    try {
+      const res = await api.put(`api/base/orgs/${creds.id}`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  
+  addOrg = async (creds) => {
+    try {
+      const res = await api.post(`api/base/orgs​`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  
+  deleteOrg = async (creds) => {
+    try {
+      const res = await api.post(
+        `api/base/orgs​/Delete?${queryString.stringify(creds)}`
+      );
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+  
   getAllRole = async (creds) => {
     try {
       const res = await api.get(`api/identity/roles/all`);
