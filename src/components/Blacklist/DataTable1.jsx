@@ -191,7 +191,7 @@ export default function DataTable() {
       dataIndex: 'phone',
     },
     {
-      title: '证件号码',
+      title: '证件类型',
       dataIndex: 'certType',
     },
     {

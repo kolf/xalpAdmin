@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Select, DatePicker, Skeleton } from "antd";
-import UploadImage from "../UI/UploadImage";
-import moment from "moment";
-import utils from "../../shared/utils";
-import faciliyService from "../../services/faciliy.service";
+import React, { useState, useEffect } from 'react';
+import { Form, Input, Button, Select, DatePicker, Skeleton } from 'antd';
+import { useRequest } from 'ahooks';
+import UploadImage from '../UI/UploadImage';
+import moment from 'moment';
+import utils from '../../shared/utils';
+import userService from '../../services/user.service';
+import faciliyService from '../../services/faciliy.service';
 const { RangePicker } = DatePicker;
-const dateFormat = "YYYY-MM-DD";
+const dateFormat = 'YYYY-MM-DD';
 
 const layout = {
   labelCol: { span: 8 },
@@ -16,42 +18,27 @@ const tailLayout = {
 };
 
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
-  const [merchantOptions, setMerchantOptions] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let mounted = true;
-    if (merchantOptions.length === 0) {
-      loadData();
-    }
-    async function loadData() {
-      try {
-        const res = await faciliyService.getMerchantList({
-          skipCount: "1",
-          maxResultCount: "1000",
-        });
-        const { items } = res;
-
-        if (mounted) {
-          setMerchantOptions(
-            items.map((item) => ({
-              label: item.name,
-              value: item.id,
-            }))
-          );
-          setLoading(false);
-        }
-      } catch (error) {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    }
-
-    return () => {
-      mounted = false;
-    };
-  }, [JSON.stringify(setMerchantOptions)]);
+  const {
+    loading,
+    data: options,
+    error,
+  } = useRequest(
+    () =>
+      userService.getOrgList({
+        skipCount: '0',
+        maxResultCount: '100',
+      }),
+    {
+      throwOnError: true,
+      initialData: [],
+      formatResult(res) {
+        return res.items.map((item) => ({
+          label: item.displayName,
+          value: item.id,
+        }));
+      },
+    },
+  );
 
   async function onFinish(values) {
     let res = null;
@@ -77,19 +64,19 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     return Object.keys(values).reduce(
       (result, key) => {
         const value = values[key];
-        if (key === "date" && value) {
+        if (key === 'date' && value) {
           const [start, end] = value;
           result.startPermissionDate = start.format(dateFormat);
           result.endPermissionDate = end.format(dateFormat);
-        } else if (key === "tempFaceFileName" && /^http/.test(value)) {
-        } else if (value !== undefined && value !== "-1") {
+        } else if (key === 'tempFaceFileName' && /^http/.test(value)) {
+        } else if (value !== undefined && value !== '-1') {
           result[key] = value;
         }
         return result;
       },
       {
         staffType: 2,
-      }
+      },
     );
   }
 
@@ -107,12 +94,10 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       webUrl,
       startCardTime,
       endCardTime,
-      merchantName,
+      departmentId,
     } = values;
 
     return {
-      merchantId: (merchantOptions.find((o) => o.label === merchantName) || {})
-        .value,
       jobNumber,
       name,
       organizationUnit,
@@ -120,6 +105,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
       certNumber,
       tempFaceFileName,
       tempFaceFileName: webUrl,
+      departmentId,
       date: [
         moment(startCardTime, dateFormat),
         moment(endCardTime, dateFormat),
@@ -135,17 +121,12 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     <>
       <Form
         {...layout}
-        size="small"
+        size='small'
         onFinish={onFinish}
-        initialValues={makeDefaultValues(defaultValues)}
-      >
-        <Form.Item
-          label="服务商"
-          name="merchantId"
-          rules={[{ required: true, message: "请选择服务商！" }]}
-        >
-          <Select placeholder="请选择">
-            {merchantOptions.map((o) => (
+        initialValues={makeDefaultValues(defaultValues)}>
+        <Form.Item label='所属部门' name='departmentId'>
+          <Select placeholder='请选择所属部门'>
+            {options.map((o) => (
               <Select.Option key={o.value} value={o.value}>
                 {o.label}
               </Select.Option>
@@ -153,61 +134,53 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           </Select>
         </Form.Item>
         <Form.Item
-          label="工号"
-          name="jobNumber"
-          rules={[{ required: true, message: "请输入工号！" }]}
-        >
-          <Input placeholder="请输入" />
+          label='工号'
+          name='jobNumber'
+          rules={[{ required: true, message: '请输入工号！' }]}>
+          <Input placeholder='请输入' />
         </Form.Item>
         <Form.Item
-          label="姓名"
-          name="name"
-          rules={[{ required: true, message: "请输入姓名！" }]}
-        >
-          <Input placeholder="请输入" />
+          label='姓名'
+          name='name'
+          rules={[{ required: true, message: '请输入姓名！' }]}>
+          <Input placeholder='请输入' />
         </Form.Item>
         <Form.Item
-          label="岗位"
-          name="organizationUnit"
-          rules={[{ required: true, message: "请输入岗位！" }]}
-        >
-          <Input placeholder="请输入" />
+          label='岗位'
+          name='organizationUnit'
+          rules={[{ required: true, message: '请输入岗位！' }]}>
+          <Input placeholder='请输入' />
         </Form.Item>
 
         <Form.Item
-          label="电话"
-          name="phone"
-          rules={[{ required: true, message: "请输入电话" }]}
-        >
-          <Input placeholder="请输入" />
+          label='电话'
+          name='phone'
+          rules={[{ required: true, message: '请输入电话' }]}>
+          <Input placeholder='请输入' />
         </Form.Item>
         <Form.Item
-          label="证件号码"
-          name="certNumber"
-          rules={[{ required: true, message: "请输入证件号码！" }]}
-        >
-          <Input placeholder="请输入" />
+          label='证件号码'
+          name='certNumber'
+          rules={[{ required: true, message: '请输入证件号码！' }]}>
+          <Input placeholder='请输入' />
         </Form.Item>
         <Form.Item
-          label="照片"
-          name="tempFaceFileName"
-          rules={[{ required: true, message: "请上传照片！" }]}
-        >
+          label='照片'
+          name='tempFaceFileName'
+          rules={[{ required: true, message: '请上传照片！' }]}>
           <UploadImage />
         </Form.Item>
         <Form.Item
-          label="有效入园时间段"
-          name="date"
-          rules={[{ required: true, message: "请选择时间段！" }]}
-        >
+          label='有效入园时间段'
+          name='date'
+          rules={[{ required: true, message: '请选择时间段！' }]}>
           <RangePicker />
         </Form.Item>
         <Form.Item {...tailLayout}>
           <Button
-            type="primary"
-            htmlType="submit"
-            rules={[{ required: true, message: "请输入" }]}
-          >
+            type='primary'
+            htmlType='submit'
+            rules={[{ required: true, message: '请输入' }]}>
             确定
           </Button>
         </Form.Item>

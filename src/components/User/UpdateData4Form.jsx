@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Select, DatePicker, message } from 'antd';
+import { Form, Input, Button, Select, Skeleton, message } from 'antd';
+import { useRequest } from 'ahooks';
 import utils from '../../shared/utils';
 import userService from '../../services/user.service';
 
@@ -12,6 +13,32 @@ const tailLayout = {
 };
 
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
+  const {
+    loading,
+    data: options,
+    error,
+  } = useRequest(
+    () =>
+      userService.getOrgList({
+        skipCount: '0',
+        maxResultCount: '100',
+      }),
+    {
+      throwOnError: true,
+      initialData: [],
+      formatResult(res) {
+        let result = res.items.map((item) => ({
+          label: item.displayName,
+          value: item.id,
+        }));
+        if (defaultValues.id) {
+          result = result.filter((o) => o.value !== defaultValues.id);
+        }
+        return result;
+      },
+    },
+  );
+
   function makeParams(values) {
     return Object.keys(values).reduce((result, key) => {
       const value = values[key];
@@ -30,6 +57,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         res = await userService.updateOrg(
           makeParams({
             ...values,
+            concurrencyStamp: defaultValues.concurrencyStamp,
             id: defaultValues.id,
           }),
         );
@@ -49,11 +77,16 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     if (!values.id) {
       return {};
     }
-    const { displayName } = values;
+    const { displayName, parentId } = values;
 
     return {
       displayName,
+      parentId,
     };
+  }
+
+  if (loading) {
+    return <Skeleton />;
   }
 
   return (
@@ -71,8 +104,8 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         </Form.Item>
 
         <Form.Item label='上级部门' name='parentId'>
-          <Select placeholder='请选择上级部门'>
-            {[].map((o) => (
+          <Select placeholder='请选择上级部门' _disabled={defaultValues.id}>
+            {options.map((o) => (
               <Select.Option key={o.value} value={o.value}>
                 {o.label}
               </Select.Option>

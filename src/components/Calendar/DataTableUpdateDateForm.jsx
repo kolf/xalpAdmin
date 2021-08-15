@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import moment from "moment";
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
 import {
   Form,
   Button,
@@ -8,15 +8,15 @@ import {
   InputNumber,
   Skeleton,
   Space,
-} from "antd";
-import { MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import utils from "../../shared/utils";
-import UploadImage from "../UI/UploadImage";
-import { datePickerOptions } from "../../shared/options";
-import commonService from "../../services/common.service";
-import faciliyService from "../../services/faciliy.service";
-import FormList from "./FormList";
-const dateFormat = "YYYY-MM-DD";
+} from 'antd';
+import { MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import utils from '../../shared/utils';
+import UploadImage from '../UI/UploadImage';
+import { datePickerOptions } from '../../shared/options';
+import commonService from '../../services/common.service';
+import faciliyService from '../../services/faciliy.service';
+import FormList from './FormList';
+const dateFormat = 'YYYY-MM-DD';
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
@@ -74,7 +74,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     } else {
       try {
         res = await faciliyService.addReservationTimeSetting(
-          makeParams(values)
+          makeParams(values),
         );
         utils.success(`添加成功！`);
       } catch (error) {}
@@ -88,7 +88,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     if (_items1 && Object.values(_items1).every((item) => item)) {
       return Promise.resolve();
     }
-    return Promise.reject(new Error("请完善时间段票数信息"));
+    return Promise.reject(new Error('请完善时间段票数信息'));
   }
 
   async function checkDateList2() {
@@ -96,14 +96,14 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     if (_items2 && Object.values(_items2).every((item) => item)) {
       return Promise.resolve();
     }
-    return Promise.reject(new Error("请完善时间段票数信息"));
+    return Promise.reject(new Error('请完善时间段票数信息'));
   }
 
   function makeParams(values) {
     const { date, warningLeftQuantity, _items1, _items2 } = values;
 
-    let startReserveDate = "";
-    let endReserveDate = "";
+    let startReserveDate = '';
+    let endReserveDate = '';
     if (defaultValues.isSpecial) {
       startReserveDate = defaultValues.dateTitle;
       endReserveDate = defaultValues.dateTitle;
@@ -169,7 +169,7 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
         }
         return result;
       },
-      [[], []]
+      [[], []],
     );
   }
 
@@ -206,59 +206,55 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   }
 
   if (loading) {
-    return <Skeleton></Skeleton>;
+    return <Skeleton />;
   }
 
   return (
     <>
       <Form
-        name="update-form"
+        name='update-form'
         form={form}
         {...layout}
-        size="small"
+        size='small'
         onFinish={onFinish}
-        initialValues={makeDefaultValues(defaultValues)}
-      >
+        initialValues={makeDefaultValues(defaultValues)}>
         <Form.Item
-          label="开始/截至日期"
-          name="date"
-          rules={[{ required: true, message: "请选择日期" }]}
-        >
+          label='开始/截至日期'
+          name='date'
+          rules={[{ required: true, message: '请选择日期' }]}>
           <RangePicker disabled={defaultValues.id} />
         </Form.Item>
 
         <Form.Item
-          label="个人时间段票数"
+          label='个人时间段票数'
           style={{ marginBottom: 12 }}
-          name="_items1"
-          className="form-item-list"
+          name='_items1'
+          className='form-item-list'
           required
-          rules={[{ validator: checkDateList1 }]}
-        >
-          <FormList name="items1" pickerOptions={datePickerOptions} />
+          rules={[{ validator: checkDateList1 }]}>
+          <FormList name='items1' pickerOptions={datePickerOptions} />
         </Form.Item>
         <Form.Item
-          label="团体时间段票数"
+          label='团体时间段票数'
           style={{ marginBottom: 12 }}
-          name="_items2"
+          name='_items2'
           required
-          className="form-item-list"
-          rules={[{ validator: checkDateList2 }]}
-        >
-          <FormList name="items2" pickerOptions={datePickerOptions} />
+          className='form-item-list'
+          rules={[{ validator: checkDateList2 }]}>
+          <FormList name='items2' pickerOptions={datePickerOptions} />
         </Form.Item>
-        <Form.Item label="库存提示">
+        <Form.Item label='库存提示'>
           <Space>
             <span>数量低于</span>
-            <Form.Item name="warningLeftQuantity" style={{ marginBottom: 0 }}>
-              <InputNumber placeholder="0" min="0" />
+            <Form.Item name='warningLeftQuantity' style={{ marginBottom: 0 }}>
+              <InputNumber placeholder='0' min='0' />
             </Form.Item>
             <span>提示“余票过少”</span>
           </Space>
         </Form.Item>
 
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
+          <Button type='primary' htmlType='submit'>
             确定
           </Button>
         </Form.Item>
