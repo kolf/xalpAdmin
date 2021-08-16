@@ -19,13 +19,16 @@ import modal from '../../shared/modal';
 import confirm from '../../shared/confirm';
 import utils from '../../shared/utils';
 import userService from '../../services/user.service';
-import dataService from '../../services/data.service';
-import { reviewOptions } from '../../shared/options';
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
 const dateFormat = 'YYYY-MM-DD';
 const secFormat = 'YYYY-MM-DD HH:mm:ss';
+
+const initialData = {
+  totalCount: 0,
+  items: [],
+}
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -35,13 +38,9 @@ export default function DataTable() {
     keyword: '',
   });
 
-  const { data, run, error, loading, refresh } = useRequest(
+  const { data = initialData, run, error, loading, refresh } = useRequest(
     () => userService.getOrgList(makeQuery(query)),
     {
-      initialData: {
-        totalCount: 0,
-        items: [],
-      },
       refreshDeps: [query],
       throwOnError: true,
     },
@@ -112,10 +111,6 @@ export default function DataTable() {
       mod.close();
       refresh();
     }
-  }
-
-  if (error) {
-    return null;
   }
 
   const columns = [
@@ -222,7 +217,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey='id'
-        // scroll={{ x: 1200 }}
+      // scroll={{ x: 1200 }}
       />
       <div className='page-container'>
         <Pagination {...paginationProps} />

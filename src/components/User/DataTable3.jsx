@@ -2,16 +2,15 @@ import React, { useState, useEffect } from "react";
 import {
   Table,
   Button,
-  DatePicker,
   Form,
   Input,
   Row,
   Col,
   Space,
-  Select,
   Pagination,
   message,
 } from "antd";
+import { useRequest } from 'ahooks';
 import UpdateDataForm from "./UpdateData3Form";
 import ImportDataTable from "./ImportData3Table";
 import moment from "moment";
@@ -20,51 +19,30 @@ import confirm from "../../shared/confirm";
 import utils from "../../shared/utils";
 import faciliyService from "../../services/faciliy.service";
 import dataService from "../../services/data.service";
-import { reviewOptions } from "../../shared/options";
-const { RangePicker } = DatePicker;
 const { Search } = Input;
-const { Option } = Select;
 const dateFormat = "YYYY-MM-DD";
 const secFormat = "YYYY-MM-DD HH:mm:ss";
 
+const initialData = {
+  totalCount: 0,
+  items: [],
+}
+
 export default function DataTable() {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [dataList, setDataList] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
     keyword: "",
   });
 
-  useEffect(() => {
-    let mounted = true;
-    loadData();
-    async function loadData() {
-      setLoading(true);
-      try {
-        const { items, totalCount } = await faciliyService.getMerchantList(
-          makeQuery(query)
-        );
-        if(mounted) {
-          setLoading(false);
-        setDataList(items);
-        setTotal(totalCount);
-        }
-      } catch (error) {
-        if(mounted) {
-          setLoading(false);
-        }
-      }
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [query, counter]);
-
-
+  const { data = initialData, run, error, loading, refresh } = useRequest(
+    () => faciliyService.getMerchantList(makeQuery(query)),
+    {
+      refreshDeps: [query],
+      throwOnError: true,
+    },
+  );
 
   function makeData(data) {
     if (!data) {
@@ -102,7 +80,6 @@ export default function DataTable() {
         const res = await faciliyService.deleteMerchant(creds);
         mod.close();
         utils.success(`删除成功！`);
-        setCounter(counter + 1);
         setQuery({
           ...query,
           skipCount: "1",
@@ -121,7 +98,6 @@ export default function DataTable() {
     });
     function onOk() {
       mod.close();
-      setCounter(counter + 1);
       setQuery({
         ...query,
         skipCount: "1",
@@ -137,7 +113,6 @@ export default function DataTable() {
     });
     function onOk() {
       mod.close();
-      setCounter(counter + 1);
       setQuery({
         ...query,
         skipCount: "1",
@@ -154,7 +129,6 @@ export default function DataTable() {
     });
     function onOk() {
       mod.close();
-      setCounter(counter + 1);
       setQuery({
         ...query,
         skipCount: "1",
@@ -166,7 +140,7 @@ export default function DataTable() {
     try {
       const res = await dataService.exportMerchantList(makeQuery(query));
       window.open(res);
-    } catch (error) {}
+    } catch (error) { }
   }
 
   const columns = [
@@ -225,7 +199,7 @@ export default function DataTable() {
     showSizeChanger: true,
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
-    total,
+    total: data.totalCount,
     position: ["", "bottomCenter"],
     size: "small",
     onChange(pageNum, pageSize) {
@@ -280,14 +254,14 @@ export default function DataTable() {
       </Form>
 
       <Table
-        dataSource={makeData(dataList)}
+        dataSource={makeData(data.items)}
         columns={columns}
         pagination={false}
         size="small"
         bordered
         loading={loading}
         rowKey="id"
-        // scroll={{ x: 1200 }}
+      // scroll={{ x: 1200 }}
       />
       <div className="page-container">
         <Pagination {...paginationProps} />

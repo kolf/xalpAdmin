@@ -10,6 +10,7 @@ import {
   Row,
   Col,
 } from "antd";
+import { useRequest } from 'ahooks';
 import UpdateDataForm from "./UpdateData2Form";
 import moment from "moment";
 import modal from "../../shared/modal";
@@ -21,44 +22,26 @@ const { Search } = Input;
 const dateFormat = "YYYY-MM-DD";
 const secFormat = "YYYY-MM-DD HH:mm:ss";
 
+const initialData = {
+  totalCount: 0,
+  items: [],
+}
+
 export default function DataTable() {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [dataList, setDataList] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: "1",
     maxResultCount: "10",
     keyword: "",
   });
 
-  useEffect(() => {
-    let mounted = true;
-    loadData();
-
-  async function loadData() {
-    setLoading(true);
-    try {
-      const { items, totalCount } = await userService.getRoleList(
-        makeQuery(query)
-      );
-      if(mounted){
-        setLoading(false);
-      setDataList(items);
-      setTotal(totalCount);
-      }
-    } catch (error) {
-      if(mounted){
-        setLoading(false);
-      }
-    }
-  }
-
-    return () => {
-      mounted = false;
-    };
-  }, [JSON.stringify(query), counter]);
+  const { data = initialData, run, error, loading, refresh } = useRequest(
+    () => userService.getRoleList(makeQuery(query)),
+    {
+      refreshDeps: [query],
+      throwOnError: true,
+    },
+  );
 
   function makeData(data) {
     if (!data) {
@@ -95,7 +78,6 @@ export default function DataTable() {
 
     function onOk() {
       mod.close();
-      setCounter(counter + 1);
       setQuery({
         ...query,
         skipCount: "1",
@@ -112,7 +94,6 @@ export default function DataTable() {
 
     function onOk() {
       mod.close();
-      setCounter(counter + 1);
       setQuery({
         ...query,
         skipCount: "1",
@@ -132,7 +113,6 @@ export default function DataTable() {
         });
         mod.close();
         utils.success(`删除成功！`);
-        setCounter(counter + 1);
         setQuery({ ...query, skipCount: "1" });
       } catch (error) {
         mod.close();
@@ -144,7 +124,7 @@ export default function DataTable() {
     {
       title: "角色名称",
       dataIndex: "name",
-      width:100,
+      width: 100,
     },
     {
       title: "最后编辑时间",
@@ -165,7 +145,7 @@ export default function DataTable() {
       title: "操作",
       dataIndex: "options",
       fixed: "right",
-      width:120,
+      width: 120,
       render(text, creds) {
         return (
           <div className="text-center">
@@ -190,7 +170,7 @@ export default function DataTable() {
     showSizeChanger: true,
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
-    total,
+    total: data.totalCount,
     position: ["", "bottomCenter"],
     size: "small",
     onChange(pageNum, pageSize) {
@@ -240,7 +220,7 @@ export default function DataTable() {
 
       <Table
         rowKey="id"
-        dataSource={makeData(dataList)}
+        dataSource={makeData(data.items)}
         columns={columns}
         pagination={false}
         size="small"

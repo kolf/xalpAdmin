@@ -15,7 +15,7 @@ const tailLayout = {
 export default function UpdateDataForm({ defaultValues = {}, onOk }) {
   const {
     loading,
-    data: options,
+    data: options = [],
     error,
   } = useRequest(
     () =>
@@ -62,12 +62,12 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           }),
         );
         utils.success(`更新成功！`);
-      } catch (error) {}
+      } catch (error) { }
     } else {
       try {
         res = await userService.addOrg(makeParams(values));
         utils.success(`添加成功！`);
-      } catch (error) {}
+      } catch (error) { }
     }
 
     onOk && onOk(res);

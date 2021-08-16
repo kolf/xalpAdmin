@@ -11,6 +11,7 @@ import {
   Space,
   Pagination,
 } from 'antd';
+import { useRequest } from 'ahooks';
 import UpdateDataForm from './UpdateData1Form';
 import modal from '../../shared/modal';
 import utils from '../../shared/utils';
@@ -19,45 +20,28 @@ import dataService from '../../services/data.service';
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = 'YYYY-MM-DD';
-const secFormat = 'YYYY-MM-DD HH:mm:ss';
+
+const initialData = {
+  totalCount: 0,
+  items: [],
+}
+
 
 export default function DataTable() {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [dataList, setDataList] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: '1',
     maxResultCount: '10',
     keyword: '',
   });
 
-  useEffect(() => {
-    let mounted = true;
-    loadData();
-
-    async function loadData() {
-      setLoading(true);
-      try {
-        const { items, totalCount } = await userService.getUserList(
-          makeQuery(query),
-        );
-        if (mounted) {
-          setLoading(false);
-          setDataList(items);
-          setTotal(totalCount);
-        }
-      } catch (error) {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [JSON.stringify(query), counter]);
+  const { data = initialData, run, error, loading, refresh } = useRequest(
+    () => userService.getUserList(makeQuery(query)),
+    {
+      refreshDeps: [query],
+      throwOnError: true,
+    },
+  );
 
   function makeData(data) {
     if (!data) {
@@ -94,7 +78,6 @@ export default function DataTable() {
 
     function onOk() {
       mod.close();
-      setCounter(counter + 1);
       setQuery({
         ...query,
         skipCount: '1',
@@ -161,7 +144,7 @@ export default function DataTable() {
     showSizeChanger: true,
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
-    total,
+    total: data.totalCount,
     position: ['', 'bottomCenter'],
     size: 'small',
     onChange(pageNum, pageSize) {
@@ -212,7 +195,7 @@ export default function DataTable() {
 
       <Table
         rowKey='id'
-        dataSource={makeData(dataList)}
+        dataSource={makeData(data.items)}
         columns={columns}
         pagination={false}
         size='small'
