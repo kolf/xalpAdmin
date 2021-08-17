@@ -137,7 +137,7 @@ const isEnableFreeCertCheckEnum = {
 
 export const staffTypeEnum = {
   1: '工作人员',
-  2: '供应商人员',
+  2: '服务商人员',
 };
 
 export const certList = ['身份证', '护照', '港澳通行证', '台胞证', '回乡证'];
