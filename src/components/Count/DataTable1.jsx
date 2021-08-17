@@ -20,6 +20,11 @@ const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = 'YYYY-MM-DD';
 
+const initialData = {
+  totalCount: 0,
+  items: [],
+}
+
 export default React.memo(function DataTable() {
   const [form] = Form.useForm();
   const [query, setQuery] = useState({
@@ -29,13 +34,9 @@ export default React.memo(function DataTable() {
     date: [moment(), moment()],
   });
 
-  const { data, run, loading } = useRequest(
+  const { data = initialData, run, loading } = useRequest(
     () => policeService.getDeviceInOutCount(makeQuery(query)),
     {
-      initialData: {
-        totalCount: 0,
-        items: [],
-      },
       refreshDeps: [query],
     },
   );
