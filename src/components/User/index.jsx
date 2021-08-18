@@ -35,7 +35,10 @@ export default function Home() {
       if (/SmartTicketing.Providers/.test(roles)) {
         result.push({ key: '3', label: '服务商管理' });
       }
-      result.push({ key: '4', label: '部门管理' });
+      if (/AbpIdentity.Organizations/.test(roles)) {
+        result.push({ key: '4', label: '部门管理' });
+      }
+
       return result;
     }
   }, [roles]);

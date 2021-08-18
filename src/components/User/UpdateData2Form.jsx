@@ -1,67 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { Form, Input, Button, Radio, Skeleton, Checkbox } from "antd";
-import utils from "../../shared/utils";
-import userService from "../../services/user.service";
+import React, { useState, useEffect } from 'react';
+import { Form, Input, Button, Radio, Skeleton, Checkbox } from 'antd';
+import PermissionsCheckbox from './PermissionsCheckbox';
+import { useRequest } from 'ahooks';
+import utils from '../../shared/utils';
+import userService from '../../services/user.service';
 
 const layout = {
-  labelCol: { span: 6 },
-  wrapperCol: { span: 16 },
+  labelCol: { span: 4 },
+  wrapperCol: { span: 20 },
 };
 const tailLayout = {
-  wrapperCol: { offset: 6, span: 16 },
+  wrapperCol: { offset: 4, span: 20 },
 };
 
 export default function UpdateDataForm({ onOk, defaultValues = {} }) {
-  const [providerOptions, setProviderOptions] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let mounted = true;
-    if (providerOptions.length === 0) {
-      loadData();
-    }
-
-    async function loadData() {
-      try {
-        let res = null;
-        if (defaultValues.name) {
-          res = await userService.getAllPermissions({
-            providerName: "R",
-            providerKey: defaultValues.name,
-          });
-        } else {
-          res = await userService.getAllPermissions({ providerName: "R" });
-        }
-
-        const options = res.groups.reduce((result, o) => {
-          if (o.permissions && o.permissions.length > 0) {
-            result = [
-              ...result,
-              ...o.permissions.map((i) => ({
-                label: i.displayName,
-                value: i.name,
-              })),
-            ];
-          }
-          return result;
-        }, []);
-
-        
-
-        if (mounted) {
-          setProviderOptions(options);
-          setLoading(false);
-        }
-      } catch (error) {
-        if (mounted) {
-          setLoading(false);
-        }
+  const { data = [], loading } = useRequest(
+    () => {
+      if (defaultValues.name) {
+        return userService.getAllPermissions({
+          providerName: 'R',
+          providerKey: defaultValues.name,
+        });
+      } else {
+        return userService.getAllPermissions({ providerName: 'R' });
       }
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [JSON.stringify(providerOptions)]);
+    },
+    {
+      throwOnError: true,
+    },
+  );
 
   async function onFinish(values) {
     let res = null;
@@ -88,11 +55,27 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
     onOk && onOk(res);
   }
 
+  function makeData(data) {
+    return data.reduce((result, o) => {
+      if (o.permissions && o.permissions.length > 0) {
+        result = [
+          ...result,
+          ...o.permissions.map((i) => ({
+            label: i.displayName,
+            value: i.name,
+            parentValue: i.parentName,
+          })),
+        ];
+      }
+      return result;
+    }, []);
+  }
+
   function makeParams(values) {
     return Object.keys(values).reduce(
       (result, key) => {
         const value = values[key];
-        if (value !== undefined && value !== "-1") {
+        if (value !== undefined && value !== '-1') {
           result[key] = value;
         }
         return result;
@@ -100,7 +83,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
       {
         isPublic: true,
         isDefault: false,
-      }
+      },
     );
   }
 
@@ -109,13 +92,14 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
       return {};
     }
 
+    const options = makeData(data.groups);
     return Object.keys(values).reduce((result, key) => {
       const value = values[key];
-      if (key === "permissions") {
-        result[key] = providerOptions
+      if (key === 'permissions') {
+        result[key] = options
           .filter((o) => values.permissions.find((v) => v === o.label))
           .map((o) => o.value);
-      } else if (value !== undefined && value !== "-1") {
+      } else if (value !== undefined && value !== '-1') {
         result[key] = value;
       }
       return result;
@@ -123,33 +107,30 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
   }
 
   if (loading) {
-    return <Skeleton></Skeleton>;
+    return <Skeleton />;
   }
 
   return (
     <>
       <Form
         {...layout}
-        size="small"
+        size='small'
         onFinish={onFinish}
-        initialValues={makeDefaultValues(defaultValues)}
-      >
+        initialValues={makeDefaultValues(defaultValues)}>
         <Form.Item
-          label="角色名称"
-          name="name"
-          rules={[{ required: true, message: "请输入角色名称！" }]}
-        >
-          <Input placeholder="请输入" />
+          label='角色名称'
+          name='name'
+          rules={[{ required: true, message: '请输入角色名称！' }]}>
+          <Input placeholder='请输入' />
         </Form.Item>
         <Form.Item
-          label="权限设置"
-          name="permissions"
-          rules={[{ required: true, message: "请选择权限！" }]}
-        >
-          <Checkbox.Group options={providerOptions} />
+          label='权限设置'
+          name='permissions'
+          rules={[{ required: true, message: '请选择权限！' }]}>
+          <PermissionsCheckbox dataSource={makeData(data.groups)} />
         </Form.Item>
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
+          <Button type='primary' htmlType='submit'>
             确定
           </Button>
         </Form.Item>

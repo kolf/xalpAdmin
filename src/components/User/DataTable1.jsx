@@ -17,6 +17,7 @@ import modal from '../../shared/modal';
 import utils from '../../shared/utils';
 import userService from '../../services/user.service';
 import dataService from '../../services/data.service';
+import sessionService from '../../services/session.service';
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = 'YYYY-MM-DD';
@@ -24,10 +25,10 @@ const dateFormat = 'YYYY-MM-DD';
 const initialData = {
   totalCount: 0,
   items: [],
-}
-
+};
 
 export default function DataTable() {
+  const roles = sessionService.getUserRoles();
   const [form] = Form.useForm();
   const [query, setQuery] = useState({
     skipCount: '1',
@@ -35,7 +36,7 @@ export default function DataTable() {
     keyword: '',
   });
 
-  const { data = initialData, run, error, loading, refresh } = useRequest(
+  const { data = initialData, loading } = useRequest(
     () => userService.getUserList(makeQuery(query)),
     {
       refreshDeps: [query],
@@ -130,9 +131,11 @@ export default function DataTable() {
       render(text, creds) {
         return (
           <div className='text-center'>
-            <Button size='small' onClick={(e) => showEditModal(creds)}>
-              编辑
-            </Button>
+            {/AbpIdentity.Users.Update/.test(roles) && (
+              <Button size='small' onClick={(e) => showEditModal(creds)}>
+                编辑
+              </Button>
+            )}
           </div>
         );
       },
