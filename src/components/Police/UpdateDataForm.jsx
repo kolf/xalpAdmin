@@ -129,17 +129,6 @@ export default function UpdateDataForm({
         rules={[{ required: true, message: '请输入设备IP地址！' }]}>
         <Input placeholder='请输入' />
       </Form.Item>
-      {checkDeviceType === '1' && (
-        <Form.Item
-          label='设备经纬度'
-          name='coordinate'
-          rules={[
-            { required: true, message: '请输入经纬度！' },
-            { validator: validatorCoordinate },
-          ]}>
-          <Input placeholder='前面经度、后面纬度，用逗号分隔！' />
-        </Form.Item>
-      )}
       {defaultValues.id && (
         <Form.Item label='录入人员姓名' name='creatorName'>
           <Input readOnly placeholder='未知' />

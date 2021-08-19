@@ -5,7 +5,6 @@ import Main from '../Layouts/AppMain';
 import DataTable1 from './DataTable1';
 import DataTable2 from './DataTable2';
 import DataTable3 from './DataTable3';
-import DataTable4 from './DataTable4';
 import './style.less';
 const { TabPane } = Tabs;
 
@@ -35,7 +34,6 @@ export default function Home() {
       if (/SmartTicketing.Providers/.test(roles)) {
         result.push({ key: '3', label: '服务商管理' });
       }
-      result.push({ key: '4', label: '部门管理' });
       return result;
     }
   }, [roles]);
@@ -59,7 +57,6 @@ export default function Home() {
       {tabKey === '1' && <DataTable1 />}
       {tabKey === '2' && <DataTable2 />}
       {tabKey === '3' && <DataTable3 />}
-      {tabKey === '4' && <DataTable4 />}
     </Main>
   );
 }

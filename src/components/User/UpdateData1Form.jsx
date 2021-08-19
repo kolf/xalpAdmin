@@ -108,18 +108,6 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item
-          label='选择部门'
-          name='organizationUnitId'
-          rules={[{ required: true, message: '请选择部门！' }]}>
-          <Select placeholder='请选择' allowClear>
-            {data[1].map((o) => (
-              <Option value={o.value} key={o.value}>
-                {o.label}
-              </Option>
-            ))}
-          </Select>
-        </Form.Item>
         <Form.Item {...tailLayout}>
           <Button type='primary' htmlType='submit'>
             确定
