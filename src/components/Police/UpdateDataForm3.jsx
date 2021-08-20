@@ -95,7 +95,13 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
           placeholder='请选择设备'
           disabled={defaultValues.id}
           allowClear
-          showSearch>
+          showSearch
+          optionFilterProp='children'
+          filterOption={(input, option) => {
+            return (
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            );
+          }}>
           {data.map((o) => (
             <Select.Option key={o.value} value={o.value}>
               {o.label}

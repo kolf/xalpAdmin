@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Space } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import ReactHlsPlayer from 'react-hls-player';
 import icon1Url from '../../assets/img/icon1.png';
 import icon2Url from '../../assets/img/icon2.png';
 import iconxUrl from '../../assets/img/remove.png';
@@ -42,12 +42,13 @@ export default function MapIcon({ dataSource }) {
               backgroundColor: 'transparent',
               borderTop: 'none',
             }}>
-            <video width='200' height='160' controls>
-              <source
-                src='https://www.w3school.com.cn/i/movie.ogg'
-                type='video/ogg'
-              />
-            </video>
+            <ReactHlsPlayer
+              src='https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8'
+              autoPlay={false}
+              controls={true}
+              width='100%'
+              height={160}
+            />
           </div>
         )}
       </div>

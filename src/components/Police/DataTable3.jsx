@@ -161,7 +161,7 @@ export default function DataTable() {
     showQuickJumper: true,
     showSizeChanger: true,
     current: query.current * 1,
-    pageSize: query.size,
+    pageSize: query.size * 1,
     total: data.total,
     position: ['', 'bottomCenter'],
     size: 'small',
@@ -218,7 +218,7 @@ export default function DataTable() {
       </Form>
 
       <Table
-        rowKey='id'
+        rowKey='deviceId'
         dataSource={makeData(data.records || [])}
         columns={columns}
         pagination={false}
