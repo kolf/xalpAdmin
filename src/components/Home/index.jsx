@@ -1,6 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import "./style.less";
+import './style.less';
 export default function Home({ children }) {
-  return null;
+  console.log(`import AliMap from "./components/UI/AliMap";`);
+  return <div>2</div>;
 }

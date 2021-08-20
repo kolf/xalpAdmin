@@ -140,9 +140,27 @@ export const staffTypeEnum = {
   2: '服务商人员',
 };
 
+const deviceStatus = {
+  // '-1': '全部',
+  0: '在线',
+  1: '离线',
+};
+
+//设备状态 -1，无状态 0,在线  1,离线  2,故障
+export const cameraStatusEnum = {
+  0: '在线',
+  1: '离线',
+  2: '故障',
+};
+
 export const certList = ['身份证', '护照', '港澳通行证', '台胞证', '回乡证'];
 
 export const staffTypeOptions = Object.entries(staffTypeEnum).map((item) => ({
+  value: item[0],
+  label: item[1],
+}));
+
+export const deviceStatusOptions = Object.entries(deviceStatus).map((item) => ({
   value: item[0],
   label: item[1],
 }));

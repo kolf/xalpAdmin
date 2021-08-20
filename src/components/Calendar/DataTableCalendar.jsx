@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from "react";
-import moment from "moment";
-import { Calendar, Space, Spin, Row, Col, Button } from "antd";
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
+import { Calendar, Space, Spin, Row, Col, Button } from 'antd';
 import {
   LeftOutlined,
   DoubleLeftOutlined,
   DoubleRightOutlined,
   RightOutlined,
-} from "@ant-design/icons";
-import DataTableCalendarDetails from "./DataTableCalendarDetails";
-import UpdateDataForm from "./DataTableUpdateTabs";
-import modal from "../../shared/modal";
-import faciliyService from "../../services/faciliy.service";
-const monthFormat = "YYYY-MM";
-const dateFormat = "YYYY-MM-DD";
+} from '@ant-design/icons';
+import DataTableCalendarDetails from './DataTableCalendarDetails';
+import UpdateDataForm from './DataTableUpdateTabs';
+import modal from '../../shared/modal';
+import faciliyService from '../../services/faciliy.service';
+const monthFormat = 'YYYY-MM';
+const dateFormat = 'YYYY-MM-DD';
 const currentMoment = moment();
 
 export default function DataTableListCalendar({ renderHeader }) {
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState('');
   const [dataList, setDataList] = useState([]);
   const [monthDate, setMonthDate] = useState(currentMoment.format(monthFormat));
   const [counter, setCounter] = useState(0);
@@ -30,7 +30,7 @@ export default function DataTableListCalendar({ renderHeader }) {
       setLoading(true);
       try {
         const { items } = await faciliyService.getReservationTimeRangeList(
-          makeQuery(monthDate)
+          makeQuery(monthDate),
         );
         if (mounted) {
           setLoading(false);
@@ -49,12 +49,12 @@ export default function DataTableListCalendar({ renderHeader }) {
   }, [monthDate, counter]);
 
   function makeQuery(date) {
-    const currentDate = moment(date).startOf("month");
+    const currentDate = moment(date).startOf('month');
     const startTime = currentDate.date(-currentDate.day() + 1);
 
     return {
       StartTime: startTime.format(dateFormat),
-      EndTime: startTime.add(6, "w").format(dateFormat),
+      EndTime: startTime.add(6, 'w').format(dateFormat),
     };
   }
 
@@ -89,7 +89,6 @@ export default function DataTableListCalendar({ renderHeader }) {
     let isWraning = false;
     if (current && current.timeRanges) {
       isSpecial = current.timeRanges.some((item) => item.isSpecial);
-      console.log(current.timeRanges, "current.timeRanges");
       isWraning = current.timeRanges.some((item) => {
         const max =
           item.groupWarningLeftQuantity || item.individualWarningLeftQuantity;
@@ -98,31 +97,27 @@ export default function DataTableListCalendar({ renderHeader }) {
           item.individualRemainTouristsQuantity;
         return number < max;
       });
-      //       groupWarningLeftQuantity
-      // individualWarningLeftQuantity
     }
 
     return (
       <div
-        className="calendar-cell"
-        onClick={() => setSelectedDate(currentDate)}
-      >
-        <div className="calendar-cell-title">{date}日</div>
-        <div className="calendar-cell-notice">
+        className='calendar-cell'
+        onClick={() => setSelectedDate(currentDate)}>
+        <div className='calendar-cell-title'>{date}日</div>
+        <div className='calendar-cell-notice'>
           {current &&
             (current.timeRanges || [])
               .filter((item, index) => index < 3)
               .map((time, j) => {
                 return (
                   <div
-                    key={time.reserveDate + time.timeItemId + "-" + j}
+                    key={time.reserveDate + time.timeItemId + '-' + j}
                     style={{
                       height: 18,
-                      overflow: "hidden",
-                      whiteSpace: "nowrap",
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
                     }}
-                    title={`${time.startTimeRange}-${time.endTimeRange} ${time.remainTouristsQuantity}/${time.maxTouristsQuantity}`}
-                  >
+                    title={`${time.startTimeRange}-${time.endTimeRange} ${time.remainTouristsQuantity}/${time.maxTouristsQuantity}`}>
                     <span style={{ paddingRight: 4 }}>
                       {time.startTimeRange}-{time.endTimeRange}
                     </span>
@@ -136,14 +131,13 @@ export default function DataTableListCalendar({ renderHeader }) {
               })}
         </div>
         <div
-          className="calendar-cell-value"
-          style={{ color: getValueColor(isSpecial, isWraning) }}
-        >
+          className='calendar-cell-value'
+          style={{ color: getValueColor(isSpecial, isWraning) }}>
           {current
             ? (current.timeRanges || []).reduce((result, item) => {
                 return (result += item.maxTouristsQuantity);
               }, 0)
-            : "0"}
+            : '0'}
         </div>
       </div>
     );
@@ -151,19 +145,19 @@ export default function DataTableListCalendar({ renderHeader }) {
 
   function getValueColor(isSpecial, isWraning) {
     if (isSpecial) {
-      return "#ffe58f";
+      return '#ffe58f';
     }
     if (isWraning) {
-      return "#b74635";
+      return '#b74635';
     }
-    return "#fff";
+    return '#fff';
   }
 
   function headerRender({ value, onChange }) {
     const month = value.month();
     const year = value.year();
     return (
-      <div className="calendar-heading">
+      <div className='calendar-heading'>
         <Button
           icon={<DoubleLeftOutlined />}
           onClick={(e) => {
@@ -171,8 +165,7 @@ export default function DataTableListCalendar({ renderHeader }) {
             nextValue.year(year - 1);
             onChange(nextValue);
             setMonthDate(nextValue.format(monthFormat));
-          }}
-        ></Button>
+          }}></Button>
         <Button
           icon={<LeftOutlined />}
           onClick={(e) => {
@@ -180,9 +173,8 @@ export default function DataTableListCalendar({ renderHeader }) {
             nextValue.month(month - 1);
             onChange(nextValue);
             setMonthDate(nextValue.format(monthFormat));
-          }}
-        ></Button>
-        <span style={{ height: 32, lineHeight: "32px", padding: "0 24px" }}>
+          }}></Button>
+        <span style={{ height: 32, lineHeight: '32px', padding: '0 24px' }}>
           {monthDate}
         </span>
         <Button
@@ -192,8 +184,7 @@ export default function DataTableListCalendar({ renderHeader }) {
             nextValue.month(month + 1);
             onChange(nextValue);
             setMonthDate(nextValue.format(monthFormat));
-          }}
-        ></Button>
+          }}></Button>
         <Button
           icon={<DoubleRightOutlined />}
           onClick={(e) => {
@@ -201,19 +192,18 @@ export default function DataTableListCalendar({ renderHeader }) {
             nextValue.year(year + 1);
             onChange(nextValue);
             setMonthDate(nextValue.format(monthFormat));
-          }}
-        ></Button>
+          }}></Button>
       </div>
     );
   }
 
   return (
-    <div className="calendar-root">
+    <div className='calendar-root'>
       <Row style={{ paddingBottom: 12 }}>
-        <Col flex="auto">{renderHeader}</Col>
-        <Col flex="120px" style={{ textAlign: "right" }}>
+        <Col flex='auto'>{renderHeader}</Col>
+        <Col flex='120px' style={{ textAlign: 'right' }}>
           <Space>
-            <Button size="small" type="primary" onClick={showAddModal}>
+            <Button size='small' type='primary' onClick={showAddModal}>
               批量上票
             </Button>
           </Space>
@@ -225,13 +215,13 @@ export default function DataTableListCalendar({ renderHeader }) {
           dataSource={getDayData(selectedDate)}
           onClose={(e) => {
             setCounter(counter + 1);
-            setSelectedDate("");
+            setSelectedDate('');
           }}
         />
       ) : (
-        <Spin tip="加载中..." spinning={loading}>
+        <Spin tip='加载中...' spinning={loading}>
           <Calendar
-            style={{ backgroundColor: "transparent" }}
+            style={{ backgroundColor: 'transparent' }}
             dateFullCellRender={dateFullCellRender}
             headerRender={headerRender}
             onPanelChange={handleChange}

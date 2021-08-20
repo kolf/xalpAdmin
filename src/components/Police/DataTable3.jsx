@@ -11,31 +11,41 @@ import {
   Pagination,
 } from 'antd';
 import { useRequest } from 'ahooks';
-import LogDataTable from './LogDataTable';
-import UpdateDataForm from './UpdateDataForm';
+import UpdateDataForm from './UpdateDataForm3';
 import policeService from '../../services/police.service';
 import sessionService from '../../services/session.service';
 import modal from '../../shared/modal';
 
-import { onlineOptions } from '../../shared/options';
+import { deviceStatusOptions, cameraStatusEnum } from '../../shared/options';
 const { Option } = Select;
 const { Search } = Input;
 
 const initialData = {
-  totalCount: 0,
-  items: [],
+  total: 0,
+  records: [],
 };
 
 export default function DataTable() {
   const roles = sessionService.getUserRoles();
   const [form] = Form.useForm();
   const [query, setQuery] = useState({
-    skipCount: '1',
-    maxResultCount: '10',
-    keyword: '',
+    current: '1',
+    size: '10',
+    status: '-1',
+    cameraName: '0',
   });
   const { data = initialData, loading } = useRequest(
-    () => policeService.getDeviceList(makeQuery(query)),
+    () =>
+      policeService.getCameraList(
+        {
+          current: query.current,
+          size: query.size,
+        },
+        {
+          status: query.status || '-1',
+          cameraName: query.cameraName,
+        },
+      ),
     {
       refreshDeps: [query],
       throwOnError: true,
@@ -47,37 +57,14 @@ export default function DataTable() {
       return [];
     }
     return data.map((item, index) => {
-      return { ...item, ...item.device, device: undefined, index: index + 1 };
+      return { ...item, index: index + 1 };
     });
-  }
-
-  function makeQuery(query) {
-    return Object.keys(query).reduce(
-      (result, key) => {
-        const value = query[key];
-        if (value !== undefined && value !== '-1') {
-          result[key] = value;
-        }
-        if (key === 'isOnline' && value !== undefined) {
-          result[key] = value === '1';
-        }
-        if (query.skipCount) {
-          result.skipCount = (query.skipCount - 1) * query.maxResultCount;
-        }
-        return result;
-      },
-      {
-        CheckDeviceType: 1,
-      },
-    );
   }
 
   function showEditModal(creds) {
     const mod = modal({
       title: '编辑',
-      content: (
-        <UpdateDataForm onOk={onOk} defaultValues={creds} checkDeviceType='2' />
-      ),
+      content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
       footer: null,
     });
 
@@ -85,7 +72,7 @@ export default function DataTable() {
       mod.close();
       setQuery({
         ...query,
-        skipCount: '1',
+        current: '1',
       });
     }
   }
@@ -93,7 +80,7 @@ export default function DataTable() {
   function showAddModal() {
     const mod = modal({
       title: '新增',
-      content: <UpdateDataForm onOk={onOk} checkDeviceType='2' />,
+      content: <UpdateDataForm onOk={onOk} />,
       footer: null,
     });
 
@@ -101,7 +88,7 @@ export default function DataTable() {
       mod.close();
       setQuery({
         ...query,
-        skipCount: '1',
+        current: '1',
       });
     }
   }
@@ -109,7 +96,7 @@ export default function DataTable() {
   const columns = [
     {
       title: '设备IP',
-      dataIndex: 'ipAddress',
+      dataIndex: 'ip',
       render(text) {
         return text || '无';
       },
@@ -119,30 +106,33 @@ export default function DataTable() {
       dataIndex: 'name',
     },
     {
-      title: '设备编码',
-      dataIndex: 'code',
+      title: '设备类型',
+      dataIndex: 'typeName',
+      render(text) {
+        return text || '无';
+      },
     },
     {
       title: '管理人姓名',
-      dataIndex: 'handlerName',
+      dataIndex: 'adminName',
       render(text) {
         return text || '无';
       },
     },
     {
       title: '管理人员电话',
-      dataIndex: 'handlerPhone',
+      dataIndex: 'adminPhone',
       width: 116,
       render(text) {
         return text || '无';
       },
     },
     {
-      title: '在线状态',
-      dataIndex: 'isOnline',
+      title: '设备状态',
+      dataIndex: 'status',
       width: 80,
       render(text) {
-        return text ? '在线' : '离线';
+        return cameraStatusEnum[text] || '未知';
       },
     },
     {
@@ -154,7 +144,10 @@ export default function DataTable() {
         return (
           <div className='text-center'>
             {/SmartTicketing.Devices.Update/.test(roles) && (
-              <Button size='small' onClick={(e) => showEditModal(creds)} disabled>
+              <Button
+                size='small'
+                onClick={(e) => showEditModal(creds)}
+                disabled={!creds.id}>
                 编辑
               </Button>
             )}
@@ -167,33 +160,27 @@ export default function DataTable() {
   const paginationProps = {
     showQuickJumper: true,
     showSizeChanger: true,
-    current: query.skipCount * 1,
-    pageSize: query.maxResultCount * 1,
-    total: data.totalCount,
+    current: query.current * 1,
+    pageSize: query.size,
+    total: data.total,
     position: ['', 'bottomCenter'],
     size: 'small',
-    onChange(pageNum, pageSize) {
-      let nextPageNum = pageNum;
-      if (pageSize !== query.maxResultCount * 1) {
-        nextPageNum = 1;
-      }
-
+    onChange(pageNum) {
       setQuery({
         ...query,
-        skipCount: nextPageNum + '',
-        maxResultCount: pageSize + '',
+        current: pageNum,
       });
     },
   };
 
   return (
-    <div>
+    <>
       <Row style={{ paddingBottom: 12 }}>
         <Col flex='auto'></Col>
         <Col flex='120px' style={{ textAlign: 'right' }}>
           <Space>
             {/SmartTicketing.Devices.Create/.test(roles) && (
-              <Button size='small' type='primary' onClick={showAddModal} disabled>
+              <Button size='small' type='primary' onClick={showAddModal}>
                 新增
               </Button>
             )}
@@ -205,12 +192,10 @@ export default function DataTable() {
         name='form'
         layout='inline'
         style={{ paddingBottom: 12 }}
-        onFinish={(values) =>
-          setQuery({ ...query, ...values, skipCount: '1' })
-        }>
-        <Form.Item name='isOnline' style={{ marginBottom: 6, width: 100 }}>
+        onFinish={(values) => setQuery({ ...query, ...values, current: '1' })}>
+        <Form.Item name='status' style={{ marginBottom: 6, width: 100 }}>
           <Select size='small' placeholder='设备状态' allowClear>
-            {onlineOptions.map((o) => (
+            {deviceStatusOptions.map((o) => (
               <Option key={o.value}>{o.label}</Option>
             ))}
           </Select>
@@ -226,7 +211,7 @@ export default function DataTable() {
             placeholder='请输入设备名称查询'
             allowClear
             onSearch={(value) =>
-              setQuery({ ...query, skipCount: '1', keyword: value })
+              setQuery({ ...query, current: '1', cameraName: value })
             }
           />
         </Form.Item>
@@ -234,7 +219,7 @@ export default function DataTable() {
 
       <Table
         rowKey='id'
-        dataSource={makeData(data.items)}
+        dataSource={makeData(data.records || [])}
         columns={columns}
         pagination={false}
         size='small'
@@ -244,6 +229,6 @@ export default function DataTable() {
       <div className='page-container'>
         <Pagination {...paginationProps} />
       </div>
-    </div>
+    </>
   );
 }
