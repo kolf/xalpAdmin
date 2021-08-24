@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   Button,
@@ -12,16 +12,20 @@ import {
   Pagination,
   Image,
   message,
-} from "antd";
-import moment from "moment";
-import faciliyService from "../../services/faciliy.service";
-import dataService from "../../services/data.service";
-import { staffTypeEnum, staffTypeOptions } from "../../shared/options";
+} from 'antd';
+import moment from 'moment';
+import faciliyService from '../../services/faciliy.service';
+import dataService from '../../services/data.service';
+import {
+  staffTypeEnum,
+  staffTypeOptions,
+  checkModeEnum,
+} from '../../shared/options';
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
-const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD HH:mm:ss";
+const dateFormat = 'YYYY-MM-DD';
+const secFormat = 'YYYY-MM-DD HH:mm:ss';
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -30,9 +34,9 @@ export default function DataTable() {
   const [total, setTotal] = useState(0);
   const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
-    skipCount: "1",
-    maxResultCount: "10",
-    keyword: "",
+    skipCount: '1',
+    maxResultCount: '10',
+    keyword: '',
     date: [moment(), moment()],
   });
 
@@ -44,7 +48,7 @@ export default function DataTable() {
       setLoading(true);
       try {
         const { items, totalCount } = await faciliyService.getStaffCheckRecords(
-          makeQuery(query)
+          makeQuery(query),
         );
         if (mounted) {
           setLoading(false);
@@ -78,11 +82,11 @@ export default function DataTable() {
   function makeQuery(query) {
     return Object.keys(query).reduce((result, key) => {
       const value = query[key];
-      if (key === "date" && value) {
+      if (key === 'date' && value) {
         const [start, end] = value;
-        result.StartDateTime = start.format(dateFormat) + " 00:00:00";
-        result.EndDateTime = end.format(dateFormat) + " 23:59:59";
-      } else if (value !== undefined && value !== "-1") {
+        result.StartDateTime = start.format(dateFormat) + ' 00:00:00';
+        result.EndDateTime = end.format(dateFormat) + ' 23:59:59';
+      } else if (value !== undefined && value !== '-1') {
         result[key] = value;
       }
       if (query.skipCount) {
@@ -101,33 +105,41 @@ export default function DataTable() {
 
   const columns = [
     {
-      title: "工号",
-      dataIndex: "jobNumber",
+      title: '工号',
+      dataIndex: 'jobNumber',
     },
     {
-      title: "姓名",
-      dataIndex: "staffName",
+      title: '姓名',
+      dataIndex: 'staffName',
     },
     {
-      title: "联系电话",
-      dataIndex: "phone",
+      title: '联系电话',
+      dataIndex: 'phone',
     },
     {
-      title: "证件号码",
-      dataIndex: "certNumber",
+      title: '证件号码',
+      dataIndex: 'certNumber',
     },
     {
-      title: "人员类型",
-      dataIndex: "staffType",
+      title: '人员类型',
+      dataIndex: 'staffType',
       render(text) {
-        return staffTypeEnum[text] || "未知";
+        return staffTypeEnum[text] || '未知';
       },
     },
     {
-      title: "入园时间",
-      dataIndex: "useTime",
+      title: '入园时间',
+      dataIndex: 'useTime',
       render(text) {
-        return text ? moment(text).format(secFormat) : "无";
+        return text ? moment(text).format(secFormat) : '无';
+      },
+    },
+    {
+      title: '入园方式',
+      dataIndex: 'checkMode',
+      width: 158,
+      render(text, creds) {
+        return checkModeEnum[text] || '无';
       },
     },
   ];
@@ -138,8 +150,8 @@ export default function DataTable() {
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
     total,
-    position: ["", "bottomCenter"],
-    size: "small",
+    position: ['', 'bottomCenter'],
+    size: 'small',
     onChange(pageNum, pageSize) {
       let nextPageNum = pageNum;
       if (pageSize !== query.maxResultCount * 1) {
@@ -148,8 +160,8 @@ export default function DataTable() {
 
       setQuery({
         ...query,
-        skipCount: nextPageNum + "",
-        maxResultCount: pageSize + "",
+        skipCount: nextPageNum + '',
+        maxResultCount: pageSize + '',
       });
     },
   };
@@ -157,10 +169,10 @@ export default function DataTable() {
   return (
     <div>
       <Row style={{ paddingBottom: 12 }}>
-        <Col flex="auto"></Col>
-        <Col flex="120px" style={{ textAlign: "right" }}>
+        <Col flex='auto'></Col>
+        <Col flex='120px' style={{ textAlign: 'right' }}>
           <Space>
-            <Button size="small" type="primary" onClick={openFile}>
+            <Button size='small' type='primary' onClick={openFile}>
               下载数据
             </Button>
           </Space>
@@ -168,34 +180,33 @@ export default function DataTable() {
       </Row>
       <Form
         form={form}
-        name="form"
-        layout="inline"
+        name='form'
+        layout='inline'
         style={{ paddingBottom: 12 }}
-        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
-        initialValues={query}
-      >
-        <Form.Item name="CardStatus" style={{ marginBottom: 6, width: 100 }}>
-          <Select size="small" placeholder="人员类型" allowClear>
+        onFinish={(values) => setQuery({ ...query, ...values, skipCount: '1' })}
+        initialValues={query}>
+        <Form.Item name='CardStatus' style={{ marginBottom: 6, width: 100 }}>
+          <Select size='small' placeholder='人员类型' allowClear>
             {staffTypeOptions.map((o) => (
               <Option key={o.value}>{o.label}</Option>
             ))}
           </Select>
         </Form.Item>
-        <Form.Item name="date">
-          <RangePicker size="small" />
+        <Form.Item name='date'>
+          <RangePicker size='small' />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" size="small">
+          <Button type='primary' htmlType='submit' size='small'>
             查询数据
           </Button>
         </Form.Item>
-        <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
+        <Form.Item style={{ marginLeft: 'auto', marginRight: 0 }}>
           <Search
-            size="small"
-            placeholder="请输入姓名查询"
+            size='small'
+            placeholder='请输入姓名查询'
             allowClear
             onSearch={(value) =>
-              setQuery({ ...query, keyword: value, skipCount: "1" })
+              setQuery({ ...query, keyword: value, skipCount: '1' })
             }
           />
         </Form.Item>
@@ -205,12 +216,12 @@ export default function DataTable() {
         dataSource={makeData(dataList)}
         columns={columns}
         pagination={false}
-        size="small"
+        size='small'
         bordered
         loading={loading}
-        rowKey="id"
+        rowKey='id'
       />
-      <div className="page-container">
+      <div className='page-container'>
         <Pagination {...paginationProps} />
       </div>
     </div>
