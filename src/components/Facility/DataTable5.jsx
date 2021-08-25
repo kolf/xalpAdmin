@@ -13,6 +13,7 @@ import {
   Image,
   message,
 } from 'antd';
+import { useRequest } from 'ahooks';
 import moment from 'moment';
 import faciliyService from '../../services/faciliy.service';
 import dataService from '../../services/data.service';
@@ -27,12 +28,13 @@ const { Option } = Select;
 const dateFormat = 'YYYY-MM-DD';
 const secFormat = 'YYYY-MM-DD HH:mm:ss';
 
+const initialData = {
+  totalCount: 0,
+  items: [],
+};
+
 export default function DataTable() {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [dataList, setDataList] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
     skipCount: '1',
     maxResultCount: '10',
@@ -40,32 +42,13 @@ export default function DataTable() {
     date: [moment(), moment()],
   });
 
-  useEffect(() => {
-    let mounted = true;
-    loadData();
-
-    async function loadData() {
-      setLoading(true);
-      try {
-        const { items, totalCount } = await faciliyService.getStaffCheckRecords(
-          makeQuery(query),
-        );
-        if (mounted) {
-          setLoading(false);
-          setDataList(items);
-          setTotal(totalCount);
-        }
-      } catch (error) {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    }
-
-    return () => {
-      mounted = false;
-    };
-  }, [JSON.stringify(query), counter]);
+  const { data = initialData, loading } = useRequest(
+    () => faciliyService.getStaffCheckRecords(makeQuery(query)),
+    {
+      refreshDeps: [query],
+      throwOnError: true,
+    },
+  );
 
   function makeData(data) {
     if (!data) {
@@ -149,7 +132,7 @@ export default function DataTable() {
     showSizeChanger: true,
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
-    total,
+    total: data.totalCount,
     position: ['', 'bottomCenter'],
     size: 'small',
     onChange(pageNum, pageSize) {
@@ -185,7 +168,7 @@ export default function DataTable() {
         style={{ paddingBottom: 12 }}
         onFinish={(values) => setQuery({ ...query, ...values, skipCount: '1' })}
         initialValues={query}>
-        <Form.Item name='CardStatus' style={{ marginBottom: 6, width: 100 }}>
+        <Form.Item name='StaffType' style={{ marginBottom: 6, width: 100 }}>
           <Select size='small' placeholder='人员类型' allowClear>
             {staffTypeOptions.map((o) => (
               <Option key={o.value}>{o.label}</Option>
@@ -213,7 +196,7 @@ export default function DataTable() {
       </Form>
 
       <Table
-        dataSource={makeData(dataList)}
+        dataSource={makeData(data.items)}
         columns={columns}
         pagination={false}
         size='small'

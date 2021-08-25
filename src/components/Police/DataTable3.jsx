@@ -94,13 +94,13 @@ export default function DataTable() {
   }
 
   const columns = [
-    {
-      title: '设备IP',
-      dataIndex: 'ip',
-      render(text) {
-        return text || '无';
-      },
-    },
+    // {
+    //   title: '设备IP',
+    //   dataIndex: 'ip',
+    //   render(text) {
+    //     return text || '无';
+    //   },
+    // },
     {
       title: '设备名称',
       dataIndex: 'name',

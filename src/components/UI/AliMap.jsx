@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import ReactHlsPlayer from 'react-hls-player';
 import { renderToString } from 'react-dom/server';
 import { useRequest } from 'ahooks';
 import { Map, APILoader } from '@uiw/react-amap';
