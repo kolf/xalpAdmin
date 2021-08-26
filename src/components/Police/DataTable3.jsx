@@ -165,9 +165,10 @@ export default function DataTable() {
     total: data.total,
     position: ['', 'bottomCenter'],
     size: 'small',
-    onChange(pageNum) {
+    onChange(pageNum, pageSize) {
       setQuery({
         ...query,
+        size: pageSize,
         current: pageNum,
       });
     },

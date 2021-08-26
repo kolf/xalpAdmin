@@ -9,8 +9,6 @@ import {
 import utils from '../../shared/utils';
 import policeService from '../../services/police.service';
 
-const coordinateReg = /^\d+\.\d+[,，]\d+\.\d+$/g;
-
 const layout = {
   labelCol: { span: 8 },
   wrapperCol: { span: 16 },
@@ -97,11 +95,15 @@ export default function UpdateDataForm({
     }, {});
   }
 
-  async function validatorCoordinate(rule, value, callback) {
-    if (coordinateReg.test(value)) {
-      return Promise.resolve();
+  async function validatorCoordinate(_, value) {
+    const coordinateReg = /^\d+\.\d+[,，]{1}\d+\.\d+$/g;
+    if (!value) {
+      return Promise.reject(new Error('请输入经纬度！'));
     }
-    return Promise.reject(new Error('请输入正确的经纬度！'));
+    if (!coordinateReg.test(value)) {
+      return Promise.reject(new Error('请输入正确的经纬度！'));
+    }
+    return Promise.resolve();
   }
 
   return (
@@ -133,10 +135,7 @@ export default function UpdateDataForm({
         <Form.Item
           label='设备经纬度'
           name='coordinate'
-          rules={[
-            { required: true, message: '请输入经纬度！' },
-            { validator: validatorCoordinate },
-          ]}>
+          rules={[{ validator: validatorCoordinate }]}>
           <Input placeholder='前面经度、后面纬度，用逗号分隔！' />
         </Form.Item>
       )}
