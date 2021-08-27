@@ -23,7 +23,7 @@ export default function AppMenu() {
   const menu = (
     <Menu>
       {/SmartTicketing.Devices/.test(roles) && (
-        <Menu.Item>
+        <Menu.Item key='police'>
           <Link to='/police'>入园设备</Link>
         </Menu.Item>
       )}
@@ -33,34 +33,34 @@ export default function AppMenu() {
         </Menu.Item>
       )}
       {/SmartTicketingReservation.TimeRangeSettings/.test(roles) && (
-        <Menu.Item>
+        <Menu.Item key='calendar'>
           <Link to='/calendar'>预约量管理</Link>
         </Menu.Item>
       )}
       {/SmartTicketingReservation.(Personal|Personal)|Personal.(Merchants|Staffs)/.test(
         roles,
       ) && (
-        <Menu.Item>
+        <Menu.Item key='facility'>
           <Link to='/facility'>预约入园</Link>
         </Menu.Item>
       )}
       {/SmartTicketing.BlockUsers/.test(roles) && (
-        <Menu.Item>
+        <Menu.Item key='blacklist'>
           <Link to='/blacklist'>黑名单管理</Link>
         </Menu.Item>
       )}
       {/AbpIdentity/.test(roles) && (
-        <Menu.Item>
+        <Menu.Item key='user'>
           <Link to='/user'>权限管理</Link>
         </Menu.Item>
       )}
       {/SmartTicketing.Products/.test(roles) && (
-        <Menu.Item>
+        <Menu.Item key='category'>
           <Link to='/ticket-category'>票种管理</Link>
         </Menu.Item>
       )}
       {/SmartTicketing.ParkActivities/.test(roles) && (
-        <Menu.Item>
+        <Menu.Item key='activity'>
           <Link to='/activity'>活动管理</Link>
         </Menu.Item>
       )}

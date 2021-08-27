@@ -9,7 +9,9 @@ import imgUrl2 from '../../assets/img/cad-02.395be9af.png';
 import update from './alimapScript';
 
 const AliMap = () => {
-  const { data, loading, run } = useRequest(policeService.getDeviceMapList);
+  const { data, loading, run } = useRequest(() =>
+    policeService.getDeviceMapList({ userStatus: 0 }),
+  );
 
   return (
     <div className='alimap-root'>
@@ -51,6 +53,7 @@ const AliMap = () => {
                     if (latitude && longitude) {
                       return new AMap.Marker({
                         position,
+                        topWhenClick: true,
                         content: renderToString(<MapIcon dataSource={item} />),
                         offset: new AMap.Pixel(-13, -30),
                       });

@@ -12,34 +12,42 @@ const openMap = {
   1: '离线',
 };
 
-export default function update(AMap, map, markers) {
-  const $markersDom = document.querySelectorAll('.mapicon-root');
+export default function update(AMap) {
+  const $root = document.querySelectorAll('.mapicon-root');
 
-  $markersDom.forEach((item, index) => {
+  $root.forEach((item) => {
     const $icon = item.querySelector('.mapicon-img');
-    const dataSource = $icon.dataset.item;
-    const $container = item.querySelector('.mapicon-container');
+    const dataSource = JSON.parse($icon.dataset.item || '{}');
     const $close = item.querySelector('.mapicon-close');
     const $reload = item.querySelector('.mapicon-reload');
     const $content = item.querySelector('.mapicon-content');
+
     $icon.addEventListener('click', () => {
-      if (AMap.DomUtil.hasClass($container, 'hide')) {
+      if (!AMap.DomUtil.hasClass(item, 'isActive')) {
         setHtml(() => {
           hide();
-          AMap.DomUtil.removeClass($container, 'hide');
+          const $parent = item.parentNode;
+          AMap.DomUtil.setCss($parent, {
+            'z-index': 100,
+          });
+          AMap.DomUtil.addClass(item, 'isActive');
         });
       } else {
-        AMap.DomUtil.addClass($container, 'hide');
+        AMap.DomUtil.removeClass(item, 'isActive');
       }
     });
     $reload.addEventListener('click', () => {
       setHtml();
     });
     $close.addEventListener('click', () => {
-      AMap.DomUtil.addClass($container, 'hide');
+      AMap.DomUtil.removeClass(item, 'isActive');
     });
 
     function setHtml(callback) {
+      if (dataSource.deviceType === 2) {
+        callback && callback();
+        return;
+      }
       const html = `<div class="ant-row"><div style="flex:auto" class="ant-col">在线状态</div><div style="text-align:right" class="ant-col">${
         dataSource.isOnline ? `在线` : `离线`
       }</div></div><div class="ant-row"><div style="flex:auto" class="ant-col">设备状态</div><div style="text-align:right" class="ant-col">${
@@ -68,9 +76,8 @@ export default function update(AMap, map, markers) {
   });
 
   function hide() {
-    $markersDom.forEach((item) => {
-      const $content = item.querySelector('.mapicon-container');
-      AMap.DomUtil.addClass($content, 'hide');
+    $root.forEach((item) => {
+      AMap.DomUtil.removeClass(item, 'isActive');
     });
   }
 }

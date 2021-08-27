@@ -35,7 +35,7 @@ export default function DataTable() {
     keyword: '',
   });
 
-  const { data = initialData, run, error, loading, refresh } = useRequest(
+  const { data = initialData, loading } = useRequest(
     () => userService.getUserList(makeQuery(query)),
     {
       refreshDeps: [query],

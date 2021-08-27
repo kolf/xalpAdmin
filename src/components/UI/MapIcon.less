@@ -3,6 +3,11 @@
     position: relative;
     width: 200px;
     // overflow: hidden;
+    &.isActive{
+      .mapicon-container{
+        display: block;
+      }
+    }
   }
   &-img {
     position: absolute;
@@ -15,6 +20,7 @@
     left: 0;
     top: 0;
     right: 0;
+    display: none;
   }
   &-heading {
     background: rgba(69, 190, 255, 0.8);
