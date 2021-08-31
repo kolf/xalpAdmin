@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Table, Button, Form, Input, Pagination } from "antd";
-import confirm from "../../shared/confirm";
-import utils from "../../shared/utils";
-import moment from "moment";
-import facilityService from "../../services/faciliy.service";
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Form, Input, Pagination } from 'antd';
+import confirm from '../../shared/confirm';
+import utils from '../../shared/utils';
+import moment from 'moment';
+import facilityService from '../../services/faciliy.service';
 const { Search } = Input;
-const secFormat = "YYYY-MM-DD HH:mm:ss";
+const secFormat = 'YYYY-MM-DD HH:mm:ss';
 
 export default function DataTable({ dataSource, showType }) {
   const [form] = Form.useForm();
@@ -14,9 +14,9 @@ export default function DataTable({ dataSource, showType }) {
   const [total, setTotal] = useState(0);
   const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
-    skipCount: "1",
-    maxResultCount: "10",
-    keyword: "",
+    skipCount: '1',
+    maxResultCount: '10',
+    keyword: '',
   });
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function DataTable({ dataSource, showType }) {
       setLoading(true);
       try {
         const { items, totalCount } = await facilityService.getOrderDetailList(
-          makeQuery(query)
+          makeQuery(query),
         );
         if (mounted) {
           setLoading(false);
@@ -63,11 +63,11 @@ export default function DataTable({ dataSource, showType }) {
     return Object.keys(query).reduce(
       (result, key) => {
         const value = query[key];
-        if (value !== undefined && value !== "-1") {
+        if (value !== undefined && value !== '-1') {
           result[key] = value;
         }
-        if (key === "isOnline" && value !== undefined) {
-          result[key] = value === "1";
+        if (key === 'isOnline' && value !== undefined) {
+          result[key] = value === '1';
         }
         if (query.skipCount) {
           result.skipCount = (query.skipCount - 1) * query.maxResultCount;
@@ -76,7 +76,7 @@ export default function DataTable({ dataSource, showType }) {
       },
       {
         OrderId: dataSource.id,
-      }
+      },
     );
   }
 
@@ -91,7 +91,7 @@ export default function DataTable({ dataSource, showType }) {
         mod.close();
         utils.success(`取消成功！`);
         setCounter(counter + 1);
-        setQuery({ ...query, skipCount: "1" });
+        setQuery({ ...query, skipCount: '1' });
       } catch (error) {
         mod.close();
       }
@@ -110,7 +110,7 @@ export default function DataTable({ dataSource, showType }) {
         mod.close();
         utils.success(`核销成功！`);
         setCounter(counter + 1);
-        setQuery({ ...query, skipCount: "1" });
+        setQuery({ ...query, skipCount: '1' });
       } catch (error) {
         mod.close();
       }
@@ -119,114 +119,112 @@ export default function DataTable({ dataSource, showType }) {
 
   function getRowClassName(creds, index) {
     if (creds.status !== 1) {
-      return "ant-table-row-disabled";
+      return 'ant-table-row-disabled';
     }
   }
 
   function makeColumns() {
     let columns = [
       {
-        title: "序号",
-        dataIndex: "index",
+        title: '序号',
+        dataIndex: 'index',
         width: 60,
         render(text) {
-          return text || "无";
+          return text || '无';
         },
       },
       {
-        title: "参观人姓名",
-        dataIndex: "name",
+        title: '参观人姓名',
+        dataIndex: 'name',
         render(text) {
-          return text || "未知";
+          return text || '未知';
         },
       },
       {
-        title: "电话",
-        dataIndex: "phone",
+        title: '电话',
+        dataIndex: 'phone',
         render(text) {
-          return text || "未知";
+          return text || '未知';
         },
       },
       {
-        title: "证件号码",
-        dataIndex: "certNumber",
+        title: '证件号码',
+        dataIndex: 'certNumber',
         render(text) {
-          return text || "未知";
+          return text || '未知';
         },
       },
       {
-        title: "客源地",
-        dataIndex: "regionProvinceName",
+        title: '客源地',
+        dataIndex: 'regionProvinceName',
         render(text) {
-          return text || "无";
+          return text || '无';
         },
       },
       {
-        title: "核销设备ID",
-        dataIndex: "checkDeviceCode",
+        title: '核销设备ID',
+        dataIndex: 'checkDeviceCode',
         render(text) {
-          return text || "无";
+          return text || '无';
         },
       },
       {
-        title: "核销设备（核销方式）",
-        dataIndex: "checkModeName",
+        title: '核销设备（核销方式）',
+        dataIndex: 'checkModeName',
         width: 158,
         render(text, creds) {
           return creds.checkDeviceName
             ? `${creds.checkDeviceName}(${text})`
-            : "无";
+            : '无';
         },
       },
       {
-        title: "核销/取消时间",
-        dataIndex: "checkTime",
+        title: '核销/取消时间',
+        dataIndex: 'checkTime',
         width: 168,
         render(text, creds) {
           const title = creds.cancelTime || creds.checkTime;
 
-          return title ? moment(title).format(secFormat) : "无";
+          return title ? moment(title).format(secFormat) : '无';
         },
       },
       {
-        title: "人工操作",
-        dataIndex: "cancelUserName",
+        title: '人工操作',
+        dataIndex: 'cancelUserName',
         width: 120,
         render(text, creds) {
-          console.log(creds, "creds");
-          let title = "";
+          console.log(creds, 'creds');
+          let title = '';
           if (text) {
             title = `人工取消/${text}`;
           } else if (creds.checkUserName) {
             title = `人工核销/${creds.checkUserName}`;
           }
-          return title || "无";
+          return title || '无';
         },
       },
     ];
     if (/(REVIEW|CANCEL)/.test(showType)) {
       columns.push({
-        title: "操作",
-        dataIndex: "options",
-        fixed: "right",
+        title: '操作',
+        dataIndex: 'options',
+        fixed: 'right',
         width: 90,
         render(text, creds) {
           return (
-            <div className="text-center">
-              {showType === "CANCEL" ? (
+            <div className='text-center'>
+              {showType === 'CANCEL' ? (
                 <Button
-                  size="small"
+                  size='small'
                   onClick={(e) => showDeleteModal(creds)}
-                  disabled={creds.status !== 1}
-                >
+                  disabled={creds.status !== 1}>
                   取消预约
                 </Button>
               ) : (
                 <Button
-                  size="small"
+                  size='small'
                   onClick={(e) => showReviewModal(creds)}
-                  disabled={creds.status !== 1}
-                >
+                  disabled={creds.status !== 1}>
                   核销
                 </Button>
               )}
@@ -244,8 +242,8 @@ export default function DataTable({ dataSource, showType }) {
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
     total,
-    position: ["", "bottomCenter"],
-    size: "small",
+    position: ['', 'bottomCenter'],
+    size: 'small',
     onChange(pageNum, pageSize) {
       let nextPageNum = pageNum;
       if (pageSize !== query.maxResultCount * 1) {
@@ -254,8 +252,8 @@ export default function DataTable({ dataSource, showType }) {
 
       setQuery({
         ...query,
-        skipCount: nextPageNum + "",
-        maxResultCount: pageSize + "",
+        skipCount: nextPageNum + '',
+        maxResultCount: pageSize + '',
       });
     },
   };
@@ -268,41 +266,37 @@ export default function DataTable({ dataSource, showType }) {
     <>
       <Form
         form={form}
-        name="form"
-        layout="inline"
+        name='form'
+        layout='inline'
         style={{ paddingBottom: 12 }}
         onFinish={(values) => {
           setQuery({
             ...query,
             ...values,
-            skipCount: "1",
+            skipCount: '1',
           });
-        }}
-      >
-        <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
+        }}>
+        <Form.Item style={{ marginLeft: 'auto', marginRight: 0 }}>
           <Search
-            size="small"
-            placeholder="模糊搜索"
+            size='small'
+            placeholder='模糊搜索'
             allowClear
             onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", keyword: value })
+              setQuery({ ...query, skipCount: '1', keyword: value })
             }
           />
         </Form.Item>
       </Form>
       <Table
-        rowKey="id"
+        rowKey='id'
         dataSource={makeData(dataList)}
         columns={makeColumns()}
         rowClassName={getRowClassName}
-        pagination={false}
-        size="small"
+        pagination={paginationProps}
+        size='small'
         bordered
         loading={loading}
       />
-      <div className="page-container">
-        <Pagination {...paginationProps} />
-      </div>
     </>
   );
 }

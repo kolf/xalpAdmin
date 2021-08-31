@@ -28,7 +28,7 @@ const secFormat = 'YYYY-MM-DD HH:mm:ss';
 const initialData = {
   totalCount: 0,
   items: [],
-}
+};
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -38,13 +38,16 @@ export default function DataTable() {
     keyword: '',
   });
 
-  const { data = initialData, run, error, loading, refresh } = useRequest(
-    () => userService.getOrgList(makeQuery(query)),
-    {
-      refreshDeps: [query],
-      throwOnError: true,
-    },
-  );
+  const {
+    data = initialData,
+    run,
+    error,
+    loading,
+    refresh,
+  } = useRequest(() => userService.getOrgList(makeQuery(query)), {
+    refreshDeps: [query],
+    throwOnError: true,
+  });
 
   function makeData(data) {
     if (!data) {
@@ -212,16 +215,13 @@ export default function DataTable() {
       <Table
         dataSource={makeData(data.items)}
         columns={columns}
-        pagination={false}
+        pagination={paginationProps}
         size='small'
         bordered
         loading={loading}
         rowKey='id'
-      // scroll={{ x: 1200 }}
+        // scroll={{ x: 1200 }}
       />
-      <div className='page-container'>
-        <Pagination {...paginationProps} />
-      </div>
     </div>
   );
 }

@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from "react";
-import moment from "moment";
-import { Table, Button, Form, Input, Pagination, Select, Tooltip } from "antd";
-import UpdateDataForm from "./UpdateData2Form";
-import modal from "../../shared/modal";
-import confirm from "../../shared/confirm";
-import utils from "../../shared/utils";
+import React, { useState, useEffect } from 'react';
+import moment from 'moment';
+import { Table, Button, Form, Input, Pagination, Select, Tooltip } from 'antd';
+import UpdateDataForm from './UpdateData2Form';
+import modal from '../../shared/modal';
+import confirm from '../../shared/confirm';
+import utils from '../../shared/utils';
 
-import activityService from "../../services/activity.service";
+import activityService from '../../services/activity.service';
 import {
   activityOrderReviewOptions,
   activityOrderAuditStatusEnum,
   activityOrderStatusEnum,
-} from "../../shared/options";
+} from '../../shared/options';
 const { Search } = Input;
 const { Option } = Select;
-const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD HH:mm:ss";
+const dateFormat = 'YYYY-MM-DD';
+const secFormat = 'YYYY-MM-DD HH:mm:ss';
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -24,9 +24,9 @@ export default function DataTable() {
   const [total, setTotal] = useState(0);
   const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
-    skipCount: "1",
-    maxResultCount: "10",
-    keyword: "",
+    skipCount: '1',
+    maxResultCount: '10',
+    keyword: '',
   });
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export default function DataTable() {
         if (mounted) {
           setLoading(false);
           setDataList(
-            items.map((item) => ({ ...item, ...item.activityOrder }))
+            items.map((item) => ({ ...item, ...item.activityOrder })),
           );
           setTotal(totalCount);
           // showEditModal({});
@@ -68,7 +68,7 @@ export default function DataTable() {
   function makeQuery(query) {
     return Object.keys(query).reduce((result, key) => {
       const value = query[key];
-      if (value !== undefined && value !== "-1") {
+      if (value !== undefined && value !== '-1') {
         result[key] = value;
       }
       if (query.skipCount) {
@@ -81,8 +81,8 @@ export default function DataTable() {
   function makeParams(values) {
     return Object.keys(values).reduce((result, key) => {
       const value = values[key];
-      if (key === "isApplySuccess") {
-        result[key] = value === "1";
+      if (key === 'isApplySuccess') {
+        result[key] = value === '1';
       } else {
         result[key] = value;
       }
@@ -93,14 +93,14 @@ export default function DataTable() {
 
   function getRowClassName(creds, index) {
     if (creds.orderStatus !== 0) {
-      return "ant-table-row-disabled";
+      return 'ant-table-row-disabled';
     }
   }
 
   function showEditModal(creds) {
     let modRef = null;
     const mod = modal({
-      title: "审核订单",
+      title: '审核订单',
       width: 720,
       content: (
         <UpdateDataForm defaultValues={creds} saveRef={(r) => (modRef = r)} />
@@ -113,15 +113,15 @@ export default function DataTable() {
       try {
         mod.confirmLoading();
         const res = await activityService.updateActivityOrderStatus(
-          makeParams({ ...values, id: creds.id })
+          makeParams({ ...values, id: creds.id }),
         );
         utils.success(`审核活动订单成功！`);
-        
+
         mod.close();
         setCounter(counter + 1);
         setQuery({
           ...query,
-          skipCount: "1",
+          skipCount: '1',
         });
       } catch (error) {
         mod.close();
@@ -131,7 +131,7 @@ export default function DataTable() {
 
   function showDetailsModal(creds) {
     const mod = modal({
-      title: "查看订单",
+      title: '查看订单',
       width: 720,
       content: <UpdateDataForm defaultValues={creds} />,
       footer: null,
@@ -140,55 +140,57 @@ export default function DataTable() {
 
   const columns = [
     {
-      title: "订单号",
-      dataIndex: "orderNO",
+      title: '订单号',
+      dataIndex: 'orderNO',
     },
     {
-      title: "活动名称",
-      dataIndex: "activityName",
+      title: '活动名称',
+      dataIndex: 'activityName',
     },
     {
-      title: "订单状态",
-      dataIndex: "orderStatus",
+      title: '订单状态',
+      dataIndex: 'orderStatus',
       render(text) {
-        return activityOrderStatusEnum[text] || "未知";
+        return activityOrderStatusEnum[text] || '未知';
       },
     },
     {
-      title: "下单时间",
-      dataIndex: "applyTime",
+      title: '下单时间',
+      dataIndex: 'applyTime',
       render(text) {
-        return text ? moment(text).format(secFormat) : "无";
+        return text ? moment(text).format(secFormat) : '无';
       },
     },
     {
-      title: "团队负责人",
-      dataIndex: "name",
+      title: '团队负责人',
+      dataIndex: 'name',
     },
     {
-      title: "报名状态",
-      dataIndex: "auditStatus",
+      title: '报名状态',
+      dataIndex: 'auditStatus',
       width: 80,
       render(text) {
-        return activityOrderAuditStatusEnum[text] || "未知";
+        return activityOrderAuditStatusEnum[text] || '未知';
       },
     },
     {
-      title: "操作",
-      dataIndex: "options",
-      fixed: "right",
+      title: '操作',
+      dataIndex: 'options',
+      fixed: 'right',
       width: 120,
       render(text, creds) {
         return (
-          <div className="text-center">
+          <div className='text-center'>
             <Button
-              size="small"
+              size='small'
               style={{ marginRight: 4 }}
-              onClick={(e) => showDetailsModal(creds)}
-            >
+              onClick={(e) => showDetailsModal(creds)}>
               查看
             </Button>
-            <Button disabled={creds.orderStatus !== 0} size="small" onClick={(e) => showEditModal(creds)}>
+            <Button
+              disabled={creds.orderStatus !== 0}
+              size='small'
+              onClick={(e) => showEditModal(creds)}>
               审核
             </Button>
           </div>
@@ -203,8 +205,8 @@ export default function DataTable() {
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
     total,
-    position: ["", "bottomCenter"],
-    size: "small",
+    position: ['', 'bottomCenter'],
+    size: 'small',
     onChange(pageNum, pageSize) {
       let nextPageNum = pageNum;
       if (pageSize !== query.maxResultCount * 1) {
@@ -212,8 +214,8 @@ export default function DataTable() {
       }
       setQuery({
         ...query,
-        skipCount: nextPageNum + "",
-        maxResultCount: pageSize + "",
+        skipCount: nextPageNum + '',
+        maxResultCount: pageSize + '',
       });
     },
   };
@@ -222,13 +224,14 @@ export default function DataTable() {
     <div>
       <Form
         form={form}
-        name="form"
-        layout="inline"
+        name='form'
+        layout='inline'
         style={{ paddingBottom: 12 }}
-        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
-      >
-        <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
-          <Select size="small" placeholder="订单状态" allowClear>
+        onFinish={(values) =>
+          setQuery({ ...query, ...values, skipCount: '1' })
+        }>
+        <Form.Item name='Status' style={{ marginBottom: 6, width: 100 }}>
+          <Select size='small' placeholder='订单状态' allowClear>
             {activityOrderReviewOptions.map((o) => (
               <Option key={o.value} value={o.value}>
                 {o.label}
@@ -237,18 +240,21 @@ export default function DataTable() {
           </Select>
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" size="small">
+          <Button type='primary' htmlType='submit' size='small'>
             查询数据
           </Button>
         </Form.Item>
-        <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
-        <Tooltip title="请输入活动名称、团队负责人查询" color={'rgba(11, 34, 63, 0.9)'} overlayStyle={{minWidth:200,textAlign:'center !important'}}>
+        <Form.Item style={{ marginLeft: 'auto', marginRight: 0 }}>
+          <Tooltip
+            title='请输入活动名称、团队负责人查询'
+            color={'rgba(11, 34, 63, 0.9)'}
+            overlayStyle={{ minWidth: 200, textAlign: 'center !important' }}>
             <Search
-              size="small"
-              placeholder="请输入活动名称、团队负责人查询"
+              size='small'
+              placeholder='请输入活动名称、团队负责人查询'
               allowClear
               onSearch={(value) =>
-                setQuery({ ...query, skipCount: "1", keyword: value })
+                setQuery({ ...query, skipCount: '1', keyword: value })
               }
             />
           </Tooltip>
@@ -256,18 +262,15 @@ export default function DataTable() {
       </Form>
 
       <Table
-        rowKey="id"
+        rowKey='id'
         rowClassName={getRowClassName}
         dataSource={makeData(dataList)}
         columns={columns}
-        pagination={false}
-        size="small"
+        pagination={paginationProps}
+        size='small'
         bordered
         loading={loading}
       />
-      <div className="page-container">
-        <Pagination {...paginationProps} />
-      </div>
     </div>
   );
 }

@@ -200,14 +200,11 @@ export default function DataTable() {
         rowKey='id'
         dataSource={makeData(data.items)}
         columns={columns}
-        pagination={false}
+        pagination={paginationProps}
         size='small'
         bordered
         loading={loading}
       />
-      <div className='page-container'>
-        <Pagination {...paginationProps} />
-      </div>
     </div>
   );
 }

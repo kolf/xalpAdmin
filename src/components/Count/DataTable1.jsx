@@ -23,7 +23,7 @@ const dateFormat = 'YYYY-MM-DD';
 const initialData = {
   totalCount: 0,
   items: [],
-}
+};
 
 export default React.memo(function DataTable() {
   const [form] = Form.useForm();
@@ -34,12 +34,13 @@ export default React.memo(function DataTable() {
     date: [moment(), moment()],
   });
 
-  const { data = initialData, run, loading } = useRequest(
-    () => policeService.getDeviceInOutCount(makeQuery(query)),
-    {
-      refreshDeps: [query],
-    },
-  );
+  const {
+    data = initialData,
+    run,
+    loading,
+  } = useRequest(() => policeService.getDeviceInOutCount(makeQuery(query)), {
+    refreshDeps: [query],
+  });
 
   function makeData(data) {
     if (!data) {
@@ -158,15 +159,12 @@ export default React.memo(function DataTable() {
       <Table
         dataSource={makeData(data.items)}
         columns={columns}
-        pagination={false}
+        pagination={paginationProps}
         size='small'
         bordered
         loading={loading}
         rowKey='id'
       />
-      <div className='page-container'>
-        <Pagination {...paginationProps} />
-      </div>
     </div>
   );
 });

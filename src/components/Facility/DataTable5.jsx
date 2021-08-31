@@ -198,15 +198,12 @@ export default function DataTable() {
       <Table
         dataSource={makeData(data.items)}
         columns={columns}
-        pagination={false}
+        pagination={paginationProps}
         size='small'
         bordered
         loading={loading}
         rowKey='id'
       />
-      <div className='page-container'>
-        <Pagination {...paginationProps} />
-      </div>
     </div>
   );
 }

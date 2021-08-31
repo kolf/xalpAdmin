@@ -222,14 +222,11 @@ export default function DataTable() {
         rowKey='deviceId'
         dataSource={makeData(data.records || [])}
         columns={columns}
-        pagination={false}
+        pagination={paginationProps}
         size='small'
         bordered
         loading={loading}
       />
-      <div className='page-container'>
-        <Pagination {...paginationProps} />
-      </div>
     </>
   );
 }

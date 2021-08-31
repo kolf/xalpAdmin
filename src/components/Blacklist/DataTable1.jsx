@@ -338,15 +338,12 @@ export default function DataTable() {
         rowKey='id'
         dataSource={makeData(dataList)}
         columns={columns}
-        pagination={false}
+        pagination={paginationProps}
         size='small'
         bordered
         loading={loading}
         scroll={{ x: 1600 }}
       />
-      <div className='page-container'>
-        <Pagination {...paginationProps} />
-      </div>
     </div>
   );
 }

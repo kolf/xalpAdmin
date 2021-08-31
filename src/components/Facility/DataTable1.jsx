@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   Button,
@@ -12,27 +12,27 @@ import {
   Pagination,
   Image,
   Tooltip,
-} from "antd";
-import moment from "moment";
-import modal from "../../shared/modal";
+} from 'antd';
+import moment from 'moment';
+import modal from '../../shared/modal';
 import {
   activityOptions,
   orderChannelEnum,
   checkModeEnum,
-} from "../../shared/options";
-import confirm from "../../shared/confirm";
-import utils from "../../shared/utils";
-import facilityService from "../../services/faciliy.service";
-import dataService from "../../services/data.service";
+} from '../../shared/options';
+import confirm from '../../shared/confirm';
+import utils from '../../shared/utils';
+import facilityService from '../../services/faciliy.service';
+import dataService from '../../services/data.service';
 
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
-const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD HH:mm:ss";
+const dateFormat = 'YYYY-MM-DD';
+const secFormat = 'YYYY-MM-DD HH:mm:ss';
 const reviewOptions = [
-  { value: "3", label: "已核销" },
-  { value: "1", label: "未核销" },
+  { value: '3', label: '已核销' },
+  { value: '1', label: '未核销' },
 ];
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -46,9 +46,9 @@ export default function DataTable() {
   const [total, setTotal] = useState(0);
   const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
-    skipCount: "1",
-    maxResultCount: "10",
-    keyword: "",
+    skipCount: '1',
+    maxResultCount: '10',
+    keyword: '',
   });
 
   useEffect(() => {
@@ -58,12 +58,12 @@ export default function DataTable() {
       setLoading(true);
       try {
         const { items, totalCount } = await facilityService.getOrderDetailList(
-          makeQuery(query)
+          makeQuery(query),
         );
         const res = await dataService.getOrderStatistics({
           ClientType: 1,
-          StartTravelTime: moment().format(dateFormat) + " 00:00:00",
-          EndTravelTime: moment().format(dateFormat) + " 23:59:59",
+          StartTravelTime: moment().format(dateFormat) + ' 00:00:00',
+          EndTravelTime: moment().format(dateFormat) + ' 23:59:59',
         });
         if (mounted) {
           setLoading(false);
@@ -102,13 +102,13 @@ export default function DataTable() {
     return Object.keys(query).reduce(
       (result, key) => {
         const value = query[key];
-        if (key === "date" && value) {
+        if (key === 'date' && value) {
           const [start, end] = value;
-          result.StartTravelTime = start.format(dateFormat) + " 00:00:00";
-          result.EndTravelTime = end.format(dateFormat) + " 23:59:59";
-        } else if (key === "isActivityApply" && value !== undefined) {
-          result.isActivityApplySuccess = value === "1";
-        } else if (value !== undefined && value !== "-1") {
+          result.StartTravelTime = start.format(dateFormat) + ' 00:00:00';
+          result.EndTravelTime = end.format(dateFormat) + ' 23:59:59';
+        } else if (key === 'isActivityApply' && value !== undefined) {
+          result.isActivityApplySuccess = value === '1';
+        } else if (value !== undefined && value !== '-1') {
           result[key] = value;
         }
         if (query.skipCount) {
@@ -118,7 +118,7 @@ export default function DataTable() {
       },
       {
         ClientType: 1,
-      }
+      },
     );
   }
 
@@ -133,7 +133,7 @@ export default function DataTable() {
         mod.close();
         utils.success(`取消成功！`);
         setCounter(counter + 1);
-        setQuery({ ...query, skipCount: "1" });
+        setQuery({ ...query, skipCount: '1' });
       } catch (error) {
         mod.close();
       }
@@ -152,7 +152,7 @@ export default function DataTable() {
         mod.close();
         utils.success(`核销成功！`);
         setCounter(counter + 1);
-        setQuery({ ...query, skipCount: "1" });
+        setQuery({ ...query, skipCount: '1' });
       } catch (error) {
         mod.close();
       }
@@ -172,193 +172,191 @@ export default function DataTable() {
 
   function getRowClassName(creds, index) {
     if (creds.status !== 1) {
-      return "ant-table-row-disabled";
+      return 'ant-table-row-disabled';
     }
   }
 
   const columns = [
     {
-      title: "订单号",
-      dataIndex: "orderNO",
+      title: '订单号',
+      dataIndex: 'orderNO',
       width: 168,
       render(text, creds) {
-        return creds.orderNO || "无";
+        return creds.orderNO || '无';
       },
     },
     {
-      title: "预约人",
-      dataIndex: "name",
+      title: '预约人',
+      dataIndex: 'name',
       width: 64,
       render(text) {
-        return text || "无";
+        return text || '无';
       },
     },
     {
-      title: "预约人电话",
-      dataIndex: "phone",
+      title: '预约人电话',
+      dataIndex: 'phone',
       width: 114,
     },
     {
-      title: "是否代预约",
-      dataIndex: "isActivityApply",
+      title: '是否代预约',
+      dataIndex: 'isActivityApply',
       width: 88,
       render(text) {
-        return text ? "是" : "否";
+        return text ? '是' : '否';
       },
     },
     {
-      title: "参观人",
-      dataIndex: "name1",
+      title: '参观人',
+      dataIndex: 'name1',
       width: 64,
       render(text, creds) {
-        return text || "无";
+        return text || '无';
       },
     },
     {
-      title: "参观人电话",
-      dataIndex: "phone1",
+      title: '参观人电话',
+      dataIndex: 'phone1',
       width: 114,
       render(text, creds) {
-        return text || "无";
+        return text || '无';
       },
     },
     {
-      title: "证件号码",
-      dataIndex: "certNumber",
+      title: '证件号码',
+      dataIndex: 'certNumber',
       width: 174,
       render(text, creds) {
-        return creds.certNumber || "无";
+        return creds.certNumber || '无';
       },
     },
     {
-      title: "预约时段",
-      dataIndex: "timeRangeName",
+      title: '预约时段',
+      dataIndex: 'timeRangeName',
       width: 196,
       render(text, creds) {
-        return moment(creds.startDate).format(dateFormat) + " " + text;
+        return moment(creds.startDate).format(dateFormat) + ' ' + text;
       },
     },
     {
-      title: "参与活动",
-      dataIndex: "activityName",
+      title: '参与活动',
+      dataIndex: 'activityName',
       width: 80,
       render(text) {
-        return text || "无";
+        return text || '无';
       },
     },
     {
-      title: "抵达方式",
-      dataIndex: "regionProvince",
+      title: '抵达方式',
+      dataIndex: 'regionProvince',
       width: 80,
       render(text) {
-        return text || "无";
+        return text || '无';
       },
     },
     {
-      title: "随行宠物",
-      dataIndex: "petInfo",
+      title: '随行宠物',
+      dataIndex: 'petInfo',
       width: 80,
       render(text) {
-        return text || "无";
+        return text || '无';
       },
     },
     {
-      title: "照片信息",
-      dataIndex: "faceWebUrl",
+      title: '照片信息',
+      dataIndex: 'faceWebUrl',
       width: 76,
       render(text) {
-        return text ? <Image src={text} width={60} /> : "无";
+        return text ? <Image src={text} width={60} /> : '无';
       },
     },
     {
-      title: "预约来源",
-      dataIndex: "orderChannel",
+      title: '预约来源',
+      dataIndex: 'orderChannel',
       width: 90,
       render(text) {
-        return text ? orderChannelEnum[text] : "无预约";
+        return text ? orderChannelEnum[text] : '无预约';
       },
     },
     {
-      title: "车牌号",
-      dataIndex: "licensePlateNumber",
+      title: '车牌号',
+      dataIndex: 'licensePlateNumber',
       render(text) {
-        return text || "无";
+        return text || '无';
       },
     },
     {
-      title: "核销设备ID",
-      dataIndex: "checkDeviceCode",
+      title: '核销设备ID',
+      dataIndex: 'checkDeviceCode',
       width: 90,
       render(text) {
-        return text || "无";
+        return text || '无';
       },
     },
     {
-      title: "人像录入",
-      dataIndex: "isFaceRegistered",
+      title: '人像录入',
+      dataIndex: 'isFaceRegistered',
       width: 80,
       render(text) {
-        return text ? "是" : "否";
+        return text ? '是' : '否';
       },
     },
     {
-      title: "核销设备（核销方式）",
-      dataIndex: "checkModeName",
+      title: '核销设备（核销方式）',
+      dataIndex: 'checkModeName',
       width: 158,
       render(text, creds) {
         return creds.checkDeviceName
           ? `${creds.checkDeviceName}(${text})`
-          : "无";
+          : '无';
       },
     },
     {
-      title: "核销/取消时间",
-      dataIndex: "checkTime",
+      title: '核销/取消时间',
+      dataIndex: 'checkTime',
       width: 168,
       render(text, creds) {
         const title = creds.cancelTime || creds.checkTime;
-        return title ? moment(title).format(secFormat) : "无";
+        return title ? moment(title).format(secFormat) : '无';
       },
     },
     {
-      title: "人工操作",
-      dataIndex: "cancelUserName",
+      title: '人工操作',
+      dataIndex: 'cancelUserName',
       width: 120,
       render(text, creds) {
-        let title = "";
+        let title = '';
         if (text) {
           title = `人工取消/${text}`;
         } else if (creds.checkUserName) {
           title = `人工核销/${creds.checkUserName}`;
         }
-        return title || "无";
+        return title || '无';
       },
     },
     {
-      title: "操作",
-      dataIndex: "options",
-      fixed: "right",
+      title: '操作',
+      dataIndex: 'options',
+      fixed: 'right',
       width: 150,
       render(text, creds) {
         return (
-          <div className="text-center">
+          <div className='text-center'>
             <Button
               disabled={creds.status !== 1}
-              size="small"
+              size='small'
               style={{ marginRight: 4 }}
               onClick={(e) => {
                 showReviewModal(creds);
-              }}
-            >
+              }}>
               核销
             </Button>
             <Button
               disabled={creds.status !== 1}
-              size="small"
+              size='small'
               onClick={(e) => {
                 showDeleteModal(creds);
-              }}
-            >
+              }}>
               取消预约
             </Button>
           </div>
@@ -373,8 +371,8 @@ export default function DataTable() {
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
     total,
-    position: ["", "bottomCenter"],
-    size: "small",
+    position: ['', 'bottomCenter'],
+    size: 'small',
     onChange(pageNum, pageSize) {
       let nextPageNum = pageNum;
       if (pageSize !== query.maxResultCount * 1) {
@@ -382,8 +380,8 @@ export default function DataTable() {
       }
       setQuery({
         ...query,
-        skipCount: nextPageNum + "",
-        maxResultCount: pageSize + "",
+        skipCount: nextPageNum + '',
+        maxResultCount: pageSize + '',
       });
     },
   };
@@ -391,26 +389,25 @@ export default function DataTable() {
   return (
     <div>
       <Row style={{ paddingBottom: 12 }}>
-        <Col flex="auto">
+        <Col flex='auto'>
           <Space>
             <span>今日预约人数:</span>
-            <span className="iconfont1 text-danger">
+            <span className='iconfont1 text-danger'>
               {totalData.travelTouristCount}
             </span>
             <span>已核销人数:</span>
-            <span className="iconfont1 text-danger">
+            <span className='iconfont1 text-danger'>
               {totalData.usedTicketCount}
             </span>
           </Space>
         </Col>
-        <Col flex="120px" style={{ textAlign: "right" }}>
+        <Col flex='120px' style={{ textAlign: 'right' }}>
           <Space>
             <Button
-              size="small"
-              type="primary"
+              size='small'
+              type='primary'
               onClick={openFile}
-              loading={openLoading}
-            >
+              loading={openLoading}>
               下载数据
             </Button>
           </Space>
@@ -418,19 +415,18 @@ export default function DataTable() {
       </Row>
       <Form
         form={form}
-        name="form"
-        layout="inline"
+        name='form'
+        layout='inline'
         style={{ paddingBottom: 12 }}
         onFinish={(values) => {
           setQuery({
             ...query,
             ...values,
-            skipCount: "1",
+            skipCount: '1',
           });
-        }}
-      >
-        <Form.Item name="Status" style={{ marginBottom: 6, width: 100 }}>
-          <Select size="small" placeholder="核销状态" allowClear>
+        }}>
+        <Form.Item name='Status' style={{ marginBottom: 6, width: 100 }}>
+          <Select size='small' placeholder='核销状态' allowClear>
             {reviewOptions.map((o) => (
               <Option key={o.value} value={o.value}>
                 {o.label}
@@ -439,10 +435,9 @@ export default function DataTable() {
           </Select>
         </Form.Item>
         <Form.Item
-          name="isActivityApply"
-          style={{ marginBottom: 6, width: 80 }}
-        >
-          <Select size="small" placeholder="活动" allowClear>
+          name='isActivityApply'
+          style={{ marginBottom: 6, width: 80 }}>
+          <Select size='small' placeholder='活动' allowClear>
             {activityOptions.map((o) => (
               <Option key={o.value} value={o.value}>
                 {o.label}
@@ -450,26 +445,25 @@ export default function DataTable() {
             ))}
           </Select>
         </Form.Item>
-        <Form.Item name="date">
-          <RangePicker size="small" />
+        <Form.Item name='date'>
+          <RangePicker size='small' />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" htmlType="submit" size="small">
+          <Button type='primary' htmlType='submit' size='small'>
             查询数据
           </Button>
         </Form.Item>
-        <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
+        <Form.Item style={{ marginLeft: 'auto', marginRight: 0 }}>
           <Tooltip
-            title="请输入参观人/参观人电话证件号码查询"
-            color={"rgba(11, 34, 63, 0.9)"}
-            overlayStyle={{ minWidth: 260, textAlign: "center !important" }}
-          >
+            title='请输入参观人/参观人电话证件号码查询'
+            color={'rgba(11, 34, 63, 0.9)'}
+            overlayStyle={{ minWidth: 260, textAlign: 'center !important' }}>
             <Search
-              size="small"
-              placeholder="请输入参观人/参观人电话证件号码查询"
+              size='small'
+              placeholder='请输入参观人/参观人电话证件号码查询'
               allowClear
               onSearch={(value) =>
-                setQuery({ ...query, skipCount: "1", keyword: value })
+                setQuery({ ...query, skipCount: '1', keyword: value })
               }
             />
           </Tooltip>
@@ -480,16 +474,13 @@ export default function DataTable() {
         dataSource={makeData(dataList)}
         columns={columns}
         rowClassName={getRowClassName}
-        pagination={false}
-        size="small"
+        pagination={paginationProps}
+        size='small'
         bordered
         loading={loading}
-        rowKey="id"
+        rowKey='id'
         scroll={{ x: 2400 }}
       />
-      <div className="page-container">
-        <Pagination {...paginationProps} />
-      </div>
     </div>
   );
 }

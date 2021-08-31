@@ -319,16 +319,13 @@ export default function DataTable() {
       <Table
         dataSource={makeData(dataList)}
         columns={columns}
-        pagination={false}
+        pagination={paginationProps}
         size='small'
         bordered
         loading={loading}
         rowKey='id'
         scroll={{ x: 1200 }}
       />
-      <div className='page-container'>
-        <Pagination {...paginationProps} />
-      </div>
     </div>
   );
 }

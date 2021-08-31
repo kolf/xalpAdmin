@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { Table, Button, Form, Input, Row, Col, Space, Pagination } from "antd";
-import UpdateDataForm from "./UpdateDataForm";
-import modal from "../../shared/modal";
-import confirm from "../../shared/confirm";
-import utils from "../../shared/utils";
-import ticketCategoryService from "../../services/ticket-category.service";
+import React, { useState, useEffect } from 'react';
+import { Table, Button, Form, Input, Row, Col, Space, Pagination } from 'antd';
+import UpdateDataForm from './UpdateDataForm';
+import modal from '../../shared/modal';
+import confirm from '../../shared/confirm';
+import utils from '../../shared/utils';
+import ticketCategoryService from '../../services/ticket-category.service';
 const { Search } = Input;
-const dateFormat = "YYYY-MM-DD";
-const secFormat = "YYYY-MM-DD HH:mm:ss";
+const dateFormat = 'YYYY-MM-DD';
+const secFormat = 'YYYY-MM-DD HH:mm:ss';
 
 export default function DataTable() {
   const [form] = Form.useForm();
@@ -16,9 +16,9 @@ export default function DataTable() {
   const [total, setTotal] = useState(0);
   const [counter, setCounter] = useState(0);
   const [query, setQuery] = useState({
-    skipCount: "1",
-    maxResultCount: "10",
-    keyword: "",
+    skipCount: '1',
+    maxResultCount: '10',
+    keyword: '',
   });
 
   useEffect(() => {
@@ -58,7 +58,7 @@ export default function DataTable() {
     return Object.keys(query).reduce(
       (result, key) => {
         const value = query[key];
-        if (value !== undefined && value !== "-1") {
+        if (value !== undefined && value !== '-1') {
           result[key] = value;
         }
         if (query.skipCount) {
@@ -68,7 +68,7 @@ export default function DataTable() {
       },
       {
         ProductType: 0,
-      }
+      },
     );
   }
 
@@ -85,7 +85,7 @@ export default function DataTable() {
         setCounter(counter + 1);
         setQuery({
           ...query,
-          skipCount: "1",
+          skipCount: '1',
         });
       } catch (error) {
         mod.close();
@@ -95,7 +95,7 @@ export default function DataTable() {
 
   function showEditModal(creds) {
     const mod = modal({
-      title: "编辑",
+      title: '编辑',
       content: <UpdateDataForm onOk={onOk} defaultValues={creds} />,
       footer: null,
     });
@@ -104,14 +104,14 @@ export default function DataTable() {
       setCounter(counter + 1);
       setQuery({
         ...query,
-        skipCount: "1",
+        skipCount: '1',
       });
     }
   }
 
   function showAddModal() {
     const mod = modal({
-      title: "新增",
+      title: '新增',
       content: <UpdateDataForm onOk={onOk} />,
       footer: null,
     });
@@ -120,7 +120,7 @@ export default function DataTable() {
       setCounter(counter + 1);
       setQuery({
         ...query,
-        skipCount: "1",
+        skipCount: '1',
       });
     }
   }
@@ -128,7 +128,7 @@ export default function DataTable() {
   async function openFile() {
     try {
       const res = await ticketCategoryService.exportProductList(
-        makeQuery(query)
+        makeQuery(query),
       );
       window.open(res);
     } catch (error) {
@@ -138,32 +138,31 @@ export default function DataTable() {
 
   const columns = [
     {
-      title: "名称",
-      dataIndex: "name",
+      title: '名称',
+      dataIndex: 'name',
     },
     {
-      title: "是否启用",
-      dataIndex: "isActive",
+      title: '是否启用',
+      dataIndex: 'isActive',
       render(text, creds) {
-        return text ? "已启用" : "未启用";
+        return text ? '已启用' : '未启用';
       },
     },
     {
-      title: "操作",
-      dataIndex: "options",
-      fixed: "right",
+      title: '操作',
+      dataIndex: 'options',
+      fixed: 'right',
       width: 120,
       render(text, creds) {
         return (
-          <div className="text-center">
+          <div className='text-center'>
             <Button
-              size="small"
+              size='small'
               style={{ marginRight: 4 }}
-              onClick={(e) => showEditModal(creds)}
-            >
+              onClick={(e) => showEditModal(creds)}>
               编辑
             </Button>
-            <Button size="small" onClick={(e) => showDeleteModal(creds)}>
+            <Button size='small' onClick={(e) => showDeleteModal(creds)}>
               删除
             </Button>
           </div>
@@ -178,8 +177,8 @@ export default function DataTable() {
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
     total,
-    position: ["", "bottomCenter"],
-    size: "small",
+    position: ['', 'bottomCenter'],
+    size: 'small',
     onChange(pageNum, pageSize) {
       let nextPageNum = pageNum;
       if (pageSize !== query.maxResultCount * 1) {
@@ -188,8 +187,8 @@ export default function DataTable() {
 
       setQuery({
         ...query,
-        skipCount: nextPageNum + "",
-        maxResultCount: pageSize + "",
+        skipCount: nextPageNum + '',
+        maxResultCount: pageSize + '',
       });
     },
   };
@@ -197,13 +196,13 @@ export default function DataTable() {
   return (
     <div>
       <Row style={{ paddingBottom: 12 }}>
-        <Col flex="auto"></Col>
-        <Col flex="120px" style={{ textAlign: "right" }}>
+        <Col flex='auto'></Col>
+        <Col flex='120px' style={{ textAlign: 'right' }}>
           <Space>
-            <Button size="small" type="primary" onClick={showAddModal}>
+            <Button size='small' type='primary' onClick={showAddModal}>
               新增
             </Button>
-            <Button size="small" type="primary" onClick={openFile}>
+            <Button size='small' type='primary' onClick={openFile}>
               下载数据
             </Button>
           </Space>
@@ -211,36 +210,34 @@ export default function DataTable() {
       </Row>
       <Form
         form={form}
-        name="form"
-        layout="inline"
+        name='form'
+        layout='inline'
         style={{ paddingBottom: 12 }}
-        onFinish={(values) => setQuery({ ...query, ...values, skipCount: "1" })}
-      >
-        <Form.Item style={{ marginLeft: "auto", marginRight: 0 }}>
+        onFinish={(values) =>
+          setQuery({ ...query, ...values, skipCount: '1' })
+        }>
+        <Form.Item style={{ marginLeft: 'auto', marginRight: 0 }}>
           <Search
-            size="small"
-            placeholder="请输入名称查询"
+            size='small'
+            placeholder='请输入名称查询'
             allowClear
             onSearch={(value) =>
-              setQuery({ ...query, skipCount: "1", keyword: value })
+              setQuery({ ...query, skipCount: '1', keyword: value })
             }
           />
         </Form.Item>
       </Form>
 
       <Table
-        rowKey="creatorId"
+        rowKey='creatorId'
         dataSource={makeData(dataList)}
         columns={columns}
-        pagination={false}
-        size="small"
+        pagination={paginationProps}
+        size='small'
         bordered
         loading={loading}
         // scroll={{ x: 1200 }}
       />
-      <div className="page-container">
-        <Pagination {...paginationProps} />
-      </div>
     </div>
   );
 }
