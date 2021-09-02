@@ -70,9 +70,9 @@ class PoliceService {
   getDeviceMapList = async (creds) => {
     try {
       const res1 = await api.get(`api/Device/HomeList`);
-      const res2 = await api.get(
-        `sightseer/camera/queryAll?${queryString.stringify(creds)}`,
-      );
+      // const res2 = await api.get(
+      //   `sightseer/camera/queryAll?${queryString.stringify(creds)}`,
+      // );
 
       return [
         ...res1.data.map((item) => ({
@@ -80,21 +80,10 @@ class PoliceService {
           ...item.device,
           deviceType: 1,
         })),
-        ...res2.data.data
-          .filter((item) => item.userStatus === '0')
-          .map((item) => ({ ...item, deviceType: 2 })),
+        // ...res2.data.data
+        //   .filter((item) => item.userStatus === '0')
+        //   .map((item) => ({ ...item, deviceType: 2 })),
       ];
-    } catch (error) {
-      return Promise.resolve([]);
-    }
-  };
-
-  getDeviceMap = async (creds) => {
-    try {
-      const res = await api.get(
-        `sightseer/cockpit/queryTouristGate?${queryString.stringify(creds)}`,
-      );
-      return res.data.data;
     } catch (error) {
       return Promise.resolve([]);
     }

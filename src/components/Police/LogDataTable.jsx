@@ -63,14 +63,14 @@ export default function DataTable({ id }) {
       dataIndex: 'deviceIP',
     },
     {
-      title: '操作时间',
+      title: '日志时间',
       dataIndex: 'interactionTime',
       render(text) {
         return text ? moment(text).format(secFormat) : '';
       },
     },
     {
-      title: '操作详情',
+      title: '日志详情',
       dataIndex: 'logContent',
     },
   ];
