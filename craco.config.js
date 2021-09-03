@@ -1,6 +1,6 @@
-const CracoLessPlugin = require("craco-less");
-const darkTheme = require("antd/dist/dark-theme");
-const theme = require("./theme");
+const CracoLessPlugin = require('craco-less');
+const darkTheme = require('antd/dist/dark-theme');
+const theme = require('./theme');
 
 module.exports = {
   plugins: [
@@ -18,30 +18,56 @@ module.exports = {
   ],
   devServer: {
     proxy: {
-      "/topark/auth": {
-        target: "http://114.67.250.8",
+      '/topark/auth': {
+        target: 'http://116.131.8.40:8888',
         changeOrigin: true,
         secure: false,
-        pathRewrite: { "^/topark": "" },
+        pathRewrite: { '^/topark': '' },
       },
-      "/topark/iotbase": {
-        target: "http://114.67.250.8",
+      '/topark/iotbase': {
+        target: 'http://116.131.8.40:8888',
         changeOrigin: true,
         secure: false,
-        pathRewrite: { "^/topark": "" },
+        pathRewrite: { '^/topark': '' },
       },
-      "/topark/sightseer": {
-        target: "http://114.67.250.8",
+      '/topark/sightseer': {
+        target: 'http://116.131.8.40:8888',
         changeOrigin: true,
         secure: false,
-        pathRewrite: { "^/topark": "" },
+        pathRewrite: { '^/topark': '' },
       },
-      "/topark/api": {
-        target: "http://xalby-api.facevisitor.com",
+      '/topark/api': {
+        target: 'http://116.131.8.38:8800',
         changeOrigin: true,
         secure: false,
-        pathRewrite: { "^/topark": "" },
+        pathRewrite: { '^/topark': '' },
       },
     },
+    // proxy: {
+    //   "/topark/auth": {
+    //     target: "http://114.67.250.8",
+    //     changeOrigin: true,
+    //     secure: false,
+    //     pathRewrite: { "^/topark": "" },
+    //   },
+    //   "/topark/iotbase": {
+    //     target: "http://114.67.250.8",
+    //     changeOrigin: true,
+    //     secure: false,
+    //     pathRewrite: { "^/topark": "" },
+    //   },
+    //   "/topark/sightseer": {
+    //     target: "http://114.67.250.8",
+    //     changeOrigin: true,
+    //     secure: false,
+    //     pathRewrite: { "^/topark": "" },
+    //   },
+    //   "/topark/api": {
+    //     target: "http://xalby-api.facevisitor.com",
+    //     changeOrigin: true,
+    //     secure: false,
+    //     pathRewrite: { "^/topark": "" },
+    //   },
+    // },
   },
 };

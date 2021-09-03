@@ -28,8 +28,9 @@ const initialData = {
 export default React.memo(function DataTable() {
   const [form] = Form.useForm();
   const [query, setQuery] = useState({
-    skipCount: '1',
+    // skipCount: '1',
     maxResultCount: '10',
+    pageNum: 1,
     keyword: '',
     date: [moment(), moment()],
   });
@@ -64,9 +65,9 @@ export default React.memo(function DataTable() {
       } else if (value !== undefined && value !== '-1') {
         result[key] = value;
       }
-      if (query.skipCount) {
-        result.skipCount = (query.skipCount - 1) * query.maxResultCount;
-      }
+
+      result.skipCount = (query.pageNum - 1) * query.maxResultCount;
+
       return result;
     }, {});
   }
@@ -98,20 +99,19 @@ export default React.memo(function DataTable() {
   const paginationProps = {
     showQuickJumper: true,
     showSizeChanger: true,
-    current: query.skipCount * 1,
+    current: query.pageNum,
     pageSize: query.maxResultCount * 1,
     total: data.totalCount,
     position: ['', 'bottomCenter'],
     size: 'small',
     onChange(pageNum, pageSize) {
-      let nextPageNum = pageNum;
-      if (pageSize !== query.maxResultCount * 1) {
-        nextPageNum = 1;
-      }
-
+      // let nextPageNum = pageNum;
+      // if (pageSize !== query.maxResultCount * 1) {
+      //   nextPageNum = 1;
+      // }
       setQuery({
         ...query,
-        skipCount: nextPageNum + '',
+        pageNum,
         maxResultCount: pageSize + '',
       });
     },
@@ -136,7 +136,7 @@ export default React.memo(function DataTable() {
         name='form'
         layout='inline'
         style={{ paddingBottom: 12 }}
-        onFinish={(values) => setQuery({ ...query, ...values })}
+        onFinish={(values) => setQuery({ ...query, ...values, pageNum: 1 })}
         initialValues={query}>
         <Form.Item name='date'>
           <RangePicker size='small' />
@@ -151,7 +151,9 @@ export default React.memo(function DataTable() {
             size='small'
             placeholder='请输入设备名称查询'
             allowClear
-            onSearch={(value) => setQuery({ ...query, keyword: value })}
+            onSearch={(value) =>
+              setQuery({ ...query, keyword: value, pageNum: 1 })
+            }
           />
         </Form.Item>
       </Form>

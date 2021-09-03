@@ -128,7 +128,7 @@ export default function UpdateDataForm({
             <Form.Item
               label='所属地址'
               name='provinceLevel'
-              rules={[{ required: true, message: '请输入所属地址!' }]}>
+              rules={[{ required: true, message: '请选择所属地址!' }]}>
               <AreaSelect defaultOptions={defaultAreaOptions} />
             </Form.Item>
 
@@ -143,13 +143,13 @@ export default function UpdateDataForm({
               label='举办地址'
               name='address'
               rules={[{ required: true, message: '请输入举办地址!' }]}>
-              <Input placeholder='请选择' />
+              <Input placeholder='请输入' />
             </Form.Item>
             <Form.Item
               label='举办方'
               name='organizers'
               rules={[{ required: true, message: '请输入举办方!' }]}>
-              <Input placeholder='请选择' />
+              <Input placeholder='请输入' />
             </Form.Item>
             <Form.Item
               label='报名名额'
@@ -236,7 +236,7 @@ export default function UpdateDataForm({
               label='参与要求'
               // notesForAttend
               name='qualificationGuidelines'
-              rules={[{ required: true, message: '请输入姓名!' }]}>
+              rules={[{ required: true, message: '请输入参与要求!' }]}>
               <Input placeholder='请输入' />
             </Form.Item>
 
