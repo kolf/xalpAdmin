@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Form,
   Input,
@@ -9,16 +9,16 @@ import {
   DatePicker,
   InputNumber,
   message,
-} from "antd";
-import utils from "../../shared/utils";
-import ticketCategoryService from "../../services/ticket-category.service";
+} from 'antd';
+import utils from '../../shared/utils';
+import ticketCategoryService from '../../services/ticket-category.service';
 const { RangePicker } = DatePicker;
-const dateFormat = "YYYY-MM-DD";
+const dateFormat = 'YYYY-MM-DD';
 
 const plainOptions = [
-  { value: "1", label: "启用" },
-  { value: "2", label: "再次验证未入园" },
-  { value: "3", label: "可预售" },
+  { value: '1', label: '启用' },
+  { value: '2', label: '再次验证未入园' },
+  { value: '3', label: '可预售' },
 ];
 
 const layout = {
@@ -54,24 +54,24 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     return Object.keys(values).reduce(
       (result, key) => {
         const value = values[key];
-        if (key === "options") {
+        if (key === 'options') {
           if (!value) {
             result.isActive = false;
             result.isCanBeRechecked = false;
             result.isCanPresale = false;
           } else {
-            result.isActive = value.includes("1");
-            result.isCanBeRechecked = value.includes("2");
-            result.isCanPresale = value.includes("3");
+            result.isActive = value.includes('1');
+            result.isCanBeRechecked = value.includes('2');
+            result.isCanPresale = value.includes('3');
           }
-        } else if (value !== undefined && value !== "-1") {
+        } else if (value !== undefined && value !== '-1') {
           result[key] = value;
         }
         return result;
       },
       {
         staffType: 1,
-      }
+      },
     );
   }
 
@@ -97,13 +97,13 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     let options = [];
 
     if (isActive) {
-      options.push("1");
+      options.push('1');
     }
     if (isCanBeRechecked) {
-      options.push("2");
+      options.push('2');
     }
     if (isCanPresale) {
-      options.push("3");
+      options.push('3');
     }
 
     return {
@@ -123,81 +123,71 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
     <>
       <Form
         {...layout}
-        size="small"
+        size='small'
         onFinish={onFinish}
-        initialValues={makeDefaultValues()}
-      >
+        initialValues={makeDefaultValues()}>
         <Form.Item
-          label="门票名称"
-          name="name"
-          rules={[{ required: true, message: "请输入门票名称！" }]}
-        >
-          <Input placeholder="请输入" />
+          label='门票名称'
+          name='name'
+          rules={[{ required: true, message: '请输入门票名称！' }]}>
+          <Input placeholder='请输入' />
         </Form.Item>
         <Form.Item
-          label="客户类型"
-          name="clientType"
-          rules={[{ required: true, message: "请选择客户类型！" }]}
-        >
+          label='客户类型'
+          name='clientType'
+          rules={[{ required: true, message: '请选择客户类型！' }]}>
           <Radio.Group>
             <Radio value={1}>个人</Radio>
             <Radio value={2}>团体</Radio>
           </Radio.Group>
         </Form.Item>
         <Form.Item
-          label="票面价格"
-          name="priceSale"
-          rules={[{ required: true, message: "请输入票面价格！" }]}
-        >
-          <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
+          label='票面价格'
+          name='priceSale'
+          rules={[{ required: true, message: '请输入票面价格！' }]}>
+          <InputNumber min={0} placeholder='请输入' style={{ width: '100%' }} />
         </Form.Item>
 
         <Form.Item
-          label="可用次数"
-          name="enterTimes"
-          rules={[{ required: true, message: "请输入可用次数！" }]}
-        >
-          <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
+          label='可用次数'
+          name='enterTimes'
+          rules={[{ required: true, message: '请输入可用次数！' }]}>
+          <InputNumber min={0} placeholder='请输入' style={{ width: '100%' }} />
         </Form.Item>
 
         <Form.Item
-          label="包含人数"
-          name="unitUserCount"
-          rules={[{ required: true, message: "请输入可用次数！" }]}
-        >
-          <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
+          label='包含人数'
+          name='unitUserCount'
+          rules={[{ required: true, message: '请输入包含人数！' }]}>
+          <InputNumber min={0} placeholder='请输入' style={{ width: '100%' }} />
         </Form.Item>
         <Form.Item
-          label="选项"
-          name="options"
-          rules={[{ required: true, message: "请选择！" }]}
-        >
+          label='选项'
+          name='options'
+          rules={[{ required: true, message: '请选择！' }]}>
           <Checkbox.Group options={plainOptions} />
         </Form.Item>
         <Form.Item
-          label="可预售天数"
-          name="presaleDays"
-          rules={[{ required: true, message: "请输入可预售天数！" }]}
-        >
-          <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
+          label='可预售天数'
+          name='presaleDays'
+          rules={[{ required: true, message: '请输入可预售天数！' }]}>
+          <InputNumber min={0} placeholder='请输入' style={{ width: '100%' }} />
         </Form.Item>
         <Form.Item
-          label="有效天数"
-          name="validDays"
-          rules={[{ required: true, message: "请输入有效天数！" }]}
-        >
-          <InputNumber min={0} placeholder="请输入" style={{ width: "100%" }} />
+          label='有效天数'
+          name='validDays'
+          rules={[{ required: true, message: '请输入有效天数！' }]}>
+          <InputNumber min={0} placeholder='请输入' style={{ width: '100%' }} />
         </Form.Item>
         <Form.Item
-          label="详情描述"
-          name="note"
-          rules={[{ required: true, message: "请输入详情描述！" }]}
-        >
-          <Input.TextArea placeholder="请输入" />
+          label='详情描述'
+          name='note'
+          rules={[{ required: true, message: '请输入详情描述！' }]}>
+          <Input.TextArea placeholder='请输入' />
         </Form.Item>
 
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
+          <Button type='primary' htmlType='submit'>
             确定
           </Button>
         </Form.Item>
