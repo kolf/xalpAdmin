@@ -4,6 +4,7 @@ import PermissionsCheckbox from './PermissionsCheckbox';
 import { useRequest } from 'ahooks';
 import utils from '../../shared/utils';
 import userService from '../../services/user.service';
+import sessionService from '../../services/session.service';
 
 const layout = {
   labelCol: { span: 4 },
@@ -41,6 +42,11 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
           concurrencyStamp: defaultValues.concurrencyStamp,
         });
         utils.success(`更新成功！`);
+        if (sessionService.isUserRoles(defaultValues.name)) {
+          await sessionService.updateRoles();
+          window.location.reload();
+          return;
+        }
       } catch (error) {}
     } else {
       try {
@@ -51,7 +57,6 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         utils.success(`添加成功！`);
       } catch (error) {}
     }
-
     onOk && onOk(res);
   }
 
@@ -63,6 +68,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
           ...o.permissions.map((i) => ({
             label: i.displayName,
             value: i.name,
+            isGranted: i.isGranted,
             parentValue: i.parentName,
           })),
         ];
@@ -93,11 +99,17 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
     }
 
     const options = makeData(data.groups);
+
+    console.log(options, values.name, 'values');
+
     return Object.keys(values).reduce((result, key) => {
       const value = values[key];
       if (key === 'permissions') {
+        // console.log(values.permissions, 'values.permissions');
         result[key] = options
-          .filter((o) => values.permissions.find((v) => v === o.label))
+          .filter(
+            (o) => o.isGranted && values.permissions.find((v) => v === o.label),
+          )
           .map((o) => o.value);
       } else if (value !== undefined && value !== '-1') {
         result[key] = value;

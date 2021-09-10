@@ -3,6 +3,7 @@ import { Form, Input, Button, Radio, Select, Skeleton } from 'antd';
 import { useRequest } from 'ahooks';
 import utils from '../../shared/utils';
 import userService from '../../services/user.service';
+import sessionService from '../../services/session.service';
 
 const { Option } = Select;
 
@@ -56,6 +57,12 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
           userName: defaultValues.userName,
         });
         utils.success(`更新成功！`);
+
+        if (sessionService.isUserName(defaultValues.userName)) {
+          await sessionService.updateRoles();
+          window.location.reload();
+          return;
+        }
       } catch (error) {}
     } else {
       try {
@@ -65,6 +72,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
     }
 
     onOk && onOk(res);
+    // window.location.reload();
   }
 
   function makeParams(values) {

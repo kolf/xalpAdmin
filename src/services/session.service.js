@@ -1,22 +1,22 @@
-import axios from "axios";
-import queryString from "query-string";
-import config from "../config";
-import history from "../shared/history";
+import axios from 'axios';
+import queryString from 'query-string';
+import config from '../config';
+import history from '../shared/history';
 
 class SessionService {
   login = async (creds) => {
     try {
       const res1 = await axios.post(
         `auth/oauth/token?${queryString.stringify({
-          grant_type: "password",
+          grant_type: 'password',
           ...creds,
         })}`,
         null,
         {
           headers: {
-            Authorization: "Basic ZGQ6ZGQ=",
+            Authorization: 'Basic ZGQ6ZGQ=',
           },
-        }
+        },
       );
       const { access_token: ossAccessToken } = res1.data.data;
 
@@ -30,21 +30,28 @@ class SessionService {
   getToken = async (ossAccessToken) => {
     // debugger;
     try {
-      const res = await axios.post("api/LbyTokenAuth", {
+      const res = await axios.post('api/LbyTokenAuth', {
         ossAccessToken,
       });
       const newToken = res.data.access_token;
       const { roles, userInfo } = await this.getRoles(newToken);
-      sessionStorage.setItem("@Auth:token", newToken);
-      sessionStorage.setItem("@Auth:roles", roles);
-      sessionStorage.setItem("user", JSON.stringify(userInfo));
+      sessionStorage.setItem('@Auth:token', newToken);
+      sessionStorage.setItem('@Auth:roles', roles);
+      sessionStorage.setItem('user', JSON.stringify(userInfo));
       return Promise.resolve(newToken);
     } catch (error) {
-      console.log(error, "error");
+      console.log(error, 'error');
       return Promise.reject(error);
     }
   };
-  // config.headers.common.Authorization = `Bearer ${token}`;
+
+  updateRoles = async () => {
+    const token = sessionStorage.getItem('@Auth:token');
+    const { roles, userInfo } = await this.getRoles(token);
+    sessionStorage.setItem('@Auth:roles', roles);
+    sessionStorage.setItem('user', JSON.stringify(userInfo));
+  };
+
   getRoles = async (token) => {
     try {
       const res = await axios.get(`api/application-configuration`, {
@@ -69,21 +76,31 @@ class SessionService {
   };
 
   getUser = () => {
-    return sessionStorage.getItem("user")
-      ? JSON.parse(sessionStorage.getItem("user"))
+    return sessionStorage.getItem('user')
+      ? JSON.parse(sessionStorage.getItem('user'))
       : null;
   };
 
   isAuthenticated = () => {
-    return !!sessionStorage.getItem("@Auth:token");
+    return !!sessionStorage.getItem('@Auth:token');
+  };
+
+  isUserRoles = (role) => {
+    const { roles = [] } = this.getUser();
+    return !!roles.find((r) => r === role);
+  };
+
+  isUserName = (name) => {
+    const { userName } = this.getUser();
+    return userName === name;
   };
 
   getUserToken = () => {
-    return sessionStorage.getItem("@Auth:token");
+    return sessionStorage.getItem('@Auth:token');
   };
 
   getUserRoles = () => {
-    return sessionStorage.getItem("@Auth:roles") || "";
+    return sessionStorage.getItem('@Auth:roles') || '';
   };
 }
 

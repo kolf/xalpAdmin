@@ -1,14 +1,15 @@
-import React, { useState } from "react";
-import { Tabs } from "antd";
-import Main from "../Layouts/AppMain";
-import DataTable from "./DataTable";
+import React, { useState } from 'react';
+import { Tabs } from 'antd';
+import Main from '../Layouts/AppMain';
+import DataTable from './DataTable';
+import sessionService from '../../services/session.service';
 
-import "./style.less";
+import './style.less';
 const { TabPane } = Tabs;
 
 export default function TicketCategory() {
   const [show, setShow] = useState(true);
-  const [tabKey, setTabKey] = useState("1");
+  const [tabKey, setTabKey] = useState('1');
   if (!show) {
     return null;
   }
@@ -20,11 +21,10 @@ export default function TicketCategory() {
       }}
       header={
         <Tabs activeKey={tabKey} onChange={setTabKey}>
-          <TabPane tab="票种管理" key="1" />
+          <TabPane tab='票种管理' key='1' />
         </Tabs>
-      }
-    >
-      {tabKey === "1" && <DataTable />}
+      }>
+      {tabKey === '1' && <DataTable />}
     </Main>
   );
 }

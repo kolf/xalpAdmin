@@ -14,12 +14,7 @@ import {
   Tooltip,
 } from 'antd';
 import moment from 'moment';
-import modal from '../../shared/modal';
-import {
-  activityOptions,
-  orderChannelEnum,
-  checkModeEnum,
-} from '../../shared/options';
+import { activityOptions, orderChannelEnum } from '../../shared/options';
 import confirm from '../../shared/confirm';
 import utils from '../../shared/utils';
 import facilityService from '../../services/faciliy.service';

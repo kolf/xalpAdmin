@@ -18,7 +18,6 @@ import confirm from '../../shared/confirm';
 import utils from '../../shared/utils';
 import userService from '../../services/user.service';
 import sessionService from '../../services/session.service';
-const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = 'YYYY-MM-DD';
 const secFormat = 'YYYY-MM-DD HH:mm:ss';

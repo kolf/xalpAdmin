@@ -1,16 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import moment from 'moment';
-import {
-  Table,
-  Button,
-  DatePicker,
-  Form,
-  Input,
-  Row,
-  Col,
-  Space,
-  Pagination,
-} from 'antd';
+import { Table, Button, Form, Input, Row, Col, Space } from 'antd';
 import { useRequest } from 'ahooks';
 import UpdateDataForm from './UpdateData1Form';
 import modal from '../../shared/modal';
@@ -18,7 +7,6 @@ import utils from '../../shared/utils';
 import userService from '../../services/user.service';
 import dataService from '../../services/data.service';
 import sessionService from '../../services/session.service';
-const { RangePicker } = DatePicker;
 const { Search } = Input;
 const dateFormat = 'YYYY-MM-DD';
 

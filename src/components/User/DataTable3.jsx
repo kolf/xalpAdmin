@@ -36,16 +36,13 @@ export default function DataTable() {
     keyword: '',
   });
 
-  const {
-    data = initialData,
-    run,
-    error,
-    loading,
-    refresh,
-  } = useRequest(() => faciliyService.getMerchantList(makeQuery(query)), {
-    refreshDeps: [query],
-    throwOnError: true,
-  });
+  const { data = initialData, loading } = useRequest(
+    () => faciliyService.getMerchantList(makeQuery(query)),
+    {
+      refreshDeps: [query],
+      throwOnError: true,
+    },
+  );
 
   function makeData(data) {
     if (!data) {

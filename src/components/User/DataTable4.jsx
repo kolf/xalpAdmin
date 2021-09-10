@@ -19,6 +19,7 @@ import modal from '../../shared/modal';
 import confirm from '../../shared/confirm';
 import utils from '../../shared/utils';
 import userService from '../../services/user.service';
+import sessionService from '../../services/session.service';
 const { RangePicker } = DatePicker;
 const { Search } = Input;
 const { Option } = Select;
@@ -31,6 +32,7 @@ const initialData = {
 };
 
 export default function DataTable() {
+  const roles = sessionService.getUserRoles();
   const [form] = Form.useForm();
   const [query, setQuery] = useState({
     skipCount: '1',
@@ -40,8 +42,6 @@ export default function DataTable() {
 
   const {
     data = initialData,
-    run,
-    error,
     loading,
     refresh,
   } = useRequest(() => userService.getOrgList(makeQuery(query)), {
@@ -143,15 +143,19 @@ export default function DataTable() {
       render(text, creds) {
         return (
           <div className='text-center'>
-            <Button
-              size='small'
-              style={{ marginRight: 4 }}
-              onClick={(e) => showEditModal(creds)}>
-              编辑
-            </Button>
-            <Button size='small' onClick={(e) => showDeleteModal(creds)}>
-              删除
-            </Button>
+            {/AbpIdentity.Organizations.Update/.test(roles) && (
+              <Button
+                size='small'
+                style={{ marginRight: 4 }}
+                onClick={(e) => showEditModal(creds)}>
+                编辑
+              </Button>
+            )}
+            {/AbpIdentity.Organizations.Delete/.test(roles) && (
+              <Button size='small' onClick={(e) => showDeleteModal(creds)}>
+                删除
+              </Button>
+            )}
           </div>
         );
       },
