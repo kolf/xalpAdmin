@@ -6,6 +6,11 @@ class PoliceService {
     try {
       const res = await api.get(
         `sightseer/camera/queryAll?${queryString.stringify(creds)}`,
+<<<<<<< HEAD
+      );
+
+      return res.data.data;
+=======
       );
 
       return res.data.data;
@@ -31,11 +36,20 @@ class PoliceService {
     try {
       const res = await api.post(`sightseer/camera/updateOne`, creds);
       return res.data;
+>>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
     } catch (error) {
       return Promise.reject(error);
     }
   };
 
+<<<<<<< HEAD
+  getCameraList = async (query, creds) => {
+    try {
+      const res = await api.get(
+        `sightseer/camera/page/${creds.status}/${
+          creds.cameraName
+        }?${queryString.stringify(query)}`,
+=======
   addCamera = async (creds) => {
     try {
       const res = await api.post(`sightseer/camera/saveData`, creds);
@@ -49,6 +63,43 @@ class PoliceService {
     try {
       const res = await api.get(
         `api/Device/InOutCount?${queryString.stringify(creds)}`,
+>>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
+      );
+      return res.data.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  updateCamera = async (creds) => {
+    try {
+      const res = await api.post(`sightseer/camera/updateOne`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+<<<<<<< HEAD
+  addCamera = async (creds) => {
+    try {
+      const res = await api.post(`sightseer/camera/saveData`, creds);
+      return res.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  getDeviceInOutCount = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/Device/InOutCount?${queryString.stringify(creds)}`,
+=======
+  getDeviceLogList = async (creds) => {
+    try {
+      const res = await api.get(
+        `api/DeviceLog/InteractionList?${queryString.stringify(creds)}`,
+>>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
       );
       return res.data;
     } catch (error) {
@@ -58,10 +109,22 @@ class PoliceService {
 
   getDeviceLogList = async (creds) => {
     try {
+<<<<<<< HEAD
       const res = await api.get(
         `api/DeviceLog/InteractionList?${queryString.stringify(creds)}`,
       );
       return res.data;
+=======
+      const res1 = await api.get(`api/Device/HomeList`);
+
+      return [
+        ...res1.data.map((item) => ({
+          ...item,
+          ...item.device,
+          deviceType: 1,
+        }))
+      ];
+>>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
     } catch (error) {
       return Promise.reject(error);
     }

@@ -28,7 +28,11 @@ export default function AppMenu() {
         </Menu.Item>
       )}
       {/SmartTicketing.InOutData/.test(roles) && (
+<<<<<<< HEAD
         <Menu.Item key='count'>
+=======
+        <Menu.Item>
+>>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
           <Link to='/count'>过闸数据统计</Link>
         </Menu.Item>
       )}
@@ -37,7 +41,11 @@ export default function AppMenu() {
           <Link to='/calendar'>预约量管理</Link>
         </Menu.Item>
       )}
+<<<<<<< HEAD
       {/SmartTicketingReservation.(Personal|Group)|SmartTicketing.(CheckRecords|Merchants|Staffs)/.test(
+=======
+      {/SmartTicketingReservation.(Personal|Personal)|Personal.(Merchants|Staffs)/.test(
+>>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
         roles,
       ) && (
         <Menu.Item key='facility'>

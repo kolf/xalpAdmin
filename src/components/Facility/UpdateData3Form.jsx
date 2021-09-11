@@ -146,17 +146,6 @@ export default function UpdateDataForm({ defaultValues = {}, onOk }) {
           rules={[{ required: true, message: '请输入姓名!' }]}>
           <Input placeholder='请输入' />
         </Form.Item>
-
-        <Form.Item label='所属部门' name='departmentId'>
-          <Select placeholder='请选择所属部门'>
-            {options.map((o) => (
-              <Select.Option key={o.value} value={o.value}>
-                {o.label}
-              </Select.Option>
-            ))}
-          </Select>
-        </Form.Item>
-
         <Form.Item
           label='岗位'
           name='organizationUnit'
