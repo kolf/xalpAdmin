@@ -5,7 +5,7 @@ import { useRequest } from 'ahooks';
 import { Map, APILoader } from '@uiw/react-amap';
 import policeService from '../../services/police.service';
 import MapIcon from './MapIcon';
-import imgUrl from '../../assets/img/cad-01.5a2c39ae.png';
+import imgUrl from '../../assets/img/map.png';
 import imgUrl2 from '../../assets/img/cad-02.395be9af.png';
 import update from './alimapScript';
 

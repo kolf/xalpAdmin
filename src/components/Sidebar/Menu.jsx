@@ -37,7 +37,7 @@ export default function AppMenu() {
           <Link to='/calendar'>预约量管理</Link>
         </Menu.Item>
       )}
-      {/SmartTicketingReservation.(Personal|Personal)|Personal.(Merchants|Staffs)/.test(
+      {/SmartTicketingReservation.(Personal|Group)|SmartTicketing.(CheckRecords|Merchants|Staffs)/.test(
         roles,
       ) && (
         <Menu.Item key='facility'>

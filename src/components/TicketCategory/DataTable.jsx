@@ -1,49 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Button, Form, Input, Row, Col, Space, Pagination } from 'antd';
 import UpdateDataForm from './UpdateDataForm';
+import { useRequest } from 'ahooks';
 import modal from '../../shared/modal';
 import confirm from '../../shared/confirm';
 import utils from '../../shared/utils';
 import ticketCategoryService from '../../services/ticket-category.service';
+import sessionService from '../../services/session.service';
 const { Search } = Input;
-const dateFormat = 'YYYY-MM-DD';
-const secFormat = 'YYYY-MM-DD HH:mm:ss';
+
+const initialData = {
+  totalCount: 0,
+  items: [],
+};
 
 export default function DataTable() {
+  const roles = sessionService.getUserRoles();
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [dataList, setDataList] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [counter, setCounter] = useState(0);
+
   const [query, setQuery] = useState({
     skipCount: '1',
     maxResultCount: '10',
     keyword: '',
   });
 
-  useEffect(() => {
-    let mounted = true;
-    loadData();
-    async function loadData() {
-      setLoading(true);
-      try {
-        const { items, totalCount } =
-          await ticketCategoryService.getProductList(makeQuery(query));
-        if (mounted) {
-          setLoading(false);
-          setDataList(items);
-          setTotal(totalCount);
-        }
-      } catch (error) {
-        if (mounted) {
-          setLoading(false);
-        }
-      }
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [JSON.stringify(query), counter]);
+  const { data = initialData, loading } = useRequest(
+    () => ticketCategoryService.getProductList(makeQuery(query)),
+    {
+      refreshDeps: [query],
+    },
+  );
 
   function makeData(data) {
     if (!data) {
@@ -82,7 +68,7 @@ export default function DataTable() {
         const res = await ticketCategoryService.deleteProduct(creds);
         mod.close();
         utils.success(`删除成功！`);
-        setCounter(counter + 1);
+
         setQuery({
           ...query,
           skipCount: '1',
@@ -101,7 +87,7 @@ export default function DataTable() {
     });
     function onOk() {
       mod.close();
-      setCounter(counter + 1);
+
       setQuery({
         ...query,
         skipCount: '1',
@@ -117,7 +103,7 @@ export default function DataTable() {
     });
     function onOk() {
       mod.close();
-      setCounter(counter + 1);
+
       setQuery({
         ...query,
         skipCount: '1',
@@ -156,15 +142,19 @@ export default function DataTable() {
       render(text, creds) {
         return (
           <div className='text-center'>
-            <Button
-              size='small'
-              style={{ marginRight: 4 }}
-              onClick={(e) => showEditModal(creds)}>
-              编辑
-            </Button>
-            <Button size='small' onClick={(e) => showDeleteModal(creds)}>
-              删除
-            </Button>
+            {/SmartTicketing.Products.Update/.test(roles) && (
+              <Button
+                size='small'
+                style={{ marginRight: 4 }}
+                onClick={(e) => showEditModal(creds)}>
+                编辑
+              </Button>
+            )}
+            {/SmartTicketing.Products.Delete/.test(roles) && (
+              <Button size='small' onClick={(e) => showDeleteModal(creds)}>
+                删除
+              </Button>
+            )}
           </div>
         );
       },
@@ -176,7 +166,7 @@ export default function DataTable() {
     showSizeChanger: true,
     current: query.skipCount * 1,
     pageSize: query.maxResultCount * 1,
-    total,
+    total: data.totalCount,
     position: ['', 'bottomCenter'],
     size: 'small',
     onChange(pageNum, pageSize) {
@@ -199,9 +189,11 @@ export default function DataTable() {
         <Col flex='auto'></Col>
         <Col flex='120px' style={{ textAlign: 'right' }}>
           <Space>
-            <Button size='small' type='primary' onClick={showAddModal}>
-              新增
-            </Button>
+            {/SmartTicketing.Products.Create/.test(roles) && (
+              <Button size='small' type='primary' onClick={showAddModal}>
+                新增
+              </Button>
+            )}
             <Button size='small' type='primary' onClick={openFile}>
               下载数据
             </Button>
@@ -230,7 +222,7 @@ export default function DataTable() {
 
       <Table
         rowKey='creatorId'
-        dataSource={makeData(dataList)}
+        dataSource={makeData(data.items)}
         columns={columns}
         pagination={paginationProps}
         size='small'

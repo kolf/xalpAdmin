@@ -9,44 +9,34 @@ import {
 } from '@ant-design/icons';
 import DataTableCalendarDetails from './DataTableCalendarDetails';
 import UpdateDataForm from './DataTableUpdateTabs';
+import { useRequest } from 'ahooks';
 import modal from '../../shared/modal';
 import faciliyService from '../../services/faciliy.service';
+import sessionService from '../../services/session.service';
 const monthFormat = 'YYYY-MM';
 const dateFormat = 'YYYY-MM-DD';
 const currentMoment = moment();
 
 export default function DataTableListCalendar({ renderHeader }) {
-  const [loading, setLoading] = useState(true);
+  const roles = sessionService.getUserRoles();
   const [selectedDate, setSelectedDate] = useState('');
-  const [dataList, setDataList] = useState([]);
   const [monthDate, setMonthDate] = useState(currentMoment.format(monthFormat));
-  const [counter, setCounter] = useState(0);
 
-  useEffect(() => {
-    let mounted = true;
-    loadData();
-
-    async function loadData() {
-      setLoading(true);
-      try {
-        const { items } = await faciliyService.getReservationTimeRangeList(
-          makeQuery(monthDate),
-        );
-        if (mounted) {
-          setLoading(false);
-          setDataList(items);
-        }
-      } catch (error) {
-        if (mounted) {
-          setLoading(false);
-          setDataList([]);
-        }
-      }
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [monthDate, counter]);
+  const {
+    refresh,
+    data = [],
+    loading,
+  } = useRequest(
+    async () => {
+      const { items } = await faciliyService.getReservationTimeRangeList(
+        makeQuery(monthDate),
+      );
+      return items || [];
+    },
+    {
+      refreshDeps: [monthDate],
+    },
+  );
 
   function makeQuery(date) {
     const currentDate = moment(date).startOf('month');
@@ -70,18 +60,18 @@ export default function DataTableListCalendar({ renderHeader }) {
     });
     function onOk() {
       mod.close();
-      setCounter(counter + 1);
+      refresh();
     }
   }
 
   function getDayData(date) {
-    return dataList.find((item) => item.reserveDatePlain === date);
+    return data.find((item) => item.reserveDatePlain === date);
   }
 
   function dateFullCellRender(e) {
     let current = null;
     const currentDate = e.format(dateFormat);
-    if (dataList.length > 0) {
+    if (data.length > 0) {
       current = getDayData(currentDate);
     }
     const date = e.date();
@@ -165,7 +155,8 @@ export default function DataTableListCalendar({ renderHeader }) {
             nextValue.year(year - 1);
             onChange(nextValue);
             setMonthDate(nextValue.format(monthFormat));
-          }}></Button>
+          }}
+        />
         <Button
           icon={<LeftOutlined />}
           onClick={(e) => {
@@ -173,7 +164,8 @@ export default function DataTableListCalendar({ renderHeader }) {
             nextValue.month(month - 1);
             onChange(nextValue);
             setMonthDate(nextValue.format(monthFormat));
-          }}></Button>
+          }}
+        />
         <span style={{ height: 32, lineHeight: '32px', padding: '0 24px' }}>
           {monthDate}
         </span>
@@ -184,7 +176,8 @@ export default function DataTableListCalendar({ renderHeader }) {
             nextValue.month(month + 1);
             onChange(nextValue);
             setMonthDate(nextValue.format(monthFormat));
-          }}></Button>
+          }}
+        />
         <Button
           icon={<DoubleRightOutlined />}
           onClick={(e) => {
@@ -192,7 +185,8 @@ export default function DataTableListCalendar({ renderHeader }) {
             nextValue.year(year + 1);
             onChange(nextValue);
             setMonthDate(nextValue.format(monthFormat));
-          }}></Button>
+          }}
+        />
       </div>
     );
   }
@@ -203,9 +197,13 @@ export default function DataTableListCalendar({ renderHeader }) {
         <Col flex='auto'>{renderHeader}</Col>
         <Col flex='120px' style={{ textAlign: 'right' }}>
           <Space>
-            <Button size='small' type='primary' onClick={showAddModal}>
-              批量上票
-            </Button>
+            {/SmartTicketingReservation.TimeRangeSettings.Create/.test(
+              roles,
+            ) && (
+              <Button size='small' type='primary' onClick={showAddModal}>
+                批量上票
+              </Button>
+            )}
           </Space>
         </Col>
       </Row>
@@ -214,7 +212,7 @@ export default function DataTableListCalendar({ renderHeader }) {
           id={selectedDate}
           dataSource={getDayData(selectedDate)}
           onClose={(e) => {
-            setCounter(counter + 1);
+            refresh();
             setSelectedDate('');
           }}
         />

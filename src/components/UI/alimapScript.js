@@ -16,28 +16,28 @@ export default function update(AMap) {
     const $content = item.querySelector('.mapicon-content');
     const $video = item.querySelector('.mapicon-video');
 
-    if (dataSource.deviceType === 2) {
-      const player = new DPlayer({
-        container: $video,
-        autoplay: true,
-        live: true,
-        video: {
-          url: dataSource.privateM3u8Url,
-          type: 'customFlv',
-          customType: {
-            customFlv: function (video, player) {
-              const flvPlayer = Flv.createPlayer({
-                type: 'flv',
-                url: video.src,
-              });
-              flvPlayer.attachMediaElement(video);
-              flvPlayer.load();
-            },
-          },
-        },
-      });
-      playerMap.set(dataSource.deviceId, player)
-    }
+    // if (dataSource.deviceType === 2) {
+    //   const player = new DPlayer({
+    //     container: $video,
+    //     autoplay: true,
+    //     live: true,
+    //     video: {
+    //       url: dataSource.privateM3u8Url,
+    //       type: 'customFlv',
+    //       customType: {
+    //         customFlv: function (video, player) {
+    //           const flvPlayer = Flv.createPlayer({
+    //             type: 'flv',
+    //             url: video.src,
+    //           });
+    //           flvPlayer.attachMediaElement(video);
+    //           flvPlayer.load();
+    //         },
+    //       },
+    //     },
+    //   });
+    //   playerMap.set(dataSource.deviceId, player)
+    // }
 
     $icon.addEventListener('click', () => {
       if (!AMap.DomUtil.hasClass(item, 'isActive')) {

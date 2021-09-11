@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { Table, Button, DatePicker, Form, Input, Select } from "antd";
-import UpdateDataForm from "./DataTableUpdateTabs";
-import modal from "../../shared/modal";
-import confirm from "../../shared/confirm";
-import utils from "../../shared/utils";
-import faciliyService from "../../services/faciliy.service";
-const dateFormat = "YYYY-MM-DD";
+import React, { useState, useEffect } from 'react';
+import { Table, Button, DatePicker, Form, Input, Select } from 'antd';
+import UpdateDataForm from './DataTableUpdateTabs';
+import modal from '../../shared/modal';
+import confirm from '../../shared/confirm';
+import utils from '../../shared/utils';
+import faciliyService from '../../services/faciliy.service';
+const dateFormat = 'YYYY-MM-DD';
 
 export default function DataTable({ id, dataSource, onClose }) {
   function makeData(data) {
@@ -67,76 +67,75 @@ export default function DataTable({ id, dataSource, onClose }) {
 
   const columns = [
     {
-      title: "时段",
-      dataIndex: "TimeRange",
+      title: '时段',
+      dataIndex: 'TimeRange',
       render(text, creds) {
         const { startTimeRange, endTimeRange } = creds;
-        if (startTimeRange === "00:00" && endTimeRange === "24:00") {
-          return "全天";
+        if (startTimeRange === '00:00' && endTimeRange === '24:00') {
+          return '全天';
         }
-        return startTimeRange + "-" + endTimeRange;
+        return startTimeRange + '-' + endTimeRange;
       },
     },
     {
-      title: "门票数量/剩余数量",
-      dataIndex: "remainTouristsQuantity",
+      title: '门票数量/剩余数量',
+      dataIndex: 'remainTouristsQuantity',
       render(text, creds) {
         return (
           creds.maxTouristsQuantity +
-          "/" +
+          '/' +
           (creds.groupRemainTouristsQuantity +
             creds.individualRemainTouristsQuantity)
         );
       },
     },
     {
-      title: "个人时段票数量/剩余数量",
-      dataIndex: "individualMaxTouristsQuantity",
+      title: '个人时段票数量/剩余数量',
+      dataIndex: 'individualMaxTouristsQuantity',
       render(text, creds) {
         return (
           creds.individualMaxTouristsQuantity +
-          "/" +
+          '/' +
           creds.individualRemainTouristsQuantity
         );
       },
     },
     {
-      title: "团体时段票数量/剩余数量",
-      dataIndex: "groupMaxTouristsQuantity",
+      title: '团体时段票数量/剩余数量',
+      dataIndex: 'groupMaxTouristsQuantity',
       render(text, creds) {
         return (
           creds.groupMaxTouristsQuantity +
-          "/" +
+          '/' +
           creds.groupRemainTouristsQuantity
         );
       },
     },
     {
-      title: "库存提示",
-      dataIndex: "warningLeftQuantity",
+      title: '库存提示',
+      dataIndex: 'warningLeftQuantity',
       render(text, creds) {
         return (
           creds.groupWarningLeftQuantity ||
           creds.individualWarningLeftQuantity ||
-          "无"
+          '无'
         );
       },
     },
     {
-      title: "操作",
-      dataIndex: "options",
+      title: '操作',
+      dataIndex: 'options',
       render(text, creds, index) {
         const obj = {
           children: (
-            <div className="text-center">
+            <div className='text-center'>
               <Button
-                size="small"
+                size='small'
                 style={{ marginRight: 4 }}
-                onClick={(e) => showEditModal(creds)}
-              >
+                onClick={(e) => showEditModal(creds)}>
                 编辑
               </Button>
-              <Button size="small" onClick={(e) => showDeleteModal(dataSource)}>
+              <Button size='small' onClick={(e) => showDeleteModal(dataSource)}>
                 删除
               </Button>
             </div>
@@ -155,16 +154,16 @@ export default function DataTable({ id, dataSource, onClose }) {
   ];
 
   return (
-    <div>
-      <div className="calendar-details-title">{id}</div>
+    <>
+      <div className='calendar-details-title'>{id}</div>
       <Table
-        rowKey="timeRangeName"
+        rowKey='timeRangeName'
         dataSource={makeData(dataSource)}
         columns={columns}
         pagination={false}
-        size="small"
+        size='small'
         bordered
       />
-    </div>
+    </>
   );
 }
