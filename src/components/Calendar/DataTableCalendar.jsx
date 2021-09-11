@@ -9,31 +9,19 @@ import {
 } from '@ant-design/icons';
 import DataTableCalendarDetails from './DataTableCalendarDetails';
 import UpdateDataForm from './DataTableUpdateTabs';
-<<<<<<< HEAD
 import { useRequest } from 'ahooks';
 import modal from '../../shared/modal';
 import faciliyService from '../../services/faciliy.service';
 import sessionService from '../../services/session.service';
-=======
-import modal from '../../shared/modal';
-import faciliyService from '../../services/faciliy.service';
->>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
 const monthFormat = 'YYYY-MM';
 const dateFormat = 'YYYY-MM-DD';
 const currentMoment = moment();
 
 export default function DataTableListCalendar({ renderHeader }) {
-<<<<<<< HEAD
   const roles = sessionService.getUserRoles();
   const [selectedDate, setSelectedDate] = useState('');
-=======
-  const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState('');
-  const [dataList, setDataList] = useState([]);
->>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
   const [monthDate, setMonthDate] = useState(currentMoment.format(monthFormat));
 
-<<<<<<< HEAD
   const {
     refresh,
     data = [],
@@ -49,33 +37,6 @@ export default function DataTableListCalendar({ renderHeader }) {
       refreshDeps: [monthDate],
     },
   );
-=======
-  useEffect(() => {
-    let mounted = true;
-    loadData();
-
-    async function loadData() {
-      setLoading(true);
-      try {
-        const { items } = await faciliyService.getReservationTimeRangeList(
-          makeQuery(monthDate),
-        );
-        if (mounted) {
-          setLoading(false);
-          setDataList(items);
-        }
-      } catch (error) {
-        if (mounted) {
-          setLoading(false);
-          setDataList([]);
-        }
-      }
-    }
-    return () => {
-      mounted = false;
-    };
-  }, [monthDate, counter]);
->>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
 
   function makeQuery(date) {
     const currentDate = moment(date).startOf('month');
@@ -194,12 +155,8 @@ export default function DataTableListCalendar({ renderHeader }) {
             nextValue.year(year - 1);
             onChange(nextValue);
             setMonthDate(nextValue.format(monthFormat));
-<<<<<<< HEAD
           }}
         />
-=======
-          }}></Button>
->>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
         <Button
           icon={<LeftOutlined />}
           onClick={(e) => {
@@ -207,12 +164,8 @@ export default function DataTableListCalendar({ renderHeader }) {
             nextValue.month(month - 1);
             onChange(nextValue);
             setMonthDate(nextValue.format(monthFormat));
-<<<<<<< HEAD
           }}
         />
-=======
-          }}></Button>
->>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
         <span style={{ height: 32, lineHeight: '32px', padding: '0 24px' }}>
           {monthDate}
         </span>
@@ -223,12 +176,8 @@ export default function DataTableListCalendar({ renderHeader }) {
             nextValue.month(month + 1);
             onChange(nextValue);
             setMonthDate(nextValue.format(monthFormat));
-<<<<<<< HEAD
           }}
         />
-=======
-          }}></Button>
->>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
         <Button
           icon={<DoubleRightOutlined />}
           onClick={(e) => {
@@ -236,12 +185,8 @@ export default function DataTableListCalendar({ renderHeader }) {
             nextValue.year(year + 1);
             onChange(nextValue);
             setMonthDate(nextValue.format(monthFormat));
-<<<<<<< HEAD
           }}
         />
-=======
-          }}></Button>
->>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
       </div>
     );
   }
@@ -252,7 +197,6 @@ export default function DataTableListCalendar({ renderHeader }) {
         <Col flex='auto'>{renderHeader}</Col>
         <Col flex='120px' style={{ textAlign: 'right' }}>
           <Space>
-<<<<<<< HEAD
             {/SmartTicketingReservation.TimeRangeSettings.Create/.test(
               roles,
             ) && (
@@ -260,11 +204,6 @@ export default function DataTableListCalendar({ renderHeader }) {
                 批量上票
               </Button>
             )}
-=======
-            <Button size='small' type='primary' onClick={showAddModal}>
-              批量上票
-            </Button>
->>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
           </Space>
         </Col>
       </Row>
@@ -273,11 +212,7 @@ export default function DataTableListCalendar({ renderHeader }) {
           id={selectedDate}
           dataSource={getDayData(selectedDate)}
           onClose={(e) => {
-<<<<<<< HEAD
             refresh();
-=======
-            setCounter(counter + 1);
->>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
             setSelectedDate('');
           }}
         />

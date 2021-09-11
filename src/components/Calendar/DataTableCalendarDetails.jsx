@@ -5,9 +5,11 @@ import modal from '../../shared/modal';
 import confirm from '../../shared/confirm';
 import utils from '../../shared/utils';
 import faciliyService from '../../services/faciliy.service';
-const dateFormat = 'YYYY-MM-DD';
+import sessionService from '../../services/session.service';
 
 export default function DataTable({ id, dataSource, onClose }) {
+  const roles = sessionService.getUserRoles();
+
   function makeData(data) {
     if (!data) {
       return [];
@@ -129,15 +131,25 @@ export default function DataTable({ id, dataSource, onClose }) {
         const obj = {
           children: (
             <div className='text-center'>
-              <Button
-                size='small'
-                style={{ marginRight: 4 }}
-                onClick={(e) => showEditModal(creds)}>
-                编辑
-              </Button>
-              <Button size='small' onClick={(e) => showDeleteModal(dataSource)}>
-                删除
-              </Button>
+              {/SmartTicketingReservation.TimeRangeSettings.Update/.test(
+                roles,
+              ) && (
+                <Button
+                  size='small'
+                  style={{ marginRight: 4 }}
+                  onClick={(e) => showEditModal(creds)}>
+                  编辑
+                </Button>
+              )}
+              {/SmartTicketingReservation.TimeRangeSettings.Delete/.test(
+                roles,
+              ) && (
+                <Button
+                  size='small'
+                  onClick={(e) => showDeleteModal(dataSource)}>
+                  删除
+                </Button>
+              )}
             </div>
           ),
           props: {},

@@ -58,45 +58,6 @@ const AliMap = () => {
                 })
                 .filter((item) => item);
             }
-<<<<<<< HEAD
-=======
-            if (map) {
-              const marker = new AMap.ImageLayer({
-                bounds: new AMap.Bounds(
-                  [115.866331, 39.112493],
-                  [115.959888, 39.067592],
-                ),
-                zIndex: 100,
-                url: imgUrl, // 图片 Url
-                zooms: [10, 18], // 设置可见级别，[最小级别，最大级别]
-              });
-              const marker1 = new AMap.ImageLayer({
-                bounds: new AMap.Bounds(
-                  [115.866331, 39.112493],
-                  [115.959888, 39.067592],
-                ),
-                zIndex: 101,
-                url: imgUrl2, // 图片 Url
-                zooms: [10, 18], // 设置可见级别，[最小级别，最大级别]
-              });
-              let markerList = [];
-              if (data && data.length > 0) {
-                markerList = data
-                  .map((item) => {
-                    const { longitude, latitude } = item;
-                    const position = [longitude * 1, latitude * 1];
-                    if (latitude && longitude) {
-                      return new AMap.Marker({
-                        position,
-                        topWhenClick: true,
-                        content: renderToString(<MapIcon dataSource={item} />),
-                        offset: new AMap.Pixel(-13, -30),
-                      });
-                    }
-                  })
-                  .filter((item) => item);
-              }
->>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
 
             const markers = [marker, marker1, ...markerList];
             map.add(markers);

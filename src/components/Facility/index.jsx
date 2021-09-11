@@ -10,13 +10,47 @@ import sessionService from '../../services/session.service';
 import './style.less';
 const { TabPane } = Tabs;
 
+const allTab = [
+  { value: '1', label: '个人参观' },
+  { value: '2', label: '团体参观' },
+  { value: '3', label: '入园记录' },
+  { value: '4', label: '工作人员' },
+  { value: '5', label: '服务商人员' },
+];
+
 function Facility() {
   const roles = sessionService.getUserRoles();
   const [show, setShow] = useState(true);
-  const [tabKey, setTabKey] = useState('1');
-  if (!show) {
+  const tabKeys = getTabKeys(roles);
+  const tabList = allTab.filter((tab) => tabKeys.includes(tab.value));
+  const [tabKey, setTabKey] = useState(
+    tabList.length > 0 ? tabList[0].value : -1,
+  );
+
+  if (tabList.length === 0 && !show) {
     return null;
   }
+
+  function getTabKeys(roles) {
+    let result = [];
+    if (/SmartTicketingReservation.Personal/.test(roles)) {
+      result.push('1');
+    }
+    if (/SmartTicketingReservation.Group/.test(roles)) {
+      result.push('2');
+    }
+    if (/SmartTicketing.CheckRecords/.test(roles)) {
+      result.push('3');
+    }
+    if (/SmartTicketing.Staffs/.test(roles)) {
+      result.push('4');
+    }
+    if (/SmartTicketing.Merchants/.test(roles)) {
+      result.push('5');
+    }
+    return result;
+  }
+
   return (
     <Main
       show={show}
@@ -25,21 +59,9 @@ function Facility() {
       }}
       header={
         <Tabs activeKey={tabKey} onChange={setTabKey}>
-          {/SmartTicketingReservation.Personal/.test(roles) && (
-            <TabPane tab='个人参观' key='1' />
-          )}
-          {/SmartTicketingReservation.Group/.test(roles) && (
-            <TabPane tab='团体参观' key='2' />
-          )}
-          {/SmartTicketing.CheckRecords/.test(roles) && (
-            <TabPane tab='入园记录' key='5' />
-          )}
-          {/SmartTicketing.Staffs/.test(roles) && (
-            <TabPane tab='工作人员' key='3' />
-          )}
-          {/SmartTicketing.Merchants/.test(roles) && (
-            <TabPane tab='服务商人员' key='4' />
-          )}
+          {tabList.map((tab) => (
+            <TabPane tab={tab.label} key={tab.value} />
+          ))}
         </Tabs>
       }>
       {tabKey === '1' && <DataTable1 />}

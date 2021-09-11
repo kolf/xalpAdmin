@@ -279,22 +279,12 @@ export default function DataTable() {
         rowKey='id'
         dataSource={makeData(data.items)}
         columns={columns}
-<<<<<<< HEAD
         pagination={paginationProps}
-=======
-        pagination={false}
->>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
         size='small'
         bordered
         loading={loading}
         scroll={{ x: 1100 }}
       />
-<<<<<<< HEAD
-=======
-      <div className='page-container'>
-        <Pagination {...paginationProps} />
-      </div>
->>>>>>> e8ee3f10bb487afce9255239d636eaff39d987cb
     </div>
   );
 }
