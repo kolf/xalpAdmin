@@ -17,6 +17,7 @@
     "enquire-js": "^0.2.1",
     "flv.js": "^1.6.1",
     "history": "^4.10.1",
+    "hls.js": "^1.0.10",
     "moment": "^2.24.0",
     "path-to-regexp": "^6.1.0",
     "prop-types": "^15.7.2",

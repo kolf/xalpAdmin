@@ -1,12 +1,12 @@
 import DPlayer from 'dplayer';
-import Flv from 'flv.js'
+import Hls from 'hls.js';
 // const Flv = require('flv.js');
 
 import policeService from '../../services/police.service';
 
 export default function update(AMap) {
   const $root = document.querySelectorAll('.mapicon-root');
-  let playerMap = new Map()
+  let player = null;
 
   $root.forEach((item) => {
     const $icon = item.querySelector('.mapicon-img');
@@ -15,29 +15,6 @@ export default function update(AMap) {
     const $reload = item.querySelector('.mapicon-reload');
     const $content = item.querySelector('.mapicon-content');
     const $video = item.querySelector('.mapicon-video');
-
-    // if (dataSource.deviceType === 2) {
-    //   const player = new DPlayer({
-    //     container: $video,
-    //     autoplay: true,
-    //     live: true,
-    //     video: {
-    //       url: dataSource.privateM3u8Url,
-    //       type: 'customFlv',
-    //       customType: {
-    //         customFlv: function (video, player) {
-    //           const flvPlayer = Flv.createPlayer({
-    //             type: 'flv',
-    //             url: video.src,
-    //           });
-    //           flvPlayer.attachMediaElement(video);
-    //           flvPlayer.load();
-    //         },
-    //       },
-    //     },
-    //   });
-    //   playerMap.set(dataSource.deviceId, player)
-    // }
 
     $icon.addEventListener('click', () => {
       if (!AMap.DomUtil.hasClass(item, 'isActive')) {
@@ -57,12 +34,15 @@ export default function update(AMap) {
       // setHtml();
     });
     $close.addEventListener('click', () => {
+      if (player) {
+        player.pause();
+      }
       AMap.DomUtil.removeClass(item, 'isActive');
     });
 
     function setHtml(callback) {
       if (dataSource.deviceType === 2) {
-
+        setVideo($video, dataSource.deviceId);
       } else {
         const html = `<div class="ant-row"><div style="flex:auto" class="ant-col">在线状态</div><div style="text-align:right" class="ant-col">${dataSource.isOnline ? `在线` : `离线`
           }</div></div><div class="ant-row"><div style="flex:auto" class="ant-col">设备状态</div><div style="text-align:right" class="ant-col">${dataSource.isActive ? `启用` : `停用`
@@ -75,9 +55,38 @@ export default function update(AMap) {
     }
   });
 
+  async function setVideo(ele, id) {
+    try {
+      const res = await policeService.getCameraDetails({
+        deviceId: id,
+        duration: 300,
+        type: 'HLS',
+      });
+      player = new DPlayer({
+        container: ele,
+        live: true,
+        screenshot: true,
+        preload: 'auto',
+        autoplay: true,
+        mutex: false,
+        video: {
+          url: res.hlsUrl,
+          type: 'customHls',
+          contextmenu: [],
+          customType: {
+            customHls: (video) => {
+              const hls = new Hls();
+              hls.loadSource(video.src);
+              hls.attachMedia(video);
+            },
+          },
+        },
+      });
+    } catch (error) { }
+  }
+
   function hide() {
     $root.forEach((item) => {
-      // const player = playerMap.get(item.deviceId)
       // if (player) {
       //   player.pause()
       // }

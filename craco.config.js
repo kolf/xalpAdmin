@@ -30,6 +30,12 @@ module.exports = {
         secure: false,
         pathRewrite: { '^/topark': '' },
       },
+      '/topark/iotwebcam': {
+        target: 'http://116.131.8.40:8888',
+        changeOrigin: true,
+        secure: false,
+        pathRewrite: { '^/topark': '' },
+      },
       '/topark/sightseer': {
         target: 'http://116.131.8.40:8888',
         changeOrigin: true,

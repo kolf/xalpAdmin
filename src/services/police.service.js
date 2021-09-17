@@ -14,6 +14,18 @@ class PoliceService {
     }
   };
 
+
+  getCameraDetails = async (creds) => {
+    try {
+      const res = await api.get(
+        `iotwebcam/device/stream?${queryString.stringify(creds)}`,
+      );
+      return res.data.data;
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
   getCameraList = async (query, creds) => {
     try {
       const res = await api.get(
