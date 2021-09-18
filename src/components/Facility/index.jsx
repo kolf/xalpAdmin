@@ -13,9 +13,9 @@ const { TabPane } = Tabs;
 const allTab = [
   { value: '1', label: '个人参观' },
   { value: '2', label: '团体参观' },
-  { value: '3', label: '入园记录' },
-  { value: '4', label: '工作人员' },
-  { value: '5', label: '服务商人员' },
+  { value: '5', label: '入园记录' },
+  { value: '3', label: '工作人员' },
+  { value: '4', label: '服务商人员' },
 ];
 
 function Facility() {
@@ -39,15 +39,16 @@ function Facility() {
     if (/SmartTicketingReservation.Group/.test(roles)) {
       result.push('2');
     }
+    if (/SmartTicketing.Merchants/.test(roles)) {
+      result.push('5');
+    }
     if (/SmartTicketing.CheckRecords/.test(roles)) {
       result.push('3');
     }
     if (/SmartTicketing.Staffs/.test(roles)) {
       result.push('4');
     }
-    if (/SmartTicketing.Merchants/.test(roles)) {
-      result.push('5');
-    }
+
     return result;
   }
 
