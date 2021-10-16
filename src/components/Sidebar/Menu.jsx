@@ -20,6 +20,8 @@ export default function AppMenu() {
     }
   }, [isHovering]);
 
+  console.log(roles, 'roles');
+
   const menu = (
     <Menu>
       {/SmartTicketing.Devices/.test(roles) && (
@@ -37,7 +39,7 @@ export default function AppMenu() {
           <Link to='/calendar'>预约量管理</Link>
         </Menu.Item>
       )}
-      {/SmartTicketingReservation.(Personal|Personal)|Personal.(Merchants|Staffs)/.test(
+      {/SmartTicketingReservation.(Personal)|SmartTicketing.(Merchants|Staffs)/.test(
         roles,
       ) && (
         <Menu.Item key='facility'>
