@@ -59,6 +59,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         utils.success(`更新成功！`);
 
         if (sessionService.isUserName(defaultValues.userName)) {
+          await sessionService.updateRoles();
           window.location.reload();
           return;
         }
@@ -110,6 +111,18 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
           <Select placeholder='请选择' mode='multiple' allowClear>
             {data[0].map((o) => (
               <Option value={o.label} key={o.value}>
+                {o.label}
+              </Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label='选择部门'
+          name='organizationUnitId'
+          rules={[{ required: true, message: '请选择部门！' }]}>
+          <Select placeholder='请选择' allowClear>
+            {data[1].map((o) => (
+              <Option value={o.value} key={o.value}>
                 {o.label}
               </Option>
             ))}

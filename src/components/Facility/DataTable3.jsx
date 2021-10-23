@@ -181,6 +181,13 @@ export default function DataTable() {
       dataIndex: 'certNumber',
     },
     {
+      title: '所属部门',
+      dataIndex: 'departmentName',
+      render(text) {
+        return text || '无';
+      },
+    },
+    {
       title: '岗位',
       dataIndex: 'organizationUnit',
     },
@@ -321,7 +328,7 @@ export default function DataTable() {
         bordered
         loading={loading}
         rowKey='id'
-        scroll={{ x: 1080 }}
+        scroll={{ x: 1280 }}
       />
     </div>
   );

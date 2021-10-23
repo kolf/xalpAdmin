@@ -13,19 +13,22 @@ const { TabPane } = Tabs;
 const allTab = [
   { value: '1', label: '个人参观' },
   { value: '2', label: '团体参观' },
-  { value: '3', label: '入园记录' },
-  { value: '4', label: '工作人员' },
-  { value: '5', label: '服务商人员' },
+  { value: '5', label: '入园记录' },
+  { value: '3', label: '工作人员' },
+  { value: '4', label: '服务商人员' },
 ];
 
 function Facility() {
   const roles = sessionService.getUserRoles();
   const [show, setShow] = useState(true);
   const tabKeys = getTabKeys(roles);
+
   const tabList = allTab.filter((tab) => tabKeys.includes(tab.value));
   const [tabKey, setTabKey] = useState(
     tabList.length > 0 ? tabList[0].value : -1,
   );
+
+  // console.log(tabList, tabKey, 'tabKeys');
 
   if (tabList.length === 0 && !show) {
     return null;
@@ -40,13 +43,13 @@ function Facility() {
       result.push('2');
     }
     if (/SmartTicketing.CheckRecords/.test(roles)) {
-      result.push('3');
+      result.push('5');
     }
     if (/SmartTicketing.Staffs/.test(roles)) {
-      result.push('4');
+      result.push('3');
     }
     if (/SmartTicketing.Merchants/.test(roles)) {
-      result.push('5');
+      result.push('4');
     }
     return result;
   }

@@ -20,6 +20,8 @@ export default function AppMenu() {
     }
   }, [isHovering]);
 
+  console.log(roles, 'roles');
+
   const menu = (
     <Menu>
       {/SmartTicketing.Devices/.test(roles) && (
