@@ -1,26 +1,27 @@
-import axios from "axios";
-import config from "../config";
-import utils from "../shared/utils";
-import sessionService from "../services/session.service";
+import axios from 'axios';
+import config from '../config';
+import utils from '../shared/utils';
+import sessionService from '../services/session.service';
 /**
  * Axios defaults
  */
 axios.defaults.baseURL = config.api.baseUrl;
 
 // Headers
-axios.defaults.headers.common["Content-Type"] =
-  "application/x-www-form-urlencoded";
-axios.defaults.headers.common["Tenant-Id"] = 10100;
-axios.defaults.headers.common["Accept-language"] = "zh-Hans";
-axios.defaults.headers.common["Access-Control-Allow-Origin"] = "*";
+axios.defaults.headers.common['Content-Type'] =
+  'application/x-www-form-urlencoded';
+axios.defaults.headers.common['Tenant-Id'] = 10100;
+axios.defaults.headers.common['Accept-language'] = 'zh-Hans';
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 /**
  * Request Interceptor
  */
 axios.interceptors.request.use(
   async (inputConfig) => {
     const config = inputConfig;
+    console.log(inputConfig, 'config');
     // Check for and add the stored Auth Token to the header request
-    let token = sessionStorage.getItem("@Auth:token");
+    let token = sessionStorage.getItem('@Auth:token');
     if (token) {
       config.headers.common.Authorization = `Bearer ${token}`;
     }
@@ -29,7 +30,7 @@ axios.interceptors.request.use(
   },
   (error) => {
     throw error;
-  }
+  },
 );
 
 /**
@@ -38,7 +39,7 @@ axios.interceptors.request.use(
 axios.interceptors.response.use(
   (res) => {
     // Status code isn't a success code - throw error
-    if (!`${res.status}`.startsWith("2")) {
+    if (!`${res.status}`.startsWith('2')) {
       utils.error(`接口请求出错！`);
       throw res.data;
     }
@@ -60,7 +61,7 @@ axios.interceptors.response.use(
       throw error.response.data;
     }
     throw error;
-  }
+  },
 );
 
 export default axios;
