@@ -43,7 +43,7 @@ export default function DataTable() {
         },
         {
           status: query.status || '-1',
-          cameraName: query.cameraName,
+          cameraName: query.cameraName || '0',
         },
       ),
     {

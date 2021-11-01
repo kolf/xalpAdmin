@@ -19,31 +19,31 @@ module.exports = {
   devServer: {
     proxy: {
       '/topark/auth': {
-        target: 'http://116.131.8.40:8888',
+        target: 'http://116.131.52.248:8888',
         changeOrigin: true,
         secure: false,
         pathRewrite: { '^/topark': '' },
       },
-      '/topark/iotbase': {
-        target: 'http://116.131.8.40:8888',
+      '/iotbase': {
+        target: 'http://116.131.52.248:8888',
         changeOrigin: true,
         secure: false,
         pathRewrite: { '^/topark': '' },
       },
-      '/topark/iotwebcam': {
-        target: 'http://116.131.8.40:8888',
+      '/iotwebcam': {
+        target: 'http://116.131.52.248:8888',
         changeOrigin: true,
         secure: false,
         pathRewrite: { '^/topark': '' },
       },
-      '/topark/sightseer': {
-        target: 'http://116.131.8.40:8888',
+      '/sightseer': {
+        target: 'http://116.131.52.248:8888',
         changeOrigin: true,
         secure: false,
         pathRewrite: { '^/topark': '' },
       },
       '/topark/api': {
-        target: 'http://116.131.8.38:8800',
+        target: 'http://116.131.52.248:8800',
         changeOrigin: true,
         secure: false,
         pathRewrite: { '^/topark': '' },

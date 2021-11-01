@@ -5,7 +5,7 @@ class PoliceService {
   getAllCamera = async (creds) => {
     try {
       const res = await api.get(
-        `sightseer/camera/queryAll?${queryString.stringify(creds)}`,
+        `../sightseer/camera/queryAll?${queryString.stringify(creds)}`,
       );
 
       return res.data.data;
@@ -14,11 +14,10 @@ class PoliceService {
     }
   };
 
-
   getCameraDetails = async (creds) => {
     try {
       const res = await api.get(
-        `iotwebcam/device/stream?${queryString.stringify(creds)}`,
+        `../iotwebcam/device/stream?${queryString.stringify(creds)}`,
       );
       return res.data.data;
     } catch (error) {
@@ -29,7 +28,8 @@ class PoliceService {
   getCameraList = async (query, creds) => {
     try {
       const res = await api.get(
-        `sightseer/camera/page/${creds.status}/${creds.cameraName
+        `../sightseer/camera/page/${creds.status}/${
+          creds.cameraName
         }?${queryString.stringify(query)}`,
       );
       return res.data.data;
@@ -40,7 +40,7 @@ class PoliceService {
 
   updateCamera = async (creds) => {
     try {
-      const res = await api.post(`sightseer/camera/updateOne`, creds);
+      const res = await api.post(`../sightseer/camera/updateOne`, creds);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -49,7 +49,7 @@ class PoliceService {
 
   addCamera = async (creds) => {
     try {
-      const res = await api.post(`sightseer/camera/saveData`, creds);
+      const res = await api.post(`../sightseer/camera/saveData`, creds);
       return res.data;
     } catch (error) {
       return Promise.reject(error);
@@ -82,7 +82,7 @@ class PoliceService {
     try {
       const res1 = await api.get(`api/Device/HomeList`);
       const res2 = await api.get(
-        `sightseer/camera/queryAll?${queryString.stringify(creds)}`,
+        `../sightseer/camera/queryAll?${queryString.stringify(creds)}`,
       );
 
       return [
