@@ -97,10 +97,7 @@ export default function UpdateDataForm({
 
   async function validatorCoordinate(_, value) {
     const coordinateReg = /^\d+\.\d+[,，]{1}\d+\.\d+$/g;
-    if (!value) {
-      return Promise.reject(new Error('请输入经纬度！'));
-    }
-    if (!coordinateReg.test(value)) {
+    if (value && !coordinateReg.test(value)) {
       return Promise.reject(new Error('请输入正确的经纬度！'));
     }
     return Promise.resolve();
@@ -135,7 +132,10 @@ export default function UpdateDataForm({
         <Form.Item
           label='设备经纬度'
           name='coordinate'
-          rules={[{ validator: validatorCoordinate }]}>
+          rules={[
+            { required: true, message: '请输入经纬度！' },
+            { validator: validatorCoordinate },
+          ]}>
           <Input placeholder='前面经度、后面纬度，用逗号分隔！' />
         </Form.Item>
       )}

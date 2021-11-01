@@ -43,7 +43,7 @@ module.exports = {
         pathRewrite: { '^/topark': '' },
       },
       '/topark/api': {
-        target: 'http://116.131.52.248:8800',
+        target: 'http://116.131.52.246:8800',
         changeOrigin: true,
         secure: false,
         pathRewrite: { '^/topark': '' },

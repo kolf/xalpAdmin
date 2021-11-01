@@ -22,10 +22,13 @@ function Facility() {
   const roles = sessionService.getUserRoles();
   const [show, setShow] = useState(true);
   const tabKeys = getTabKeys(roles);
+
   const tabList = allTab.filter((tab) => tabKeys.includes(tab.value));
   const [tabKey, setTabKey] = useState(
     tabList.length > 0 ? tabList[0].value : -1,
   );
+
+  // console.log(tabList, tabKey, 'tabKeys');
 
   if (tabList.length === 0 && !show) {
     return null;
@@ -39,16 +42,15 @@ function Facility() {
     if (/SmartTicketingReservation.Group/.test(roles)) {
       result.push('2');
     }
-    if (/SmartTicketing.Merchants/.test(roles)) {
+    if (/SmartTicketing.CheckRecords/.test(roles)) {
       result.push('5');
     }
-    if (/SmartTicketing.CheckRecords/.test(roles)) {
+    if (/SmartTicketing.Staffs/.test(roles)) {
       result.push('3');
     }
-    if (/SmartTicketing.Staffs/.test(roles)) {
+    if (/SmartTicketing.Merchants/.test(roles)) {
       result.push('4');
     }
-
     return result;
   }
 

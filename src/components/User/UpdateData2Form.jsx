@@ -43,6 +43,7 @@ export default function UpdateDataForm({ onOk, defaultValues = {} }) {
         });
         utils.success(`更新成功！`);
         if (sessionService.isUserRoles(defaultValues.name)) {
+          await sessionService.updateRoles();
           window.location.reload();
           return;
         }

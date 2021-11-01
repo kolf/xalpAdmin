@@ -244,6 +244,15 @@ export default function DataTable() {
     },
   ];
 
+  const onSearch = () => {
+    const values = form.getFieldsValue();
+    setQuery({
+      ...query,
+      ...values,
+      skipCount: '1',
+    });
+  };
+
   const paginationProps = {
     showQuickJumper: true,
     showSizeChanger: true,
@@ -286,9 +295,7 @@ export default function DataTable() {
         name='form'
         layout='inline'
         style={{ paddingBottom: 12 }}
-        onFinish={(values) =>
-          setQuery({ ...query, ...values, skipCount: '1' })
-        }>
+        onFinish={onSearch}>
         <Form.Item name='CardStatus' style={{ marginBottom: 6, width: 100 }}>
           <Select size='small' placeholder='状态' allowClear>
             {userStatusOptions.map((o) => (
@@ -304,14 +311,13 @@ export default function DataTable() {
             查询数据
           </Button>
         </Form.Item>
-        <Form.Item style={{ marginLeft: 'auto', marginRight: 0 }}>
+        <Form.Item
+          name='keyword'
+          style={{ marginLeft: 'auto', marginRight: 0 }}>
           <Search
             size='small'
             placeholder='请输入姓名查询'
-            allowClear
-            onSearch={(value) =>
-              setQuery({ ...query, keyword: value, skipCount: '1' })
-            }
+            onSearch={onSearch}
           />
         </Form.Item>
       </Form>

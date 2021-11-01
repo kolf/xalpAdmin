@@ -157,6 +157,15 @@ export default function DataTable() {
     },
   ];
 
+  const onSearch = () => {
+    const values = form.getFieldsValue();
+    setQuery({
+      ...query,
+      ...values,
+      current: '1',
+    });
+  };
+
   const paginationProps = {
     showQuickJumper: true,
     showSizeChanger: true,
@@ -193,7 +202,7 @@ export default function DataTable() {
         name='form'
         layout='inline'
         style={{ paddingBottom: 12 }}
-        onFinish={(values) => setQuery({ ...query, ...values, current: '1' })}>
+        onFinish={onSearch}>
         <Form.Item name='status' style={{ marginBottom: 6, width: 100 }}>
           <Select size='small' placeholder='设备状态' allowClear>
             {deviceStatusOptions.map((o) => (
@@ -206,14 +215,13 @@ export default function DataTable() {
             查询数据
           </Button>
         </Form.Item>
-        <Form.Item style={{ marginLeft: 'auto', marginRight: 0 }}>
+        <Form.Item
+          name='cameraName'
+          style={{ marginLeft: 'auto', marginRight: 0 }}>
           <Search
             size='small'
             placeholder='请输入设备名称查询'
-            allowClear
-            onSearch={(value) =>
-              setQuery({ ...query, current: '1', cameraName: value })
-            }
+            onSearch={onSearch}
           />
         </Form.Item>
       </Form>

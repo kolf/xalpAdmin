@@ -96,6 +96,16 @@ export default React.memo(function DataTable() {
     },
   ];
 
+  const onSearch = (v) => {
+    const values = form.getFieldsValue();
+    console.log(v, values, 'values');
+    setQuery({
+      ...query,
+      ...values,
+      pageNum: 1,
+    });
+  };
+
   const paginationProps = {
     showQuickJumper: true,
     showSizeChanger: true,
@@ -105,10 +115,6 @@ export default React.memo(function DataTable() {
     position: ['', 'bottomCenter'],
     size: 'small',
     onChange(pageNum, pageSize) {
-      // let nextPageNum = pageNum;
-      // if (pageSize !== query.maxResultCount * 1) {
-      //   nextPageNum = 1;
-      // }
       setQuery({
         ...query,
         pageNum,
@@ -136,7 +142,7 @@ export default React.memo(function DataTable() {
         name='form'
         layout='inline'
         style={{ paddingBottom: 12 }}
-        onFinish={(values) => setQuery({ ...query, ...values, pageNum: 1 })}
+        onFinish={onSearch}
         initialValues={query}>
         <Form.Item name='date'>
           <RangePicker size='small' />
@@ -146,14 +152,13 @@ export default React.memo(function DataTable() {
             查询数据
           </Button>
         </Form.Item>
-        <Form.Item style={{ marginLeft: 'auto', marginRight: 0 }}>
+        <Form.Item
+          name='keyword'
+          style={{ marginLeft: 'auto', marginRight: 0 }}>
           <Search
             size='small'
             placeholder='请输入设备名称查询'
-            allowClear
-            onSearch={(value) =>
-              setQuery({ ...query, keyword: value, pageNum: 1 })
-            }
+            onSearch={onSearch}
           />
         </Form.Item>
       </Form>

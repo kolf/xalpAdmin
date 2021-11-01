@@ -252,6 +252,15 @@ export default function DataTable() {
     },
   ];
 
+  const onSearch = () => {
+    const values = form.getFieldsValue();
+    setQuery({
+      ...query,
+      ...values,
+      skipCount: '1',
+    });
+  };
+
   const paginationProps = {
     showQuickJumper: true,
     showSizeChanger: true,
@@ -301,13 +310,7 @@ export default function DataTable() {
         name='form'
         layout='inline'
         style={{ paddingBottom: 12 }}
-        onFinish={(values) => {
-          setQuery({
-            ...query,
-            ...values,
-            skipCount: '1',
-          });
-        }}>
+        onFinish={onSearch}>
         <Form.Item name='Status' style={{ marginBottom: 6, width: 100 }}>
           <Select size='small' placeholder='核销状态' allowClear>
             {reviewOptions.map((o) => (
@@ -336,7 +339,9 @@ export default function DataTable() {
             查询数据
           </Button>
         </Form.Item>
-        <Form.Item style={{ marginLeft: 'auto', marginRight: 0 }}>
+        <Form.Item
+          name='keyword'
+          style={{ marginLeft: 'auto', marginRight: 0 }}>
           <Tooltip
             title='请输入预约人员姓名查询'
             color={'rgba(11, 34, 63, 0.9)'}
@@ -345,10 +350,7 @@ export default function DataTable() {
             <Search
               size='small'
               placeholder='请输入预约人员姓名查询'
-              allowClear
-              onSearch={(value) =>
-                setQuery({ ...query, skipCount: '1', keyword: value })
-              }
+              onSearch={onSearch}
             />
           </Tooltip>
         </Form.Item>

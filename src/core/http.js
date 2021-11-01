@@ -19,7 +19,6 @@ axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.interceptors.request.use(
   async (inputConfig) => {
     const config = inputConfig;
-    console.log(inputConfig, 'config');
     // Check for and add the stored Auth Token to the header request
     let token = sessionStorage.getItem('@Auth:token');
     if (token) {

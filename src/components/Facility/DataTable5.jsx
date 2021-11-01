@@ -63,6 +63,7 @@ export default function DataTable() {
   }
 
   function makeQuery(query) {
+    console.log(query, 'query');
     return Object.keys(query).reduce((result, key) => {
       const value = query[key];
       if (key === 'date' && value) {
@@ -149,8 +150,17 @@ export default function DataTable() {
     },
   };
 
+  const onSearch = () => {
+    const values = form.getFieldsValue();
+    setQuery({
+      ...query,
+      ...values,
+      skipCount: '1',
+    });
+  };
+
   return (
-    <div>
+    <>
       <Row style={{ paddingBottom: 12 }}>
         <Col flex='auto'></Col>
         <Col flex='120px' style={{ textAlign: 'right' }}>
@@ -166,7 +176,7 @@ export default function DataTable() {
         name='form'
         layout='inline'
         style={{ paddingBottom: 12 }}
-        onFinish={(values) => setQuery({ ...query, ...values, skipCount: '1' })}
+        onFinish={onSearch}
         initialValues={query}>
         <Form.Item name='StaffType' style={{ marginBottom: 6, width: 100 }}>
           <Select size='small' placeholder='人员类型' allowClear>
@@ -183,14 +193,13 @@ export default function DataTable() {
             查询数据
           </Button>
         </Form.Item>
-        <Form.Item style={{ marginLeft: 'auto', marginRight: 0 }}>
+        <Form.Item
+          name='keyword'
+          style={{ marginLeft: 'auto', marginRight: 0 }}>
           <Search
             size='small'
             placeholder='请输入姓名查询'
-            allowClear
-            onSearch={(value) =>
-              setQuery({ ...query, keyword: value, skipCount: '1' })
-            }
+            onSearch={onSearch}
           />
         </Form.Item>
       </Form>
@@ -204,6 +213,6 @@ export default function DataTable() {
         loading={loading}
         rowKey='id'
       />
-    </div>
+    </>
   );
 }
